@@ -421,6 +421,9 @@ mips_arch_create octeon 64	mips64r2 {} \
 mips_arch_create octeonp 64	octeon {} \
 			{ -march=octeon+ -mtune=octeon+ } { -mmips:octeon+ } \
 			{ }
+mips_arch_create octeon2 64	octeonp {} \
+			{ -march=octeon2 -mtune=octeon2 } { -mmips:octeon2 } \
+			{ }
 mips_arch_create xlr 	64	mips64	{} \
 			{ -march=xlr -mtune=xlr } { -mmips:xlr }
 
@@ -994,6 +997,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_list_test_arches "octeon-ill" "" \
 					[mips_arch_list_matching octeon]
     run_dump_test_arches "octeon-pref"	[mips_arch_list_matching octeon]
+    run_dump_test_arches "octeon2"	[mips_arch_list_matching octeon2]
 
     run_dump_test "smartmips"
     run_dump_test "mips32-dsp"
