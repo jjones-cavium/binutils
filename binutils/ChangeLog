@@ -1,3 +1,9 @@
+2012-07-12  Alan Modra  <amodra@gmail.com>
+
+	Bug #4312: addr2line (GCC 4.7 toolchain) broken for Linux kernel.
+	* addr2line.c (translate_addresses): Truncate input addresses to
+	arch_size bits.  Avoid undefined shift.  Print '?' for zero line.
+
 2011-10-25  Alan Modra  <amodra@gmail.com>
 
 	Apply mainline patches
