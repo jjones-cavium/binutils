@@ -1,3 +1,4 @@
 2012-07-12  Andrew Pinski  <apinski@cavium.com>
 
-	* mips-opc.c (mips_builtin_opcodes): Mark saa and saad as Octeon rather than Octeon+.
+	* mips-opc.c (mips_builtin_opcodes): Mark saa and saad as
+	Octeon rather than Octeon+.
