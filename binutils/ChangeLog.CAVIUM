@@ -1,3 +1,9 @@
+2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	Bug #1668
+	* testsuite/binutils-all/readelf.exp (readelf_wl_test): New function
+	to test '-wl' option of readelf.
+
 2012-07-12  Adam Nemet  <anemet@caviumnetworks.com>
 
 	Bug #1651
