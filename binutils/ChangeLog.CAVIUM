@@ -1,0 +1,5 @@
+2012-07-12  Adam Nemet  <anemet@caviumnetworks.com>
+
+	Bug #1651
+	* testsuite/binutils-all/objcopy.exp (copy_setup): Link original
+	executable statically.
