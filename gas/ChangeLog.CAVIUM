@@ -1,0 +1,13 @@
+2012-07-15  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-mips.c (ISA_HAS_INS): New.
+	(macro2): Expand ulh/ulhu to use "ins" instr instead of "sll ori".
+	* testsuite/gas/mips/ulh2-eb-mips32r2.d: New.
+	* testsuite/gas/mips/ulh2-el-mips32r2.d: New
+	* testsuite/gas/mips/ulh3.s: New testcase.
+	* testsuite/gas/mips/ulh3-eb-mips32r2.d: New reference file.
+	* testsuite/gas/mips/ulhu.s: New testcase.
+	* testsuite/gas/mips/ulhu-eb-mips32r2.d: New reference file.
+	* testsuite/gas/mips/mips.exp: Added new tests.
+	ulh2-eb-mips32r2, ulh2-el-mips32r2 new reference files.
