@@ -1,3 +1,9 @@
+2012-07-15  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4316
+	* config/tc-mips.c (append_insn): Fix handling of BFD_RELOC_MIPS_JMP,
+	BFD_RELOC_MIPS16_JMP, and BFD_RELOC_16_PCREL_S2 with constant operands.
+
 2012-07-15  Chandrakala Chavva  <cchavva@caviumnetworks.com>
             Andrew Pinski  <apinski@cavium.com>
 

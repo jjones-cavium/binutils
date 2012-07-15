@@ -4078,7 +4078,6 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 		      (unsigned long) address_expr->X_add_number);
 	    ip->insn_opcode |= ((address_expr->X_add_number >> shift)
 				& 0x3ffffff);
-	    ip->complete_p = 0;
 	  }
 	  break;
 
@@ -4090,7 +4089,6 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 	    (((address_expr->X_add_number & 0x7c0000) << 3)
 	       | ((address_expr->X_add_number & 0xf800000) >> 7)
 	       | ((address_expr->X_add_number & 0x3fffc) >> 2));
-	  ip->complete_p = 0;
 	  break;
 
 	case BFD_RELOC_16_PCREL_S2:
@@ -4101,7 +4099,9 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 	    if ((address_expr->X_add_number & ((1 << shift) - 1)) != 0)
 	      as_bad (_("branch to misaligned address (0x%lx)"),
 		      (unsigned long) address_expr->X_add_number);
-	    if (!mips_relax_branch)
+	    if (mips_relax_branch)
+	      ip->complete_p = 0;
+	    else
 	      {
 		if ((address_expr->X_add_number + (1 << (shift + 15)))
 		    & ~((1 << (shift + 16)) - 1))
@@ -4110,7 +4110,6 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 		ip->insn_opcode |= ((address_expr->X_add_number >> shift)
 				    & 0xffff);
 	      }
-	    ip->complete_p = 0;
 	  }
 	  break;
 
