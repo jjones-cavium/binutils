@@ -1,0 +1,18 @@
+2012-07-15  Andrew Pinski  <apinski@caviumnetworks.com>
+
+	Bug #2780
+	* config/tc-mips.c (RELAX_ENCODE): Add error argument.
+	(RELAX_ERROR_SECOND_NOAT): New macro.
+	(relax_close_frag): Add new argument, relax_error.
+	(relax_end): Likewise.  Update call to relax_close_frag.
+	(append_insn): Update call to relax_close_frag.
+	(load_address): Update calls to relax_end.
+	(load_got_offset): Likewise.
+	(add_got_offset): Likewise.
+	(add_got_offset_hilo): Likewise.
+	(macro): Likewise.  If we are trying to use GP, set
+	used_at to false and pass if we want to error out if noat is used
+	when at is used.
+	(md_convert_frag): Error out if the second alternative is used and
+	RELAX_ERROR_SECOND_NOAT was set.
+
