@@ -402,6 +402,12 @@ static int mips_32bitmode = 0;
   ((ISA) == ISA_MIPS32R2		\
    || (ISA) == ISA_MIPS64R2)
 
+/* Return true if ISA supports ins instructions. */
+#define ISA_HAS_INS(ISA)               \
+   (((ISA) == ISA_MIPS32R2             \
+    || (ISA) == ISA_MIPS64R2           \
+   ) && !mips_opts.micromips)
+
 #define HAVE_32BIT_GPRS		                   \
     (mips_opts.gp32 || !ISA_HAS_64BIT_REGS (mips_opts.isa))
 
@@ -12667,43 +12673,62 @@ macro (struct mips_cl_insn *ip, char *str)
 
     ulh_sh:
       used_at = 1;
-      if (target_big_endian == ust)
-	ep->X_add_number += off;
-      tempreg = ust || large_offset ? op[0] : AT;
-      macro_build (ep, s, "t,o(b)", tempreg, -1,
-		   offset_reloc[0], offset_reloc[1], offset_reloc[2], breg);
-
-      /* For halfword transfers we need a temporary register to shuffle
-         bytes.  Unfortunately for M_USH_A we have none available before
-         the next store as AT holds the base address.  We deal with this
-         case by clobbering TREG and then restoring it as with ULH.  */
-      tempreg = ust == large_offset ? op[0] : AT;
-      if (ust)
-	macro_build (NULL, "srl", SHFT_FMT, tempreg, op[0], 8);
-
-      if (target_big_endian == ust)
-	ep->X_add_number -= off;
-      else
-	ep->X_add_number += off;
-      macro_build (ep, s2, "t,o(b)", tempreg, -1,
-		   offset_reloc[0], offset_reloc[1], offset_reloc[2], breg);
-
-      /* For M_USH_A re-retrieve the LSB.  */
-      if (ust && large_offset)
+      /* For non stores and AB, then swap around the loads but only when we have INS
+        to minizime the number of nops inserted. */
+      if (!ust && large_offset && ISA_HAS_INS (mips_opts.isa))
 	{
 	  if (target_big_endian)
 	    ep->X_add_number += off;
+          macro_build (ep, s2, "t,o(b)", op[0], BFD_RELOC_LO16, AT);
+          if (target_big_endian)
+            ep->X_add_number -= off;
 	  else
+            ep->X_add_number += off;
+          macro_build (ep, s, "t,o(b)", AT, BFD_RELOC_LO16, AT);
+        }
+       else
+        {
+          if (target_big_endian == ust)
+            ep->X_add_number += off;
+          tempreg = ust || large_offset ? op[0] : AT;
+          macro_build (ep, s, "t,o(b)", tempreg, BFD_RELOC_LO16, breg);
+
+          /* For halfword transfers we need a temporary register to shuffle
+           bytes.  Unfortunately for M_USH_A we have none available before
+            the next store as AT holds the base address.  We deal with this
+            case by clobbering TREG and then restoring it as with ULH.  */
+         tempreg = ust == large_offset ? op[0] : AT;
+         if (ust)
+           macro_build (NULL, "srl", SHFT_FMT, tempreg, op[0], 8);
+
+          if (target_big_endian == ust)
 	    ep->X_add_number -= off;
-	  macro_build (&expr1, "lbu", "t,o(b)", AT, -1,
-		       offset_reloc[0], offset_reloc[1], offset_reloc[2], AT);
+          else
+            ep->X_add_number += off;
+          macro_build (ep, s2, "t,o(b)", tempreg, BFD_RELOC_LO16, breg);
+
+          /* For M_USH_A re-retrieve the LSB.  */
+          if (ust && large_offset)
+            {
+              if (target_big_endian)
+                ep->X_add_number += off;
+              else
+                ep->X_add_number -= off;
+              macro_build (&expr1, "lbu", "t,o(b)", AT, BFD_RELOC_LO16, AT);
+            }
 	}
       /* For ULH and M_USH_A OR the LSB in.  */
       if (!ust || large_offset)
 	{
 	  tempreg = !large_offset ? AT : op[0];
-	  macro_build (NULL, "sll", SHFT_FMT, tempreg, tempreg, 8);
-	  macro_build (NULL, "or", "d,v,t", op[0], op[0], AT);
+          /* If we have ins and this was store, then use ins. */
+          if (ISA_HAS_INS (mips_opts.isa) && (tempreg == AT || !ust))
+            macro_build (NULL, "ins", "t,r,+A,+B", op[0], AT, 8, 31);
+          else
+            {
+              macro_build (NULL, "sll", SHFT_FMT, tempreg, tempreg, 8);
+              macro_build (NULL, "or", "d,v,t", op[0], op[0], AT);
+            }
 	}
       break;
 
