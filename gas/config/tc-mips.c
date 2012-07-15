@@ -6566,7 +6566,9 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 	    if ((address_expr->X_add_number & ((1 << shift) - 1)) != 0)
 	      as_bad (_("branch to misaligned address (0x%lx)"),
 		      (unsigned long) address_expr->X_add_number);
-	    if (!mips_relax_branch)
+	    if (mips_relax_branch)
+	      ip->complete_p = 0;
+	    else
 	      {
 		if ((address_expr->X_add_number + (1 << (shift + 15)))
 		    & ~((1 << (shift + 16)) - 1))
