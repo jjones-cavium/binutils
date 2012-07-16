@@ -1,3 +1,15 @@
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Adam Nemet  <anemet@caviumnetworks.com>
+
+        * mips-dis.c (is_octeon): New function.
+        (print_insn_mips): Disassemble Octeon/MIPS unaligned
+        load/store instructions.
+	(parse_mips_dis_option): Handle octeon-useun and
+        no-octeon-useun options.
+        (print_mips_disassembler_options): New octeon-useun and
+        no-octeon-useun options.
+	* mips-opc.c (mips_builtin_opcodes): Add uld, ulw, usd, and usw.
+
 2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
 	* mips-opc.c (mips_builtin_opcodes): Add syncio and syncioall.

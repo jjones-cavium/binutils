@@ -1,3 +1,21 @@
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+        * config/tc-mips.c (macro): Emit Octeon unaligned load/store
+        instruction for M_{ULD,ULW,USD,USW} and M_{ULD,ULW,USD,USW}_A masks.
+        (mips_ip): Issue a error message if MIPS unaligned load/store
+	instructions are used when octeon_use_unalign is set.
+	(enum options): Add OPTION_MOCTEON_USEUN and OPTION_NO_MOCTEON_USEUN.
+        (md_longopts): New options to generate Octeon/MIPS unaligned
+        load/store instructions.
+        (md_parse_option): Added cases for new options.
+        (md_show_usage): Added new options in the help message.
+        * testsuite/gas/mips/mips.exp: Added new tests.
+        * testsuite/gas/mips/no_octeon_unalign.s: New testcase.
+        * testsuite/gas/mips/no_octeon_unalign.l: New.
+        * testsuite/gas/mips/octeon_unalign.s: New testcase.
+        * testsuite/gas/mips/octeon_unalign.l: New.
+
 2012-07-15  Andrew Pinski  <apinski@caviumnetworks.com>
 
 	Bug #2780

@@ -1,3 +1,10 @@
+2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/binutils-all/mips-octeon/unaligned-mips.s: New.
+	* testsuite/binutils-all/mips-octeon/unaligned-octeon.s: New.
+	* testsuite/binutils-all/mips-octeon/unaligned-others.s: New.
+	* testsuite/binutils-all/mips-octeon/objdump.exp: New.
+
 2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
 	* testsuite/binutils-all/readelf.exp: Use tmips target_machine for
