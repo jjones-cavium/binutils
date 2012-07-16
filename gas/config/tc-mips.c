@@ -83,6 +83,15 @@ int mips_flag_pdr = FALSE;
 int mips_flag_pdr = TRUE;
 #endif
 
+/* Control generation of Octeon/MIPS unaligned load/store instructions.
+   For ELF target, default to Octeon load/store instructions.
+   For Linux target, default to MIPS load/store instructions.  */
+#ifdef OCTEON_USE_UNALIGN
+static int octeon_use_unalign = 1;
+#else
+static int octeon_use_unalign = 0;
+#endif
+
 #include "ecoff.h"
 
 #if defined (OBJ_ELF) || defined (OBJ_MAYBE_ELF)
@@ -6259,6 +6268,7 @@ macro (struct mips_cl_insn *ip)
   const char *s;
   const char *s2;
   const char *fmt;
+  const char *orig;
   int likely = 0;
   int coproc = 0;
   int off12 = 0;
@@ -6291,6 +6301,7 @@ macro (struct mips_cl_insn *ip)
   expr1.X_op_symbol = NULL;
   expr1.X_add_symbol = NULL;
   expr1.X_add_number = 1;
+  orig = NULL;
 
   switch (mask)
     {
@@ -9807,6 +9818,8 @@ macro (struct mips_cl_insn *ip)
       s2 = "lwr";
       off12 = mips_opts.micromips;
       off = 3;
+      if (octeon_use_unalign && CPU_IS_OCTEON (mips_opts.arch))
+	orig = "ulw";
       goto uld_st;
     case M_ULD_A:
       ab = 1;
@@ -9815,6 +9828,8 @@ macro (struct mips_cl_insn *ip)
       s2 = "ldr";
       off12 = mips_opts.micromips;
       off = 7;
+      if (octeon_use_unalign && CPU_IS_OCTEON (mips_opts.arch))
+	orig = "uld";
       goto uld_st;
     case M_USH_A:
       ab = 1;
@@ -9832,6 +9847,8 @@ macro (struct mips_cl_insn *ip)
       off12 = mips_opts.micromips;
       off = 3;
       ust = 1;
+      if (octeon_use_unalign && CPU_IS_OCTEON (mips_opts.arch))
+	orig = "usw";
       goto uld_st;
     case M_USD_A:
       ab = 1;
@@ -9841,6 +9858,8 @@ macro (struct mips_cl_insn *ip)
       off12 = mips_opts.micromips;
       off = 7;
       ust = 1;
+      if (octeon_use_unalign && CPU_IS_OCTEON (mips_opts.arch))
+	orig = "usd";
 
     uld_st:
       if (!ab && offset_expr.X_add_number >= 0x8000 - off)
@@ -9880,6 +9899,12 @@ macro (struct mips_cl_insn *ip)
 	}
       else
 	tempreg = treg;
+
+      if (orig)
+	{
+	  macro_build (ep, orig, "t,o(b)", treg, BFD_RELOC_LO16, breg);
+	  break;
+	}
 
       if (off == 1)
 	goto ulh_sh;
@@ -10731,6 +10756,41 @@ mips_ip (char *str, struct mips_cl_insn *ip)
       gas_assert (strcmp (insn->name, name) == 0);
 
       ok = is_opcode_valid (insn);
+
+      if (insn->pinfo != INSN_MACRO)
+	{
+	  /* Don't accept Octeon unaligned load/store instructions when
+	     octeon_use_unalign is not set.  We used to issue an error message
+	     here to avoid the potential ambiguity of these mnemonics of
+	     whether they mean the MIPS macro or the Octeon insn.  This wasn't
+	     actually working properly and it also made us incompatible with
+	     generic MIPS assemblers.  */
+	  if (CPU_IS_OCTEON (mips_opts.arch) && ! octeon_use_unalign
+              && (strcmp (insn->name, "ulw") == 0
+                  || strcmp (insn->name, "uld") == 0
+                  || strcmp (insn->name, "usw") == 0
+                  || strcmp (insn->name, "usd") == 0))
+	    ok = FALSE;
+
+	  /* Issue a warning message for MIPS unaligned load/store 
+	     instructions used when octeon_use_unalign is set.  */
+          if (CPU_IS_OCTEON (mips_opts.arch) && octeon_use_unalign
+              && (strcmp (insn->name, "lwl") == 0
+                  || strcmp (insn->name, "lwr") == 0
+                  || strcmp (insn->name, "ldl") == 0
+                  || strcmp (insn->name, "ldr") == 0
+                  || strcmp (insn->name, "sdl") == 0
+                  || strcmp (insn->name, "sdr") == 0
+                  || strcmp (insn->name, "swr") == 0
+                  || strcmp (insn->name, "swl") == 0))
+            {
+              static char buf[100];
+              sprintf (buf, _("Unaligned load/store instructions are not allowed with -mocteon-useun"));
+              insn_error = buf;
+              return;
+            }
+	}
+
       size_ok = is_size_valid (insn);
       delay_slot_ok = is_delay_slot_valid (insn);
       if (!delay_slot_ok && !wrong_delay_slot_insns)
@@ -14386,6 +14446,8 @@ enum options
     OPTION_SINGLE_FLOAT,
     OPTION_DOUBLE_FLOAT,
     OPTION_32,
+    OPTION_MOCTEON_USEUN,
+    OPTION_NO_MOCTEON_USEUN,
 #ifdef OBJ_ELF
     OPTION_CALL_SHARED,
     OPTION_CALL_NONPIC,
@@ -14494,7 +14556,10 @@ struct option md_longopts[] =
      but we allow it for other ports as well in order to
      make testing easier.  */
   {"32",          no_argument, NULL, OPTION_32},
-  
+
+  {"mocteon-useun", no_argument, NULL, OPTION_MOCTEON_USEUN},
+  {"mno-octeon-useun", no_argument, NULL, OPTION_NO_MOCTEON_USEUN},
+
   /* ELF-specific options.  */
 #ifdef OBJ_ELF
   {"KPIC",        no_argument, NULL, OPTION_CALL_SHARED},
@@ -14560,6 +14625,14 @@ md_parse_option (int c, char *arg)
 
     case OPTION_EL:
       target_big_endian = 0;
+      break;
+
+    case OPTION_MOCTEON_USEUN:
+      octeon_use_unalign = 1;
+      break;
+
+    case OPTION_NO_MOCTEON_USEUN:
+      octeon_use_unalign = 0;
       break;
 
     case 'O':
@@ -19497,6 +19570,9 @@ MIPS options:\n\
 -n32			create n32 ABI object file\n\
 -64			create 64 ABI object file\n"));
 #endif
+  fprintf (stream, _("\
+-mocteon-useun   	generate Octeon unaligned load/store instructions\n\
+-mno-octeon-useun 	generate MIPS unaligned load/store instructions\n"));
 }
 
 #ifdef TE_IRIX
