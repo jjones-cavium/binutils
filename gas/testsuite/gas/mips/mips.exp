@@ -465,7 +465,8 @@ if { [istarget mips*-*-vxworks*] } {
     set no_mips16 [expr !$elf]
     set no_micromips [expr !$elf]
 
-    if { [istarget "mips*-*-*linux*"] || [istarget "mips*-sde-elf*"] } then {
+    if { [istarget "mips*-*-*linux*"] || [istarget "mips*-sde-elf*"] \
+	     || [istarget "mipsisa64*-octeon-elf*"] } then {
 	set tmips "t"
     } else {
 	set tmips ""
