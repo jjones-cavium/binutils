@@ -1,3 +1,50 @@
+2012-07-16  Adam Nemet  <anemet@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-mips.c (file_mips_soft_float): Initialize it to -1.
+	Change comment.
+	(CPU_SOFT_FLOAT): New macro.
+	(struct mips_cpu_info): Update documentation of field flags.
+	(MIPS_CPU_FLOAT_OPS_NONE): New macro.
+	(mips_cpu_info_table): Use it for octeon, octeon+, and octeon2.
+	(mips_after_parse_args): If -msoft-float is not passed infer it
+	from the architecture.
+	(s_mipsset): Set soft-float after changing architecture.
+	* testsuite/gas/mips/soft-float-arch.s,
+	testsuite/gas/mips/soft-float-arch.l: New test.
+	* testsuite/gas/mips/mips.exp: Run it.  Document soft_float
+	architecture property.  Add soft_float property to octeon, octeon+ and octeon2.
+	(24k-triple-stores-4): Don't run for octeon.
+	(24k-triple-stores-5): Likewise.
+	(24k-triple-stores-6): Likewise.
+	(24k-triple-stores-7): Likewise.
+	(relax): Don't run for soft-float.
+	(relax-at): Likewise.
+	(alnv_ps-swap): Likewise.
+	(mips1-fp): Likewise.
+	(l_d*): Likewise.
+	(s_d*): Likewise.
+	(ldc1*): Likewise.
+	(sdc1*): Likewise.
+	(mips4-fp): Likewise.
+	(mips4-branch-likely): Likewise.
+	(mips5-fp): Likewise.
+	(mips*-sf32): Likewise.
+	(mips32r2-ill-fp64): Likewise.
+	(elf${el}-rel2): Likewise.
+	(mips-double-float-flag): Likewise.
+	(alnv_ps-swap): Likewise.
+	(mips*-sf32): Add a soft-float version to run.
+	(mips32r2-ill-nofp): Run on soft-float targets.
+	(illegal): Use run_list_test_arches and disable it for mips16.
+	(fpr-names-numeric): Don't run on soft-float or micromips.
+	(fpr-names-32): Likewise.
+	(fpr-names-n32): Likewise.
+	(fpr-names-64): Likewise.
+	(octeon_unsupported_insn): Add test.
+	(mips-macro-ill-nofp): Likewise.
+	(soft-float-arch): Likewise.
+
 2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
             Andrew Pinski  <apinski@cavium.com>
 
