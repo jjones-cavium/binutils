@@ -1,3 +1,10 @@
+2012-07-16 	Chandrakala Chavva  <cchavva@caviumnetworks.com>
+		Adam Nemet <anemet@caviumnetworks.com>
+
+	* configure.tgt (mips*-octeon-elf*): Set em=tmips.
+	* configure.in: Detect octeon from the target_vendor.
+	(mipsisa64*-octeon-elf*): New case.
+
 2012-07-16  Adam Nemet  <anemet@caviumnetworks.com>
 	Andrew Pinski  <apinski@cavium.com>
 

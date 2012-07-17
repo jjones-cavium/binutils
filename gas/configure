@@ -12061,6 +12061,14 @@ _ACEOF
 	    as_fn_error "$target_cpu isn't a supported MIPS CPU name" "$LINENO" 5
 	    ;;
 	esac
+
+	# Define mips_cpu to octeon for Octeon.
+	case ${target_vendor} in
+	  octeon)
+	    mips_cpu=octeon;;
+	  *) ;;
+	esac
+
 	# See whether it's appropriate to set E_MIPS_ABI_O32 for o32
 	# binaries.  It's a GNU extension that some OSes don't understand.
 	case ${target} in
@@ -12083,6 +12091,12 @@ _ACEOF
 	esac
 	# Decide which ABI to target by default.
 	case ${target} in
+	  mipsisa64*-octeon-elf*)
+	    mips_default_abi=NO_ABI
+
+$as_echo "#define OCTEON_USE_UNALIGN 1" >>confdefs.h
+
+	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)
 	    mips_default_abi=N32_ABI
 	    ;;
