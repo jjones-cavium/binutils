@@ -7,6 +7,32 @@ if {[which $OBJDUMP] == 0} then {
     return
 }
 
+# Test COP0 registers
+
+if {![binutils_assemble $srcdir/$subdir/cop0.s tmpdir/cop0.o]} then {
+    return
+}
+
+if [is_remote host] {
+    set objfile [remote_download host tmpdir/cop0.o]
+} else {
+    set objfile tmpdir/cop0.o
+}
+
+set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d $objfile"]
+
+verbose "got is $got\n"
+
+set want ".*cop0.o:.*file format .*mips.*test1.*mfc0\tv0,c0_random.*dmtc0\tv0,c0_status.*dmfc0\tv0,c0_config.*dmfc0\tv0,c0_config1.*mfc0\tv0,c0_cvmmemctl.*mfc0\tv0,c0_cvmcount.*mfc0\tv0,c0_count.*dmfc0\tv0,c0_cvmctl"
+
+verbose "want is $want\n"
+
+if [regexp $want $got] then {
+    pass "cop0 test"
+} else {
+    fail "cop0 test"
+}
+
 # Test MIPS unaligned load/store instructions.
 # For Elf target, the assembler returns an error causing the testcase to FAIL.
 # For Linux target, MIPS unaligned load/store instructions are disassembled

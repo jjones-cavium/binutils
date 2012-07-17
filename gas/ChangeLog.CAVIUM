@@ -1,3 +1,9 @@
+2012-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/cp0sel-names-octeon.d: New test.
+	* testsuite/gas/mips/cp0-names-octeon.d: Likewise.
+	* testsuite/gas/mips/mips.exp: Run cp0-names-octeon and cp0sel-names-octeon.
+
 2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
         * testsuite/gas/mips/mips.exp: Use traditional mips reference file
