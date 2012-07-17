@@ -1,5 +1,10 @@
 2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
+	* testsuite/binutils-all/mips-octeon/objdump.exp: Add cop0.s testcase.
+	* testsuite/binutils-all/mips-octeon/cop0.s: New.
+
+2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
 	* testsuite/binutils-all/mips-octeon/unaligned-mips.s: New.
 	* testsuite/binutils-all/mips-octeon/unaligned-octeon.s: New.
 	* testsuite/binutils-all/mips-octeon/unaligned-others.s: New.
