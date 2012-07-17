@@ -1,3 +1,7 @@
+2012-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* config.in: Regenerate.
+
 2012-07-16 	Chandrakala Chavva  <cchavva@caviumnetworks.com>
 		Adam Nemet <anemet@caviumnetworks.com>
 
