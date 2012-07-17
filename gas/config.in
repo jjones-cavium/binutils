@@ -221,6 +221,9 @@
 /* SOM support? */
 #undef OBJ_MAYBE_SOM
 
+/* Define to use Octeon unaligned load/store instructions. */
+#undef OCTEON_USE_UNALIGN
+
 /* Name of package */
 #undef PACKAGE
 
