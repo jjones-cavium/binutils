@@ -475,6 +475,7 @@ if { [istarget mips*-*-vxworks*] } {
     if { [istarget "mips*-*-*linux*"]
 	 || [istarget "mips*-sde-elf*"]
 	 || [istarget "mips*-mti-elf*"]
+         || [istarget "mipsisa64*-octeon-elf*"]
 	 || [istarget "mips*-*-*bsd*"] } then {
 	set tmips "t"
     } else {
