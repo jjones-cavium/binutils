@@ -1,3 +1,10 @@
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+	Adam Nemet  <anemet@caviumnetworks.com>
+
+	* mips-dis.c (mips_cp0_names_octeon): New.
+	(mips_cp0sel_names_octeon): New.
+	(mips_arch_choices): Use them for Octeon, Octeon+ and Octeon2.
+
 2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
 	* mips-opc.c (mips_builtin_opcodes): Add syncio and syncioall.

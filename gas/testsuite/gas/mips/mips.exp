@@ -984,6 +984,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "cp0-names-mips32r2"
     run_dump_test "cp0-names-mips64"
     run_dump_test "cp0-names-mips64r2"
+    run_dump_test "cp0-names-octeon"
     run_dump_test "cp0-names-sb1"
 
     run_dump_test "cp0sel-names-numeric"
@@ -991,6 +992,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "cp0sel-names-mips32r2"
     run_dump_test "cp0sel-names-mips64"
     run_dump_test "cp0sel-names-mips64r2"
+    run_dump_test "cp0sel-names-octeon"
     run_dump_test "cp0sel-names-sb1"
 
     run_dump_test "cp1-names-numeric"

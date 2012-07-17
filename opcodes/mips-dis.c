@@ -354,6 +354,49 @@ static const struct mips_cp0sel_name mips_cp0sel_names_sb1[] =
   { 29, 3, "c0_datahi_d"	},
 };
 
+static const char * const mips_cp0_names_octeon[32] = {
+  "c0_index",     "c0_random",    "c0_entrylo0",  "c0_entrylo1",
+  "c0_context",   "c0_pagemask",  "c0_wired",     "c0_hwrena",
+  "c0_badvaddr",  "c0_count",     "c0_entryhi",   "c0_compare",
+  "c0_status",    "c0_cause",     "c0_epc",       "c0_prid",
+  "c0_config",    "$17",          "c0_watchlo",   "c0_watchhi",
+  "c0_xcontext",  "$21",          "c0_mdebug",    "c0_debug",
+  "c0_depc",      "c0_perfctl0",  "$26",          "c0_cacheerri",
+  "c0_tagloi",    "c0_taghii",    "c0_errorepc",  "c0_desave",
+};
+
+static const struct mips_cp0sel_name mips_cp0sel_names_octeon[] = {
+  { 4,  2, "c0_userlocal"       },
+  { 5,  1, "c0_pagegrain"	},
+  { 9,  6, "c0_cvmcount"	},
+  { 9,  7, "c0_cvmctl"		},
+  { 11, 6, "c0_powthr"		},
+  { 11, 7, "c0_cvmmemctl"	},
+  { 12, 1, "c0_intctl"		},
+  { 12, 2, "c0_srsctl"		},
+  { 15, 1, "c0_ebase"		},
+  { 16, 1, "c0_config1"		},
+  { 16, 2, "c0_config2"		},
+  { 16, 3, "c0_config3"		},
+  { 16, 4, "c0_config4"		},
+  { 18, 1, "c0_watchlo1"	},
+  { 19, 1, "c0_watchhi1"	},
+  { 23, 6, "c0_debug2"          },
+  { 25, 1, "c0_perfval0"	},
+  { 25, 2, "c0_perfctl1"	},
+  { 25, 3, "c0_perfval1"	},
+  { 27, 1, "c0_cacheerrd"	},
+  { 28, 1, "c0_dataloi"		},
+  { 28, 2, "c0_taglod"		},
+  { 28, 3, "c0_datalod"		},
+  { 29, 1, "c0_datahii"		},
+  { 29, 2, "c0_taghid"		},
+  { 29, 3, "c0_datahid"		},
+  { 31, 2, "c0_kscratch1"       },
+  { 31, 3, "c0_kscratch2"       },
+  { 31, 4, "c0_kscratch3"       },
+};
+
 /* Xlr cop0 register names.  */
 static const char * const mips_cp0_names_xlr[32] = {
   "c0_index",     "c0_random",    "c0_entrylo0",  "c0_entrylo1",
@@ -592,16 +635,19 @@ const struct mips_arch_choice mips_arch_choices[] =
     NULL, 0, mips_cp1_names_mips3264, mips_hwr_names_numeric },
 
   { "octeon",   1, bfd_mach_mips_octeon, CPU_OCTEON,
-    ISA_MIPS64R2 | INSN_OCTEON, 0, mips_cp0_names_numeric, NULL, 0,
+    ISA_MIPS64R2 | INSN_OCTEON, 0, mips_cp0_names_octeon,
+    mips_cp0sel_names_octeon, ARRAY_SIZE (mips_cp0sel_names_octeon),
     mips_cp1_names_mips3264, mips_hwr_names_numeric },
 
   { "octeon+",   1, bfd_mach_mips_octeonp, CPU_OCTEONP,
-    ISA_MIPS64R2 | INSN_OCTEONP, 0, mips_cp0_names_numeric,
-    NULL, 0, mips_cp1_names_mips3264, mips_hwr_names_numeric },
+    ISA_MIPS64R2 | INSN_OCTEONP, 0, mips_cp0_names_octeon,
+    mips_cp0sel_names_octeon, ARRAY_SIZE (mips_cp0sel_names_octeon),
+    mips_cp1_names_mips3264, mips_hwr_names_numeric },
 
   { "octeon2",   1, bfd_mach_mips_octeon2, CPU_OCTEON2,
-    ISA_MIPS64R2 | INSN_OCTEON2, 0, mips_cp0_names_numeric,
-    NULL, 0, mips_cp1_names_mips3264, mips_hwr_names_numeric },
+    ISA_MIPS64R2 | INSN_OCTEON2, 0, mips_cp0_names_octeon,
+    mips_cp0sel_names_octeon, ARRAY_SIZE (mips_cp0sel_names_octeon),
+    mips_cp1_names_mips3264, mips_hwr_names_numeric },
 
   { "xlr", 1, bfd_mach_mips_xlr, CPU_XLR,
     ISA_MIPS64 | INSN_XLR, 0,
