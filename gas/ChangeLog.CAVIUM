@@ -1,9 +1,15 @@
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+        * testsuite/gas/mips/mips.exp: Use traditional mips reference file
+        for simple exec toolchain as some tests have different reference file
+        for traditional mips bfd target.
+
 2012-07-16  Andrew Pinski  <apinski@cavium.com>
 
 	* config.in: Regenerate.
 
-2012-07-16 	Chandrakala Chavva  <cchavva@caviumnetworks.com>
-		Adam Nemet <anemet@caviumnetworks.com>
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+	    Adam Nemet <anemet@caviumnetworks.com>
 
 	* configure.tgt (mips*-octeon-elf*): Set em=tmips.
 	* configure.in: Detect octeon from the target_vendor.
