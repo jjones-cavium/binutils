@@ -292,8 +292,13 @@ static int file_mips_gp32 = -1;
 /* True if -mfp32 was passed.  */
 static int file_mips_fp32 = -1;
 
-/* 1 if -msoft-float, 0 if -mhard-float.  The default is 0.  */
-static int file_mips_soft_float = 0;
+/* 1 if -msoft-float, 0 if -mhard-float and -1 if neither was
+   passed.  */
+static int file_mips_soft_float = -1;
+
+/* Return non-zero if CPU has no FPU.  */
+#define CPU_SOFT_FLOAT(CPU_INFO_FLAGS)		\
+  ((CPU_INFO_FLAGS) & MIPS_CPU_FLOAT_OPS_NONE)
 
 /* 1 if -msingle-float, 0 if -mdouble-float.  The default is 0.   */
 static int file_mips_single_float = 0;
@@ -1395,7 +1400,7 @@ static int relaxed_micromips_32bit_branch_length (fragS *, asection *, int);
 struct mips_cpu_info
 {
   const char *name;           /* CPU or ISA name.  */
-  int flags;                  /* ASEs available, or ISA flag.  */
+  int flags;                  /* ASEs available, FPU capability, ISA flag.  */
   int isa;                    /* ISA level.  */
   int cpu;                    /* CPU number (default CPU if ISA).  */
 };
@@ -1408,6 +1413,7 @@ struct mips_cpu_info
 #define MIPS_CPU_ASE_MDMX	0x0020	/* CPU implements MDMX ASE */
 #define MIPS_CPU_ASE_DSPR2	0x0040	/* CPU implements DSP R2 ASE */
 #define MIPS_CPU_ASE_MCU	0x0080	/* CPU implements MCU ASE */
+#define MIPS_CPU_FLOAT_OPS_NONE	0x0100	/* CPU has no FPU */
 
 static const struct mips_cpu_info *mips_parse_cpu (const char *, const char *);
 static const struct mips_cpu_info *mips_cpu_info_from_isa (int);
@@ -15220,6 +15226,9 @@ mips_after_parse_args (void)
 
   /* End of GCC-shared inference code.  */
 
+  if (file_mips_soft_float == -1)
+    file_mips_soft_float = CPU_SOFT_FLOAT (arch_info->flags);
+
   /* This flag is set when we have a 64-bit capable CPU but use only
      32-bit wide registers.  Note that EABI does not use it.  */
   if (ISA_HAS_64BIT_REGS (mips_opts.isa)
@@ -16340,6 +16349,7 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
   else if (strncmp (name, "mips", 4) == 0 || strncmp (name, "arch=", 5) == 0)
     {
       int reset = 0;
+      const struct mips_cpu_info *arch_info = NULL;
 
       /* Permit the user to change the ISA and architecture on the fly.
 	 Needless to say, misuse can cause serious problems.  */
@@ -16351,28 +16361,24 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
 	}
       else if (strncmp (name, "arch=", 5) == 0)
 	{
-	  const struct mips_cpu_info *p;
-
-	  p = mips_parse_cpu("internal use", name + 5);
-	  if (!p)
+	  arch_info = mips_parse_cpu("internal use", name + 5);
+	  if (!arch_info)
 	    as_bad (_("unknown architecture %s"), name + 5);
 	  else
 	    {
-	      mips_opts.arch = p->cpu;
-	      mips_opts.isa = p->isa;
+	      mips_opts.arch = arch_info->cpu;
+	      mips_opts.isa = arch_info->isa;
 	    }
 	}
       else if (strncmp (name, "mips", 4) == 0)
 	{
-	  const struct mips_cpu_info *p;
-
-	  p = mips_parse_cpu("internal use", name);
-	  if (!p)
+	  arch_info = mips_parse_cpu("internal use", name);
+	  if (!arch_info)
 	    as_bad (_("unknown ISA level %s"), name + 4);
 	  else
 	    {
-	      mips_opts.arch = p->cpu;
-	      mips_opts.isa = p->isa;
+	      mips_opts.arch = arch_info->cpu;
+	      mips_opts.isa = arch_info->isa;
 	    }
 	}
       else
@@ -16401,10 +16407,19 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
 	  as_bad (_("unknown ISA level %s"), name + 4);
 	  break;
 	}
+
+      /* Update soft-float based on the arch of if reset to the
+	 file-default.  */
+      if (arch_info)
+	mips_opts.soft_float = CPU_SOFT_FLOAT (arch_info->flags);
+      else
+	mips_opts.soft_float = file_mips_soft_float;
+
       if (reset)
 	{
 	  mips_opts.gp32 = file_mips_gp32;
 	  mips_opts.fp32 = file_mips_fp32;
+	  mips_opts.soft_float = file_mips_soft_float;
 	}
     }
   else if (strcmp (name, "autoextend") == 0)
@@ -19286,9 +19301,9 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
   /* MIPS 64 Release 2 */
 
   /* Cavium Networks Octeon CPU core */
-  { "octeon",	      0,      ISA_MIPS64R2,   CPU_OCTEON },
-  { "octeon+",	      0,      ISA_MIPS64R2,   CPU_OCTEONP },
-  { "octeon2",	      0,      ISA_MIPS64R2,   CPU_OCTEON2 },
+  { "octeon",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEON },
+  { "octeon+",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEONP },
+  { "octeon2",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEON2 },
 
   /* RMI Xlr */
   { "xlr",	      0,      ISA_MIPS64,     CPU_XLR },
