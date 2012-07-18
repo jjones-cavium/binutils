@@ -1,3 +1,11 @@
+2012-07-18  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* Makefile.am (mips-dis.lo): Compile with archdefs.
+	* Makefile.in: Regenerate.
+	* configure.in (bfd_mips_arch): Pass -DINCLUDE_OCTEON_USEUN to
+	archdefs for Elf target.
+	* configure: Regenerate.
+
 2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
             Adam Nemet  <anemet@caviumnetworks.com>
 

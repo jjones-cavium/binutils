@@ -505,6 +505,9 @@ ia64-opc.lo: $(srcdir)/ia64-asmtab.c
 $(srcdir)/rx-decode.c: @MAINT@ $(srcdir)/rx-decode.opc opc2c$(EXEEXT_FOR_BUILD)
 	./opc2c$(EXEEXT_FOR_BUILD) $(srcdir)/rx-decode.opc > $(srcdir)/rx-decode.c
 
+mips-dis.lo: mips-dis.c
+	$(LIBTOOL) --mode=compile $(COMPILE) -c @archdefs@ $<
+
 opc2c$(EXEEXT_FOR_BUILD): opc2c.o $(BUILD_LIBS_DEPS)
 	$(LINK_FOR_BUILD) opc2c.o $(BUILD_LIBS)
 
