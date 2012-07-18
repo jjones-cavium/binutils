@@ -422,7 +422,7 @@ mips_arch_create mips32r2 32	mips32	{ fpisa3 fpisa4 fpisa5 ror } \
 			{ mipsisa32r2-*-* mipsisa32r2el-*-* }
 mips_arch_create mips64	64	mips5	{ mips32 } \
 			{ -march=mips64 -mtune=mips64 } { -mmips:isa64 } \
-			{ mipsisa64-*-* mipsisa64el-*-* }
+			{ mipsisa64-unknown-* mipsisa64el-unknown-* }
 mips_arch_create mips64r2 64	mips64	{ mips32r2 ror } \
 			{ -march=mips64r2 -mtune=mips64r2 } \
 			{ -mmips:isa64r2 } \
@@ -445,7 +445,7 @@ mips_arch_create sb1 	64	mips64	{ mips3d } \
 			{ mipsisa64sb1-*-* mipsisa64sb1el-*-* }
 mips_arch_create octeon 64	mips64r2 { soft_float} \
 			{ -march=octeon -mtune=octeon } { -mmips:octeon } \
-			{ mips64octeon*-*-* }
+			{ mipsisa64*-octeon-elf* mips64*-octeon-linux-gnu* mips64octeon*-*-* }
 mips_arch_create octeonp 64	octeon { soft_float } \
 			{ -march=octeon+ -mtune=octeon+ } { -mmips:octeon+ } \
 			{ }
