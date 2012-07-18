@@ -1,3 +1,7 @@
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/mips.exp: Auto Detect octeon target.
+
 2012-07-17      Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
 	* configure.in (mips64*-octeon-linux*): New case.
