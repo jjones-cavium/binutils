@@ -1,5 +1,5 @@
 #objdump: -dr
-#as: -mfix-24k -32
+#as: -mfix-24k -32 -mno-octeon-useun
 #name: 24K: Triple Store (Range Check)
 
 .*: +file format .*mips.*
