@@ -1,4 +1,4 @@
-#objdump: -dr
+#objdump: -dr -M no-octeon-useun
 #as: -mfix-24k -32 -mno-octeon-useun
 #name: 24K: Triple Store (Range Check)
 

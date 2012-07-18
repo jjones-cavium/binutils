@@ -1,5 +1,5 @@
 #as: -EL -mno-octeon-useun
-#objdump: -dr --prefix-addresses --show-raw-insn -M reg-names=numeric
+#objdump: -dr --prefix-addresses --show-raw-insn -M reg-names=numeric -M no-octeon-useun
 #name: uld2 -EL
 #source: uld2.s
 

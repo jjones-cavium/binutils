@@ -1,5 +1,10 @@
 2012-07-18  Andrew Pinski  <apinski@cavium.com>
 
+	* testsuite/gas/mips/mips.exp: Run octeon_unalign_noopts.
+	* testsuite/gas/mips/octeon_unalign_noopts.d: New test.
+
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
 	* testsuite/gas/mips/24k-triple-stores-2.d: Add -mno-octeon-useun to the as options.
 	* testsuite/gas/mips/24k-triple-stores-3.d: Likewise.
 	* testsuite/gas/mips/uld2-eb.d: Likewise.
