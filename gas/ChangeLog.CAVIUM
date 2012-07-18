@@ -1,5 +1,33 @@
 2012-07-18  Andrew Pinski  <apinski@cavium.com>
 
+	* testsuite/gas/mips/mips.exp: Run no_fix_prefetch_bug,
+	fix_prefetch_bug, octeon_instructions, ulh-eb-mips32r2
+	and octeon_saa_saad.
+	* gas/testsuite/gas/mips/fix_prefetch_bug.d: New file.
+	* gas/testsuite/gas/mips/no_fix_prefetch_bug.d: New file.
+	* gas/testsuite/gas/mips/no_fix_prefetch_bug.s: New file.
+	* gas/testsuite/gas/mips/octeon_dmtc2_dmfc2.l: New file.
+	* gas/testsuite/gas/mips/octeon_dmtc2_dmfc2.s: New file.
+	* gas/testsuite/gas/mips/octeon_instructions.d: New file.
+	* gas/testsuite/gas/mips/octeon_instructions.s: New file.
+	* gas/testsuite/gas/mips/octeon_saa_saad.d: New file.
+	* gas/testsuite/gas/mips/octeon_saa_saad.s: New file.
+	* gas/testsuite/gas/mips/ulh-eb-mips32r2.d: New file.
+
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/align2-el.d: Allow for 64bit addresses.
+	* testsuite/gas/mips/align2.d: Likewise.
+	* testsuite/gas/mips/loongson-2f-2.d: Likewise.
+	* testsuite/gas/mips/loongson-2f-3.d: Likewise.
+	* testsuite/gas/mips/mips-jalx.d: Likewise.
+	* testsuite/gas/mips/mips16e-64.d: Likewise.
+	* testsuite/gas/mips/mips64-dsp.d: Likewise.
+	* testsuite/gas/mips/set-arch.d: Likewise.
+	* testsuite/gas/mips/octeon-saa-saad.d: Run as 32bit only.
+
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
 	* testsuite/gas/mips/mips.exp: Run octeon_unalign_noopts.
 	* testsuite/gas/mips/octeon_unalign_noopts.d: New test.
 
