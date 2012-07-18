@@ -1,4 +1,4 @@
-#as: -EB
+#as: -EB -mno-octeon-useun
 #objdump: -dr --prefix-addresses --show-raw-insn -M reg-names=numeric
 #name: uld2 -EB
 #source: uld2.s

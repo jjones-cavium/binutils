@@ -1,5 +1,14 @@
 2012-07-18  Andrew Pinski  <apinski@cavium.com>
 
+	* testsuite/gas/mips/24k-triple-stores-2.d: Add -mno-octeon-useun to the as options.
+	* testsuite/gas/mips/24k-triple-stores-3.d: Likewise.
+	* testsuite/gas/mips/uld2-eb.d: Likewise.
+	* testsuite/gas/mips/uld2-el.d: Likewise.
+	* testsuite/gas/mips/ulw2-eb-ilocks.d: Likewise.
+	* testsuite/gas/mips/ulw2-el-ilocks.d: Likewise.
+
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
 	* testsuite/gas/mips/mips.exp: Auto Detect octeon target.
 
 2012-07-17      Chandrakala Chavva  <cchavva@caviumnetworks.com>

@@ -1,4 +1,4 @@
-#as: -EB -32
+#as: -EB -32 -mno-octeon-useun
 #objdump: -dr --prefix-addresses --show-raw-insn -M reg-names=numeric
 #name: ulw2 -EB interlocked
 #source: ulw2.s
