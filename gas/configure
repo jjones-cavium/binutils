@@ -12093,6 +12093,9 @@ _ACEOF
 $as_echo "#define OCTEON_USE_UNALIGN 1" >>confdefs.h
 
 	    ;;
+	  mips64*-octeon-linux*)
+            mips_default_abi=N64_ABI
+	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)
 	    mips_default_abi=N32_ABI
 	    ;;

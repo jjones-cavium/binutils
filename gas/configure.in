@@ -272,6 +272,9 @@ changequote([,])dnl
 	    AC_DEFINE(OCTEON_USE_UNALIGN, 1,
 		  [Define to use Octeon unaligned load/store instructions.])
 	    ;;
+	  mips64*-octeon-linux*)
+            mips_default_abi=N64_ABI
+	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)
 	    mips_default_abi=N32_ABI
 	    ;;
