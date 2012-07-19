@@ -1,4 +1,11 @@
-2012-06-06  Andrew Pinski  <apinski@cavium.com>
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+
+	Bug #1650
+	* testsuite/ld-mips-elf/relax-jalr-n32.d,
+	testsuite/ld-mips-elf/relax-jalr-n64.d: Also accept jal besides
+	bal.
+
+2012-07-19  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/config/default.exp: Set the ABI to 64 for Octeon Linux's.
 
