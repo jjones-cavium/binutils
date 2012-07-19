@@ -1,7 +1,7 @@
 #name: jal to bal
 #source: jalbal.s
 #as: -EB -n32 -march=rm9000
-#ld: -EB -e s1 -Ttext 0x200000a0
+#ld: -EB -e s1 -Ttext 0x200000a0 -melf32btsmipn32
 #objdump: -d
 
 .*file format elf.*mips.*

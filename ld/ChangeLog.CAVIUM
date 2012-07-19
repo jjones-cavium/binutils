@@ -1,3 +1,11 @@
+2012-07-19  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/ld-mips-elf/jalbal.d: Add -melf32btsmipn32 to the link line.
+	* testsuite/ld-mips-elf/reloc-1-n32.d: Likewise.
+	* testsuite/ld-mips-elf/mips-elf.exp: Add melf32btsmipn32 to link line
+	for "reloc test 6a" and "reloc test 6b" tests.
+	* testsuite/ld-mips-elf/reloc-4.s: Set the arch to mips64r2 to allow for fp.
+
 2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
             Andrew Pinski  <apinski@cavium.com>
 

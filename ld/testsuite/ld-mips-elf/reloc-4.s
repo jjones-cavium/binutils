@@ -1,6 +1,7 @@
 	.text
 	.globl	_start
 _start:
+.set arch=mips64r2
         li.d    $f2,1.10000000000000000000e0
 
 	.section .sdata

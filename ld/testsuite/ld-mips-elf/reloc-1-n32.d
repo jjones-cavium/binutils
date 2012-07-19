@@ -1,6 +1,6 @@
 #source: reloc-1a.s -mabi=n32
 #source: reloc-1b.s -mabi=n32
-#ld: -r
+#ld: -melf32btsmipn32 -r
 #readelf: --relocs
 
 Relocation section '\.rela\.text' .*
