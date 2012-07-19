@@ -18,6 +18,10 @@
 # Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
+if test -n "$EXTRA_MIPS_EM_FILE" ; then
+  source_em ${srcdir}/emultempl/${EXTRA_MIPS_EM_FILE}.em
+fi
+
 fragment <<EOF
 
 #include "ldctor.h"

@@ -1,5 +1,25 @@
 2012-07-19  Chandrakala Chavva  <cchavva@caviumnetworks.com>
             Adam Nemet  <anemet@caviumnetworks.com>
+            Roy Franz  <Roy.Franz@caviumnetworks.com>
+
+	* Makefile.am: New emulations, eelf32ebocteon.o eelf32elocteon.o
+	eelf32ebocteonn32.o eelf32elocteonn32.o eelf64ebocteon.o and
+        eelf64elocteon.o.
+	Also added rules to build the emulations.
+	* Makefile.in: Regenerate it.
+	* configure.tgt (mipsisa64*-octeon-elf*): New target.
+	(mips64-octeon-linux-gnu*): New target for Linux toolchain.
+	* emulparams/elf32ebocteon.sh: New emulation for EABI ABI (elf).
+	* emulparams/elf32elocteon.sh: Ditto.
+	* emulparams/elf32ebocteonn32.sh: New emulation for N32 ABI (elf)
+	* emulparams/elf32elocteonn32.sh: Ditto.
+        * emulparams/elf64ebocteon.sh: New emulation for N64 ABI (elf).
+        * emulparams/elf64elocteon.sh: Ditto.
+	* scripttempt/elf.sc: Add OCTEON_SPECIAL_SECTIONS.
+
+
+2012-07-19  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Adam Nemet  <anemet@caviumnetworks.com>
 
         * configure.tgt (mips64-octeon-linux-gnu*): New target for
 	Linux toolchain.
