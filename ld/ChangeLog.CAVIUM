@@ -1,0 +1,7 @@
+2012-07-19  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Adam Nemet  <anemet@caviumnetworks.com>
+
+        * configure.tgt (mips64-octeon-linux-gnu*): New target for
+	Linux toolchain.
+
+
