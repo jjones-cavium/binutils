@@ -638,6 +638,13 @@ if { $linux_gnu } {
     }
 }
 
+# N64 doesn't have .reginfo, force n32.
+if $has_newabi {
+    run_dump_test "reginfo-size-n32"
+} else {
+    run_dump_test "reginfo-size"
+}
+
 run_dump_test "undefined"
 
 # Test the conversion from jr to b

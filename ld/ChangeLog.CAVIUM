@@ -1,4 +1,13 @@
 2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+            Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/ld-mips-elf/reginfo-size-n32.d,
+	testsuite/ld-mips-elf/reginfo-size-n32.ld,
+	testsuite/ld-mips-elf/reginfo-size.d,
+	testsuite/ld-mips-elf/reginfo-size.ld,
+	testsuite/ld-mips-elf/reginfo-size.s: New test. 
+
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
             Andrew Pinski  <apinski@cavium.com>
 
 	Bug #1039
