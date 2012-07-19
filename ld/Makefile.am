@@ -207,6 +207,10 @@ ALL_EMULATION_SOURCES = \
 	eelf32_sparc.c \
 	eelf32_sparc_sol2.c \
 	eelf32_sparc_vxworks.c \
+	eelf32ebocteon.c \
+	eelf32elocteon.c \
+	eelf64ebocteon.c \
+	eelf64elocteon.c \
 	eelf32_spu.c \
 	eelf32_tic6x_be.c \
 	eelf32_tic6x_le.c \
@@ -220,6 +224,12 @@ ALL_EMULATION_SOURCES = \
 	eelf32cr16.c \
 	eelf32cr16c.c \
 	eelf32crx.c \
+	eelf32ebmip.c \
+	eelf32ebmipvxworks.c \
+	eelf32elmip.c \
+	eelf32ebocteonn32.c \
+	eelf32elocteonn32.c \
+	eelf32elmipvxworks.c \
 	eelf32epiphany.c \
 	eelf32epiphany_4x4.c \
 	eelf32fr30.c \
@@ -1009,6 +1019,16 @@ eelf32btsmip.c: $(srcdir)/emulparams/elf32btsmip.sh \
   $(srcdir)/emulparams/elf32bmip.sh $(ELF_DEPS) \
   $(srcdir)/emultempl/mipself.em $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
 	${GENSCRIPTS} elf32btsmip "$(tdir_elf32btsmip)"
+eelf32ebocteon.c: $(srcdir)/emulparams/elf32ebocteon.sh \
+  $(srcdir)/emulparams/elf32bmip.sh $(ELF_DEPS) \
+  $(srcdir)/emultempl/mipself.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf32ebocteon "$(tdir_elf32ebocteon)"
+eelf32elocteon.c: $(srcdir)/emulparams/elf32elocteon.sh \
+  $(srcdir)/emulparams/elf32ebocteon.sh $(srcdir)/emulparams/elf32bmip.sh \
+  $(ELF_DEPS) $(srcdir)/emultempl/mipself.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf32elocteon "$(tdir_elf32elocteon)"
 eelf32btsmip_fbsd.c: $(srcdir)/emulparams/elf32btsmip_fbsd.sh \
   $(srcdir)/emulparams/elf32bmip.sh $(ELF_DEPS) \
   $(srcdir)/emultempl/mipself.em $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
@@ -1046,6 +1066,28 @@ eelf32elmip.c: $(srcdir)/emulparams/elf32elmip.sh \
   $(ELF_DEPS) $(srcdir)/emultempl/mipself.em $(srcdir)/scripttempl/elf.sc \
   ${GEN_DEPENDS}
 	${GENSCRIPTS} elf32elmip "$(tdir_elf32elmip)"
+eelf32ebocteonn32.c: $(srcdir)/emulparams/elf32ebocteonn32.sh \
+  $(srcdir)/emulparams/elf32ebocteon.sh \
+  $(srcdir)/emultempl/elf32.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf32ebocteonn32 "$(tdir_elf32ebocteonn32)"
+eelf32elocteonn32.c: $(srcdir)/emulparams/elf32elocteonn32.sh \
+  $(srcdir)/emulparams/elf32ebocteonn32.sh \
+  $(srcdir)/emulparams/elf32ebocteon.sh \
+  $(srcdir)/emultempl/elf32.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf32elocteonn32 "$(tdir_elf32elocteonn32)"
+eelf64ebocteon.c: $(srcdir)/emulparams/elf64ebocteon.sh \
+  $(srcdir)/emulparams/elf32ebocteon.sh \
+  $(srcdir)/emultempl/elf32.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf64ebocteon "$(tdir_elf64ebocteon)"
+eelf64elocteon.c: $(srcdir)/emulparams/elf64elocteon.sh \
+  $(srcdir)/emulparams/elf64ebocteon.sh \
+  $(srcdir)/emulparams/elf32ebocteon.sh \
+  $(srcdir)/emultempl/elf32.em $(srcdir)/emultempl/octeonelf.em \
+  $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} elf64elocteon "$(tdir_elf64elocteon)"
 eelf32elmipvxworks.c: $(srcdir)/emulparams/elf32elmipvxworks.sh \
   $(srcdir)/emulparams/elf32bmip.sh $(srcdir)/emulparams/vxworks.sh \
   $(ELF_DEPS) $(srcdir)/emultempl/generic.em $(srcdir)/emultempl/mipself.em \
