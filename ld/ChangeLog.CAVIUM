@@ -1,4 +1,13 @@
 2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	Bug #1039
+	* testsuite/ld-mips-elf/octeon.exp: New file.
+	* testsuite/ld-mips-elf/common-1.c: New file.
+	* testsuite/ld-mips-elf/common-2.c: New file.
+	* testsuite/ld-mips-elf/common-3.c: New file.
+
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
 
 	Bug #1650
 	* testsuite/ld-mips-elf/relax-jalr-n32.d,

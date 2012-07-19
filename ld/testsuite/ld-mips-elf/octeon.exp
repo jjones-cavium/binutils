@@ -1,0 +1,78 @@
+# Additional tests run for Octeon.
+#   Copyright 2007 Cavium Networks
+#
+# This file is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+# This could be part of mips-elf.exp but it is easier to maintain if
+# it is not.
+
+if {![istarget mips*-*-*] || ![is_elf_format]} {
+    return
+}
+
+set linux [expr [istarget *-*-linux*]]
+
+# Alignment of a common symbols should be preserved even if the symbol
+# is overridden.
+
+proc check_dso_common_symbol_alignment {} {
+    global CC CFLAGS srcdir subdir ld nm
+    set testname "DSO common symbol alignment preserved"
+
+    if {![ld_compile "$CC $CFLAGS" $srcdir/$subdir/common-2.c common-2.o]
+	|| ![ld_compile "$CC $CFLAGS" $srcdir/$subdir/common-3.c common-3.o]
+	|| ![ld_simple_link $ld libcommon-2.so "-shared common-2.o"]
+	|| ![ld_simple_link $ld common-3 "common-3.o libcommon-2.so"]} {
+	fail $testname
+	return
+    }
+    catch "exec $nm common-3" output
+    send_log "nm: $output\n"
+    if {[regexp -inline {0 B iii} $output] != ""
+        && [regexp -inline {0 B jjj} $output] != ""} {
+	pass $testname
+    } else {
+	fail $testname
+    }
+}
+
+# Alignment of an scommon symbol should be preserved across partial links.
+
+proc check_partial_link_small_common_symbol_alignment {} {
+    global CC CFLAGS READELF srcdir subdir ld
+    set name "common-1"
+    set testname "Partial link preserves small common symbol alignment"
+
+    if {![ld_compile "$CC $CFLAGS" $srcdir/$subdir/$name.c $name.o]
+	|| ![ld_simple_link $ld $name.1.o "-r $name.o"]
+	|| ![ld_simple_link $ld $name.2.o "-r $name.1.o"]} {
+	fail $testname
+	return
+    }
+    catch "exec $READELF -s $name.2.o" output
+    send_log "readelf: $output\n"
+    if {[regexp -inline {:\s+0*4\s+4\s+.*common_variable} $output] != "" } {
+	pass $testname
+    } else {
+	fail $testname
+    }
+}
+
+if { $linux } {
+    check_dso_common_symbol_alignment
+}
+
+check_partial_link_small_common_symbol_alignment
+
