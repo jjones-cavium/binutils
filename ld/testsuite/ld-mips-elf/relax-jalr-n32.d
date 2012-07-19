@@ -10,14 +10,14 @@ Disassembly of section \.text:
 	\.\.\.
 	\.\.\.
 .*	lw	t9,.*
-.*	bal	.* <__start>
+.*	(bal|jal)	.* <__start>
 .*	nop
 	\.\.\.
 .*	lw	t9,.*
-.*	bal	.* <__start>
+.*	(bal|jal)	.* <__start>
 .*	nop
 	\.\.\.
 .*	lw	t9,.*
-.*	bal	.* <__start>
+.*	(bal|jal)	.* <__start>
 .*	nop
 	\.\.\.
