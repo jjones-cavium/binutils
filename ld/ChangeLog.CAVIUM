@@ -1,3 +1,12 @@
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+            Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/ld-mips-elf/reginfo-size-n32.d,
+	testsuite/ld-mips-elf/reginfo-size-n32.ld,
+	testsuite/ld-mips-elf/reginfo-size.d,
+	testsuite/ld-mips-elf/reginfo-size.ld,
+	testsuite/ld-mips-elf/reginfo-size.s: New test. 
+
 2012-07-19  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/ld-mips-elf/jalbal.d: Add -melf32btsmipn32 to the link line.
