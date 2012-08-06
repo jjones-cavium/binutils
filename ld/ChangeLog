@@ -1,3 +1,10 @@
+2012-08-06  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* emulparams/elf32bmip.sh: Make _gp hidden.
+	* emulparams/elf32bmipn32-defs.sh: Likewise.
+	* emulparams/elf32mipswindiss.sh: Likewise.
+	* scripttempl/mips.sc: Likewise.
+
 2011-12-20  Joseph Myers  <joseph@codesourcery.com>
 
 	* emulparams/elf32bmip.sh (OTHER_SECTIONS): Put .mdebug.* and

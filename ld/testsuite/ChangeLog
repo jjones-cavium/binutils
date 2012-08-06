@@ -1,3 +1,10 @@
+2012-08-06  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* ld-mips-elf/rel32-o32.d: Adjust section VMAs after the removal
+	of _gp from the global scope.
+	* ld-mips-elf/rel32-n32.d: Likewise.
+	* ld-mips-elf/rel64.d: Likewise.
+
 2012-05-13  Richard Sandiford  <rdsandiford@googlemail.com>
 
 	* ld-mips-elf/eh-frame1.ld (.gcc_compiled_long32): Add KEEP.
