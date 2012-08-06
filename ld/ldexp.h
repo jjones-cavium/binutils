@@ -66,6 +66,7 @@ typedef union etree_union {
     node_type type;
     const char *dst;
     union etree_union *src;
+    bfd_boolean defsym;
     bfd_boolean hidden;
   } assign;
   struct {
@@ -190,7 +191,7 @@ etree_type *exp_unop
 etree_type *exp_nameop
   (int, const char *);
 etree_type *exp_assign
-  (const char *, etree_type *);
+  (const char *, etree_type *, bfd_boolean);
 etree_type *exp_defsym
   (const char *, etree_type *);
 etree_type *exp_provide
