@@ -1,3 +1,33 @@
+2012-08-29  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-mips.c (warn_error_unalign): New variable.
+	(mips_set_options): Add ase_virt.
+	(mips_opts): Likewise.
+	(file_ase_virt): New variable.
+	(ISA_SUPPORTS_VIRT_ASE): New define.
+	(NO_ISA_COP): Don't return false for Octeon3.
+	(MIPS_CPU_ASE_VIRT): New define.
+	(CPU_IS_OCTEON3): New define.
+	(is_opcode_valid): Support virtualization ASE.
+	(options): Add OPTION_VIRT and OPTION_NO_VIRT.
+	(md_longopts): Add mvirt and mno-virt options.
+	Add mwarn-unalign and merror-unalign.
+	(md_parse_option): Handle mvirt and mno-virt options.
+	Handle mwarn-unalign and merror-unalign.
+	(mips_after_parse_args): Add support for virt ase.
+	(s_mipsset): Handle .set virt and .set novirt.
+	(mips_elf_final_processing): Add comment about virt ase.
+	(mips_cpu_info_table): Octeon3 enables virt ase.
+	(md_show_usage): Print out the help for -mvirt and -mno-virt.
+	(CPU_IS_OCTEON): Handle CPU_OCTEON3.
+	(mips_ip): Warn instead of erroring out for ldl/ldr/etc.
+	if warn_error_unalign is true.  Only warn once too.
+	Also handle '+J'.
+	(macro_build): Handle +J.
+	(validate_mips_insn): Likewise.
+	(OPTION_ERROR_UNALIGN, OPTION_WARN_UNALIGN): New enum value.
+	(mips_cpu_info_table): Add octeon3.
+
 2012-10-11  Andrew Pinski  <apinski@cavium.com>
 
 	* configure: Regerate.
