@@ -92,6 +92,8 @@ static int octeon_use_unalign = 1;
 static int octeon_use_unalign = 0;
 #endif
 
+static int warn_error_unalign = 0;
+
 #include "ecoff.h"
 
 #if defined (OBJ_ELF) || defined (OBJ_MAYBE_ELF)
@@ -228,6 +230,7 @@ struct mips_set_options
   int ase_dspr2;
   int ase_mt;
   int ase_mcu;
+  int ase_virt;
   /* Whether we are assembling for the mips16 processor.  0 if we are
      not, 1 if we are, and -1 if the value has not been initialized.
      Changed by `.set mips16' and `.set nomips16', and the -mips16 and
@@ -307,10 +310,11 @@ static struct mips_set_options mips_opts =
 {
   /* isa */ ISA_UNKNOWN, /* ase_mips3d */ -1, /* ase_mdmx */ -1,
   /* ase_smartmips */ 0, /* ase_dsp */ -1, /* ase_dspr2 */ -1, /* ase_mt */ -1,
-  /* ase_mcu */ -1, /* mips16 */ -1, /* micromips */ -1, /* noreorder */ 0,
-  /* at */ ATREG, /* warn_about_macros */ 0, /* nomove */ 0, /* nobopt */ 0,
-  /* noautoextend */ 0, /* gp32 */ 0, /* fp32 */ 0, /* arch */ CPU_UNKNOWN,
-  /* sym32 */ FALSE, /* soft_float */ FALSE, /* single_float */ FALSE
+  /* ase_mcu */ -1, /* ase_virt */ -1, /* mips16 */ -1,/* micromips */ -1,
+  /* noreorder */ 0,  /* at */ ATREG, /* warn_about_macros */ 0,
+  /* nomove */ 0, /* nobopt */ 0, /* noautoextend */ 0, /* gp32 */ 0,
+  /* fp32 */ 0, /* arch */ CPU_UNKNOWN, /* sym32 */ FALSE,
+  /* soft_float */ FALSE, /* single_float */ FALSE
 };
 
 /* These variables are filled in with the masks of registers used.
@@ -385,6 +389,13 @@ static int file_ase_mt;
 
 #define ISA_SUPPORTS_MCU_ASE (mips_opts.isa == ISA_MIPS32R2		\
 			      || mips_opts.isa == ISA_MIPS64R2)
+
+/* True if -mvirt was passed or implied by arguments passed on the
+   command line (e.g., by -march). */
+static int file_ase_virt;
+
+#define ISA_SUPPORTS_VIRT_ASE (mips_opts.isa == ISA_MIPS32R2		\
+			       || mips_opts.isa == ISA_MIPS64R2)
 
 /* The argument of the -march= flag.  The architecture we are assembling.  */
 static int file_mips_arch = CPU_UNKNOWN;
@@ -517,7 +528,11 @@ static int mips_32bitmode = 0;
 #define CPU_HAS_ROR(CPU)	CPU_HAS_DROR (CPU)
 
 /* True if CPU is in the Octeon family */
-#define CPU_IS_OCTEON(CPU) ((CPU) == CPU_OCTEON || (CPU) == CPU_OCTEONP || (CPU) == CPU_OCTEON2)
+#define CPU_IS_OCTEON(CPU) ((CPU) == CPU_OCTEON || (CPU) == CPU_OCTEONP \
+			    || (CPU) == CPU_OCTEON2 || (CPU) == CPU_OCTEON3)
+
+/* True if CPU is Octeon3 or higher */
+#define CPU_IS_OCTEON3(CPU) ((CPU) == CPU_OCTEON3)
 
 /* True if CPU has seq/sne and seqi/snei instructions.  */
 #define CPU_HAS_SEQ(CPU)	(CPU_IS_OCTEON (CPU))
@@ -525,7 +540,7 @@ static int mips_32bitmode = 0;
 /* True if CPU does not implement the all the coprocessor insns.  For these
    CPUs only those COP insns are accepted that are explicitly marked to be
    available on the CPU.  ISA membership for COP insns is ignored.  */
-#define NO_ISA_COP(CPU)		(CPU_IS_OCTEON (CPU))
+#define NO_ISA_COP(CPU)		(CPU_IS_OCTEON (CPU) && !CPU_IS_OCTEON3 (CPU))
 
 /* True if mflo and mfhi can be immediately followed by instructions
    which write to the HI and LO registers.
@@ -1422,7 +1437,8 @@ struct mips_cpu_info
 #define MIPS_CPU_ASE_MDMX	0x0020	/* CPU implements MDMX ASE */
 #define MIPS_CPU_ASE_DSPR2	0x0040	/* CPU implements DSP R2 ASE */
 #define MIPS_CPU_ASE_MCU	0x0080	/* CPU implements MCU ASE */
-#define MIPS_CPU_FLOAT_OPS_NONE	0x0100	/* CPU has no FPU */
+#define MIPS_CPU_ASE_VIRT	0x0100  /* CPU implements Virtualization ASE */
+#define MIPS_CPU_FLOAT_OPS_NONE	0x0200	/* CPU has no FPU */
 
 static const struct mips_cpu_info *mips_parse_cpu (const char *, const char *);
 static const struct mips_cpu_info *mips_cpu_info_from_isa (int);
@@ -2240,6 +2256,8 @@ is_opcode_valid (const struct mips_opcode *mo)
     isa |= INSN_SMARTMIPS;
   if (mips_opts.ase_mcu)
     isa |= INSN_MCU;
+  if (mips_opts.ase_virt)
+    isa |= INSN_VIRT;
 
   /* Don't accept instructions based on the ISA if the CPU does not implement
      all the coprocessor insns. */
@@ -4895,6 +4913,11 @@ macro_build (expressionS *ep, const char *name, const char *fmt, ...)
 		 MSB values must be calculated.)  */
 	      INSERT_OPERAND (mips_opts.micromips,
 			      INSMSB, insn, va_arg (args, int));
+	      continue;
+
+	    case 'J':
+	      gas_assert (!mips_opts.micromips);
+	      INSERT_OPERAND (0, CODE10, insn, va_arg (args, int));
 	      continue;
 
 	    case 'C':
@@ -10310,6 +10333,7 @@ validate_mips_insn (const struct mips_opcode *opc)
 	  case 'G': USE_BITS (OP_MASK_EXTMSBD,	OP_SH_EXTMSBD);	break;
 	  case 'H': USE_BITS (OP_MASK_EXTMSBD,	OP_SH_EXTMSBD);	break;
 	  case 'I': break;
+	  case 'J': USE_BITS (OP_MASK_CODE10,	OP_SH_CODE10);	break;
 	  case 't': USE_BITS (OP_MASK_RT,	OP_SH_RT);	break;
 	  case 'T': USE_BITS (OP_MASK_RT,	OP_SH_RT);
 		    USE_BITS (OP_MASK_SEL,	OP_SH_SEL);	break;
@@ -10781,6 +10805,7 @@ mips_ip (char *str, struct mips_cl_insn *ip)
 
       if (insn->pinfo != INSN_MACRO)
 	{
+	  static int already_warned = 0;
 	  /* Don't accept Octeon unaligned load/store instructions when
 	     octeon_use_unalign is not set.  We used to issue an error message
 	     here to avoid the potential ambiguity of these mnemonics of
@@ -10804,12 +10829,19 @@ mips_ip (char *str, struct mips_cl_insn *ip)
                   || strcmp (insn->name, "sdl") == 0
                   || strcmp (insn->name, "sdr") == 0
                   || strcmp (insn->name, "swr") == 0
-                  || strcmp (insn->name, "swl") == 0))
+                  || strcmp (insn->name, "swl") == 0)
+	      && (!warn_error_unalign || !already_warned))
             {
               static char buf[100];
+	      already_warned = 1;
               sprintf (buf, _("Unaligned load/store instructions are not allowed with -mocteon-useun"));
-              insn_error = buf;
-              return;
+	      if (warn_error_unalign)
+		as_warn (buf);
+	      else
+		{
+		  insn_error = buf;
+		  return;
+		}
             }
 	}
 
@@ -11205,6 +11237,23 @@ mips_ip (char *str, struct mips_cl_insn *ip)
 		      }
 		    ip->insn_opcode |= ((unsigned long) imm_expr.X_add_number
 					<< imm->shift);
+		    imm_expr.X_op = O_absent;
+		    s = expr_end;
+		  }
+		  continue;
+
+		case 'J':		/* 10-bit hypcall code.  */
+		  gas_assert (!mips_opts.micromips);
+		  {
+		    unsigned long mask = OP_MASK_CODE10;
+
+		    my_getExpression (&imm_expr, s);
+		    check_absolute_expr (ip, &imm_expr);
+		    if ((unsigned long) imm_expr.X_add_number > mask)
+		      as_warn (_("Code for %s not in range 0..%lu (%lu)"),
+			       ip->insn_mo->name,
+			       mask, (unsigned long) imm_expr.X_add_number);
+		    INSERT_OPERAND (0, CODE10, *ip, imm_expr.X_add_number);
 		    imm_expr.X_op = O_absent;
 		    s = expr_end;
 		  }
@@ -14362,6 +14411,8 @@ enum options
     OPTION_NO_DSP,
     OPTION_MT,
     OPTION_NO_MT,
+    OPTION_VIRT,
+    OPTION_NO_VIRT,
     OPTION_SMARTMIPS,
     OPTION_NO_SMARTMIPS,
     OPTION_DSPR2,
@@ -14416,6 +14467,8 @@ enum options
     OPTION_32,
     OPTION_MOCTEON_USEUN,
     OPTION_NO_MOCTEON_USEUN,
+    OPTION_ERROR_UNALIGN,
+    OPTION_WARN_UNALIGN,
 #ifdef OBJ_ELF
     OPTION_CALL_SHARED,
     OPTION_CALL_NONPIC,
@@ -14468,6 +14521,8 @@ struct option md_longopts[] =
   {"mno-micromips", no_argument, NULL, OPTION_NO_MICROMIPS},
   {"mmcu", no_argument, NULL, OPTION_MCU},
   {"mno-mcu", no_argument, NULL, OPTION_NO_MCU},
+  {"mvirt", no_argument, NULL, OPTION_VIRT},
+  {"mno-virt", no_argument, NULL, OPTION_NO_VIRT},
 
   /* Old-style architecture options.  Don't add more of these.  */
   {"m4650", no_argument, NULL, OPTION_M4650},
@@ -14527,6 +14582,8 @@ struct option md_longopts[] =
 
   {"mocteon-useun", no_argument, NULL, OPTION_MOCTEON_USEUN},
   {"mno-octeon-useun", no_argument, NULL, OPTION_NO_MOCTEON_USEUN},
+  {"mwarn-unalign", no_argument, NULL, OPTION_WARN_UNALIGN},
+  {"merror-unalign", no_argument, NULL, OPTION_ERROR_UNALIGN},
 
   /* ELF-specific options.  */
 #ifdef OBJ_ELF
@@ -14601,6 +14658,14 @@ md_parse_option (int c, char *arg)
 
     case OPTION_NO_MOCTEON_USEUN:
       octeon_use_unalign = 0;
+      break;
+
+    case OPTION_ERROR_UNALIGN:
+      warn_error_unalign = 0;
+      break;
+
+    case OPTION_WARN_UNALIGN:
+      warn_error_unalign = 1;
       break;
 
     case 'O':
@@ -14754,6 +14819,14 @@ md_parse_option (int c, char *arg)
     case OPTION_NO_MICROMIPS:
       mips_opts.micromips = 0;
       mips_no_prev_insn ();
+      break;
+
+    case OPTION_VIRT:
+      mips_opts.ase_virt = 1;
+      break;
+
+    case OPTION_NO_VIRT:
+      mips_opts.ase_virt = 0;
       break;
 
     case OPTION_MIPS16:
@@ -15249,6 +15322,12 @@ mips_after_parse_args (void)
       as_warn (_("%s ISA does not support MCU ASE"),
 	       mips_cpu_info_from_isa (mips_opts.isa)->name);
 
+  if (mips_opts.ase_virt == -1)
+    mips_opts.ase_virt = (arch_info->flags & MIPS_CPU_ASE_VIRT) ? 1 : 0;
+  if (mips_opts.ase_virt && !ISA_SUPPORTS_VIRT_ASE)
+    as_warn (_("%s ISA does not support Virtualization ASE"),
+	     mips_cpu_info_from_isa (mips_opts.isa)->name);
+
   file_mips_isa = mips_opts.isa;
   file_ase_mips3d = mips_opts.ase_mips3d;
   file_ase_mdmx = mips_opts.ase_mdmx;
@@ -15256,6 +15335,7 @@ mips_after_parse_args (void)
   file_ase_dsp = mips_opts.ase_dsp;
   file_ase_dspr2 = mips_opts.ase_dspr2;
   file_ase_mt = mips_opts.ase_mt;
+  file_ase_virt = mips_opts.ase_virt;
   mips_opts.gp32 = file_mips_gp32;
   mips_opts.fp32 = file_mips_fp32;
   mips_opts.soft_float = file_mips_soft_float;
@@ -16296,6 +16376,15 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
     mips_opts.ase_mcu = 1;
   else if (strcmp (name, "nomcu") == 0)
     mips_opts.ase_mcu = 0;
+  else if (strcmp (name, "virt") == 0)
+    {
+      if (!ISA_SUPPORTS_VIRT_ASE)
+	as_warn (_("%s ISA does not support Virtualization ASE"), 
+		 mips_cpu_info_from_isa (mips_opts.isa)->name);
+      mips_opts.ase_virt = 1;
+    }
+  else if (strcmp (name, "novirt") == 0)
+    mips_opts.ase_virt = 0;
   else if (strncmp (name, "mips", 4) == 0 || strncmp (name, "arch=", 5) == 0)
     {
       int reset = 0;
@@ -18572,6 +18661,8 @@ mips_elf_final_processing (void)
   /* Same for DSP R2.  */
   /* We may need to define a new flag for MT ASE, and set this flag when
      file_ase_mt is true.  */
+  /* We may need to define a new flag for VIRT ASE, and set this flag when
+     file_ase_virt is true.  */
   if (file_ase_mips16)
     elf_elfheader (stdoutput)->e_flags |= EF_MIPS_ARCH_ASE_M16;
   if (file_ase_micromips)
@@ -19202,6 +19293,7 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
   { "octeon",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEON },
   { "octeon+",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEONP },
   { "octeon2",	      MIPS_CPU_FLOAT_OPS_NONE,      ISA_MIPS64R2,   CPU_OCTEON2 },
+  { "octeon3",	      MIPS_CPU_ASE_VIRT,            ISA_MIPS64R2,   CPU_OCTEON3 },
 
   /* RMI Xlr */
   { "xlr",	      0,      ISA_MIPS64,     CPU_XLR },
@@ -19430,6 +19522,9 @@ MIPS options:\n\
   fprintf (stream, _("\
 -mmcu			generate MCU instructions\n\
 -mno-mcu		do not generate MCU instructions\n"));
+  fprintf (stream, _("\
+-mvirt			generate Virtualization instructions\n\
+-mno-virt		do not generate Virtualization instructions\n"));
   fprintf (stream, _("\
 -mfix-loongson2f-jump	work around Loongson2F JUMP instructions\n\
 -mfix-loongson2f-nop	work around Loongson2F NOP errata\n\
