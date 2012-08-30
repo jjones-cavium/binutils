@@ -86,6 +86,8 @@ int mips_flag_pdr = FALSE;
 int mips_flag_pdr = TRUE;
 #endif
 
+static int warn_error_unalign = 0;
+
 #include "ecoff.h"
 
 static char *mips_regmask_frag;
@@ -457,7 +459,11 @@ static int mips_32bitmode = 0;
 #define CPU_HAS_ROR(CPU)	CPU_HAS_DROR (CPU)
 
 /* True if CPU is in the Octeon family */
-#define CPU_IS_OCTEON(CPU) ((CPU) == CPU_OCTEON || (CPU) == CPU_OCTEONP || (CPU) == CPU_OCTEON2)
+#define CPU_IS_OCTEON(CPU) ((CPU) == CPU_OCTEON || (CPU) == CPU_OCTEONP \
+			    || (CPU) == CPU_OCTEON2 || (CPU) == CPU_OCTEON3)
+
+/* True if CPU is Octeon3 or higher */
+#define CPU_IS_OCTEON3(CPU) ((CPU) == CPU_OCTEON3)
 
 /* True if CPU has seq/sne and seqi/snei instructions.  */
 #define CPU_HAS_SEQ(CPU)	(CPU_IS_OCTEON (CPU))
@@ -1311,7 +1317,8 @@ struct mips_cpu_info
 };
 
 #define MIPS_CPU_IS_ISA		0x0001	/* Is this an ISA?  (If 0, a CPU.) */
-#define MIPS_CPU_FLOAT_OPS_NONE        0x0100  /* CPU has no FPU */
+#define MIPS_CPU_ASE_VIRT	0x0100  /* CPU implements Virtualization ASE */
+#define MIPS_CPU_FLOAT_OPS_NONE        0x0200  /* CPU has no FPU */
 
 static const struct mips_cpu_info *mips_parse_cpu (const char *, const char *);
 static const struct mips_cpu_info *mips_cpu_info_from_isa (int);
@@ -1405,6 +1412,8 @@ enum options
     OPTION_SINGLE_FLOAT,
     OPTION_DOUBLE_FLOAT,
     OPTION_32,
+    OPTION_ERROR_UNALIGN,
+    OPTION_WARN_UNALIGN,
     OPTION_CALL_SHARED,
     OPTION_CALL_NONPIC,
     OPTION_NON_SHARED,
@@ -13499,6 +13508,14 @@ md_parse_option (int c, char *arg)
       target_big_endian = 0;
       break;
 
+    case OPTION_ERROR_UNALIGN:
+      warn_error_unalign = 0;
+      break;
+
+    case OPTION_WARN_UNALIGN:
+      warn_error_unalign = 1;
+      break;
+
     case 'O':
       if (arg == NULL)
 	mips_optimize = 1;
@@ -17944,6 +17961,7 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
   { "octeon",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEON },
   { "octeon+",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEONP },
   { "octeon2",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEON2 },
+  { "octeon3",	      MIPS_CPU_ASE_VIRT, 0,            ISA_MIPS64R2,   CPU_OCTEON3 },
 
   /* RMI Xlr */
   { "xlr",	      0, 0,			ISA_MIPS64,   CPU_XLR },
@@ -18186,6 +18204,9 @@ MIPS options:\n\
   fprintf (stream, _("\
 -minsn32		only generate 32-bit microMIPS instructions\n\
 -mno-insn32		generate all microMIPS instructions\n"));
+  fprintf (stream, _("\
+-mvirt			generate Virtualization instructions\n\
+-mno-virt		do not generate Virtualization instructions\n"));
   fprintf (stream, _("\
 -mfix-loongson2f-jump	work around Loongson2F JUMP instructions\n\
 -mfix-loongson2f-nop	work around Loongson2F NOP errata\n\
