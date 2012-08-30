@@ -614,7 +614,7 @@ const struct mips_arch_choice mips_arch_choices[] =
 
   { "mips32r2",	1, bfd_mach_mipsisa32r2, CPU_MIPS32R2,
     (ISA_MIPS32R2 | INSN_SMARTMIPS | INSN_DSP | INSN_DSPR2
-     | INSN_MIPS3D | INSN_MT | INSN_MCU),
+     | INSN_MIPS3D | INSN_MT | INSN_MCU | INSN_VIRT),
     mips_cp0_names_mips3264r2,
     mips_cp0sel_names_mips3264r2, ARRAY_SIZE (mips_cp0sel_names_mips3264r2),
     mips_hwr_names_mips3264r2 },
@@ -628,7 +628,7 @@ const struct mips_arch_choice mips_arch_choices[] =
 
   { "mips64r2",	1, bfd_mach_mipsisa64r2, CPU_MIPS64R2,
     (ISA_MIPS64R2 | INSN_MIPS3D | INSN_DSP | INSN_DSPR2
-     | INSN_DSP64 | INSN_MT | INSN_MDMX | INSN_MCU),
+     | INSN_DSP64 | INSN_MT | INSN_MDMX | INSN_MCU | INSN_VIRT),
     mips_cp0_names_mips3264r2,
     mips_cp0sel_names_mips3264r2, ARRAY_SIZE (mips_cp0sel_names_mips3264r2),
     mips_hwr_names_mips3264r2 },
@@ -665,6 +665,11 @@ const struct mips_arch_choice mips_arch_choices[] =
     ISA_MIPS64R2 | INSN_OCTEON2, mips_cp0_names_octeon,
     mips_cp0sel_names_octeon, ARRAY_SIZE (mips_cp0sel_names_octeon),
     mips_hwr_names_numeric },
+
+  { "octeon3",   1, bfd_mach_mips_octeon3, CPU_OCTEON3,
+    ISA_MIPS64R2 | INSN_OCTEON3 | INSN_VIRT,
+    mips_cp0_names_octeon, mips_cp0sel_names_octeon,
+    ARRAY_SIZE (mips_cp0sel_names_octeon), mips_hwr_names_numeric },
 
   { "xlr", 1, bfd_mach_mips_xlr, CPU_XLR,
     ISA_MIPS64 | INSN_XLR,
