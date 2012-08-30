@@ -1,3 +1,17 @@
+2012-08-29  Andrew Pinski  <apinski@cavium.com>
+
+	* mips-dis.c (mips_arch_choices): Set INSN_VIRT for mips32r2 and mips64r2.
+	Add octeon3.
+	* mips-opc.c (IOCT): Include INSN_OCTEON3.
+	(IOCT2): Likewise.
+	(IOCT3): New define.
+	(IVIRT): New define.
+	(mips_builtin_opcodes): Add dmfgc0, dmtgc0, hypcall, mfgc0, mtgc0,
+	tlbinv, tlbinvf, tlbgr, tlbgwi, tlbginv, tlbginvf, tlbgwr, tlbgp, tlti
+	IVIRT instructions.
+	Extend mtm0, mtm1, mtm2, mtp0, mtp1, mtp2 instructions to take another
+	operand for IOCT3.
+
 2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
 	Adam Nemet  <anemet@caviumnetworks.com>
 
