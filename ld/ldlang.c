@@ -1823,7 +1823,7 @@ lang_insert_orphan (asection *s,
 	  sprintf (symname + (symname[0] != 0), "__start_%s", secname);
 	  e_align = exp_unop (ALIGN_K,
 			      exp_intop ((bfd_vma) 1 << s->alignment_power));
-	  lang_add_assignment (exp_assign (".", e_align));
+	  lang_add_assignment (exp_assign (".", e_align, FALSE));
 	  lang_add_assignment (exp_provide (symname,
 					    exp_unop (ABSOLUTE,
 						      exp_nameop (NAME, ".")),
