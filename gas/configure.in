@@ -245,9 +245,9 @@ changequote([,])dnl
 	    ;;
 	esac
 
-	# Define mips_cpu to octeon for Octeon.
+	# Define mips_cpu to octeon for Octeon and MontaVista.
 	case ${target_vendor} in
-	  octeon)
+	  octeon|montavista)
 	    mips_cpu=octeon;;
 	  *) ;;
 	esac
@@ -279,7 +279,7 @@ changequote([,])dnl
 	    AC_DEFINE(OCTEON_USE_UNALIGN, 1,
 		  [Define to use Octeon unaligned load/store instructions.])
 	    ;;
-	  mips64*-octeon-linux*)
+	  mips*-octeon-linux*|mips*-montavista-linux*)
             mips_default_abi=N64_ABI
 	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)

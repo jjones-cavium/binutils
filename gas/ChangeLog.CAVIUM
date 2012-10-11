@@ -1,3 +1,13 @@
+2012-10-11  Andrew Pinski  <apinski@cavium.com>
+
+	* configure: Regerate.
+	* configure.in: Also mips*-montavista-* should default to octeon.
+	mips*-montavista-linux* defaults to n64.
+	* configure.tgt: Match mips*-montavista-linux-gnu* and mips*-octeon-linux-gnu*
+	as what was mips64-octeon-linux-gnu.
+	Match mips*el-montavista-linux-gnu* and mips*el-octeon-linux-gnu* as
+	what was mips64el-octeon-linux-gnu.
+
 2012-07-18  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/gas/mips/mips.exp: Auto Detect octeon target.
