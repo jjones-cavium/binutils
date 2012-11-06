@@ -1,3 +1,18 @@
+2012-11-05  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5113
+	* config.in: Regenerate.
+	* configure: Regenerate.
+	* configure.in (--with-lto-plugin-source): New option.
+	* plugin.c (struct plugin): Add internal_bfd_gcc_lto_plugin field
+	if USE_LTO_PLUGIN_SOURCE is defined.
+	(plugin_opt_plugin): Set internal_bfd_gcc_lto_plugin to true
+	if plugin contains "liblto_plugin".
+	(plugin_load_plugins): Use __bfd_gcc_lto_onload if internal_bfd_gcc_lto_plugin
+	is true.
+	(plugin_call_cleanup): Don't call dlclose if internal_bfd_gcc_lto_plugin
+	is true.
+
 2012-10-11  Andrew Pinski  <apinski@cavium.com>
 
 	* configure.tgt: Match mips*-montavista-linux-gnu* and mips*-octeon-linux-gnu*
