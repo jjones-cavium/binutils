@@ -87,6 +87,13 @@ AC_SUBST(use_sysroot)
 AC_SUBST(TARGET_SYSTEM_ROOT)
 AC_SUBST(TARGET_SYSTEM_ROOT_DEFINE)
 
+AC_ARG_WITH(lto-plugin-source,
+  AS_HELP_STRING([--with-lto-plugin-source=PATH], [Use the GCC LTO plugin source at PATH]),
+[case "${withval}" in
+  no) ;;
+  *) AC_DEFINE(USE_LTO_PLUGIN_SOURCE, 1, [Define if we should compile in the source to the GCC LTO PLUGIN]) ;;
+  esac])
+
 dnl Use --enable-gold to decide if this linker should be the default.
 dnl "install_as_default" is set to false if gold is the default linker.
 dnl "installed_linker" is the installed BFD linker name.
