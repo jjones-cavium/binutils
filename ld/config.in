@@ -172,6 +172,9 @@
 /* Use b modifier when opening binary files? */
 #undef USE_BINARY_FOPEN
 
+/* Define if we should compile in the source to the GCC LTO PLUGIN */
+#undef USE_LTO_PLUGIN_SOURCE
+
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE

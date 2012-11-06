@@ -70,6 +70,10 @@ typedef struct plugin
   ld_plugin_cleanup_handler cleanup_handler;
   /* TRUE if the cleanup handlers have been called.  */
   bfd_boolean cleanup_done;
+#ifdef USE_LTO_PLUGIN_SOURCE
+  /* TRUE if it is really the already loaded plugin from GCC LTO plugin */
+  bfd_boolean internal_bfd_gcc_lto_plugin;
+#endif
 } plugin_t;
 
 /* The master list of all plugins.  */
@@ -186,9 +190,19 @@ plugin_opt_plugin (const char *plugin)
   newplug = xmalloc (sizeof *newplug);
   memset (newplug, 0, sizeof *newplug);
   newplug->name = plugin;
+#ifdef USE_LTO_PLUGIN_SOURCE
+  if (strstr (plugin, "liblto_plugin") != NULL)
+    newplug->internal_bfd_gcc_lto_plugin = 1;
+  else
+    {
+#endif
   newplug->dlhandle = dlopen (plugin, RTLD_NOW);
   if (!newplug->dlhandle)
     return set_plugin_error (plugin);
+
+#ifdef USE_LTO_PLUGIN_SOURCE
+    }
+#endif
 
   /* Chain on end, so when we run list it is in command-line order.  */
   *plugins_tail_chain_ptr = newplug;
@@ -798,11 +812,24 @@ plugin_load_plugins (void)
   while (curplug)
     {
       enum ld_plugin_status rv;
-      ld_plugin_onload onloadfn = dlsym (curplug->dlhandle, "onload");
+      ld_plugin_onload onloadfn;
+#ifdef USE_LTO_PLUGIN_SOURCE
+      if (curplug->internal_bfd_gcc_lto_plugin)
+	{
+	  extern enum ld_plugin_status __bfd_gcc_lto_onload (struct ld_plugin_tv *tv);
+	  onloadfn = __bfd_gcc_lto_onload;
+	}
+      else
+	{
+#endif
+      onloadfn = dlsym (curplug->dlhandle, "onload");
       if (!onloadfn)
 	onloadfn = dlsym (curplug->dlhandle, "_onload");
       if (!onloadfn)
 	return set_plugin_error (curplug->name);
+#ifdef USE_LTO_PLUGIN_SOURCE
+	}
+#endif
       set_tv_plugin_args (curplug, &my_tv[tv_header_size]);
       called_plugin = curplug;
       rv = (*onloadfn) (my_tv);
@@ -926,6 +953,9 @@ plugin_call_cleanup (void)
 	  called_plugin = NULL;
 	  if (rv != LDPS_OK)
 	    set_plugin_error (curplug->name);
+#ifdef USE_LTO_PLUGIN_SOURCE
+          if (!curplug->internal_bfd_gcc_lto_plugin)
+#endif
 	  dlclose (curplug->dlhandle);
 	}
       curplug = curplug->next;
