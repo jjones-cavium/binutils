@@ -1,3 +1,8 @@
+2013-01-16  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/ld-mips-elf/elf-rel-xgot-n32.d: Fix testcase for
+	alignment difference.
+
 2012-11-13  Andrew Pinski  <apinski@cavium.com>
 
 	Backport from the trunk
