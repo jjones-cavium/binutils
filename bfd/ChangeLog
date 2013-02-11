@@ -1,3 +1,8 @@
+2013-02-11  Richard Sandiford  <rdsandiford@googlemail.com>
+
+	* elfxx-mips.c (mips_elf_merge_got_with): Only use arg->global_count
+	if there are TLS relocations.
+
 2012-09-12  Chris Schlumberger-Socha  <chris.schlumberger-socha@arm.com>
 
 	* bfd-in2.h: Regenerated.
