@@ -142,9 +142,6 @@ struct mips_got_page_entry
 
 struct mips_got_info
 {
-  /* The global symbol in the GOT with the lowest index in the dynamic
-     symbol table.  */
-  struct elf_link_hash_entry *global_gotsym;
   /* The number of global .got entries.  */
   unsigned int global_gotno;
   /* The number of global .got entries that are in the GGA_RELOC_ONLY area.  */
@@ -464,6 +461,10 @@ struct mips_elf_link_hash_table
 
   /* The master GOT information.  */
   struct mips_got_info *got_info;
+
+  /* The global symbol in the GOT with the lowest index in the dynamic
+     symbol table.  */
+  struct elf_link_hash_entry *global_gotsym;
 
   /* The size of the PLT header in bytes.  */
   bfd_vma plt_header_size;
@@ -3323,8 +3324,8 @@ mips_elf_global_got_index (bfd *abfd, bfd *ibfd, struct elf_link_hash_entry *h,
 	}
     }
 
-  if (gg->global_gotsym != NULL)
-    global_got_dynindx = gg->global_gotsym->dynindx;
+  if (htab->global_gotsym != NULL)
+    global_got_dynindx = htab->global_gotsym->dynindx;
 
   if (TLS_RELOC_P (r_type))
     {
@@ -3611,7 +3612,7 @@ mips_elf_sort_hash_table (bfd *abfd, struct bfd_link_info *info)
 
   /* Now we know which dynamic symbol has the lowest dynamic symbol
      table index in the GOT.  */
-  g->global_gotsym = hsd.low;
+  htab->global_gotsym = hsd.low;
 
   return TRUE;
 }
@@ -4150,7 +4151,6 @@ mips_elf_get_got_for_bfd (struct htab *bfd2got, bfd *output_bfd,
       bfdgot->bfd = input_bfd;
       bfdgot->g = g;
 
-      g->global_gotsym = NULL;
       g->global_gotno = 0;
       g->reloc_only_gotno = 0;
       g->local_gotno = 0;
@@ -4450,8 +4450,6 @@ mips_elf_set_global_got_offset (void **entryp, void *p)
     {
       if (g)
 	{
-	  BFD_ASSERT (g->global_gotsym == NULL);
-
 	  entry->gotidx = arg->value * (long) g->assigned_gotno++;
 	  if (arg->info->shared
 	      || (elf_hash_table (arg->info)->dynamic_sections_created
@@ -4579,7 +4577,6 @@ mips_elf_multi_got (bfd *abfd, struct bfd_link_info *info,
       if (g->next == NULL)
 	return FALSE;
 
-      g->next->global_gotsym = NULL;
       g->next->global_gotno = 0;
       g->next->reloc_only_gotno = 0;
       g->next->local_gotno = 0;
@@ -4930,7 +4927,6 @@ mips_elf_create_got_section (bfd *abfd, struct bfd_link_info *info)
   g = bfd_alloc (abfd, amt);
   if (g == NULL)
     return FALSE;
-  g->global_gotsym = NULL;
   g->global_gotno = 0;
   g->reloc_only_gotno = 0;
   g->tls_gotno = 0;
@@ -10687,9 +10683,9 @@ _bfd_mips_elf_finish_dynamic_sections (bfd *output_bfd,
 	      break;
 
 	    case DT_MIPS_GOTSYM:
-	      if (gg->global_gotsym)
+	      if (htab->global_gotsym)
 		{
-		  dyn.d_un.d_val = gg->global_gotsym->dynindx;
+		  dyn.d_un.d_val = htab->global_gotsym->dynindx;
 		  break;
 		}
 	      /* In case if we don't have global got symbols we default
