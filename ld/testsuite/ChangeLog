@@ -1,3 +1,8 @@
+2013-02-11  Richard Sandiford  <rdsandiford@googlemail.com>
+
+	* ld-mips-elf/tlsdyn-o32-2.got, ld-mips-elf/tlsdyn-o32-3.got: Remove
+	unused GOT entries.
+
 2012-09-12  Chris Schlumberger-Socha  <chris.schlumberger-socha@arm.com>
 
 	* ld-aarch64/aarch64-elf.exp: New reloc tests.
