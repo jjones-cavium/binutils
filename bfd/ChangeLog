@@ -10,6 +10,11 @@
 	(mips_elf_merge_obj_attributes): Report the originating input BFD
 	on attribute conflicts.
 
+2013-02-12  Richard Sandiford  <rdsandiford@googlemail.com>
+
+	* elfxx-mips.c (mips_elf_lay_out_got): Count VxWorks GOT relocs
+	in g->relocs.
+
 2013-02-11  Richard Sandiford  <rdsandiford@googlemail.com>
 
 	* elfxx-mips.c (mips_elf_count_got_entries): Delete.
