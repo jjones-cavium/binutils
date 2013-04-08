@@ -878,6 +878,15 @@ static bfd *reldyn_sorting_bfd;
 #define ELF_R_INFO(bfd, s, t)					\
   (ELF32_R_INFO (s, t))
 #endif
+
+/*  Return true if direct jumps are faster than unconditional
+    branches.  This is used by the relaxation pass.  ??? We probably
+    don't this since even if the two are equally fast jump have bigger
+    ranges so we should do that unless we are linking a shared
+    library.  */
+
+#define PREFER_JUMP_OVER_BRANCH(bfd)  \
+  bfd_get_mach (bfd) == bfd_mach_mips_octeon
 
   /* The mips16 compiler uses a couple of special sections to handle
      floating point arguments.
@@ -8366,6 +8375,15 @@ _bfd_mips_relax_section (bfd *abfd, asection *sec,
   if (link_info->relocatable)
     return TRUE;
 
+  /* Don't read relocations from the .rel.dyn section.  We can't do
+     relaxation with them and _bfd_elf_link_read_relocs can fail with
+     .rel.dyn if it is attached to a stripped shared library.  For
+     stripped shared libraries symtab_hdr->sh_entsize is zero which is
+     used as a divisor in _bfd_elf_link_read_relocs.  */
+  if (strcmp (bfd_get_section_name (abfd, sec),
+	      MIPS_ELF_REL_DYN_NAME (link_info)) == 0)
+    return TRUE;
+
   internal_relocs = _bfd_elf_link_read_relocs (abfd, sec, NULL, NULL,
 					       link_info->keep_memory);
   if (internal_relocs == NULL)
@@ -8379,15 +8397,14 @@ _bfd_mips_relax_section (bfd *abfd, asection *sec,
   for (irel = internal_relocs; irel < irelend; irel++)
     {
       bfd_vma symval;
-      bfd_signed_vma sym_offset;
       unsigned int r_type;
       unsigned long r_symndx;
       asection *sym_sec;
       unsigned long instruction;
 
-      /* Turn jalr into bgezal, and jr into beq, if they're marked
-	 with a JALR relocation, that indicate where they jump to.
-	 This saves some pipeline bubbles.  */
+      /* Turn jalr into bgezal/jal, and jr into beq/j, if they're marked with
+	 a JALR relocation, that indicate where they jump to.  This saves some
+	 pipeline bubbles.  */
       r_type = ELF_R_TYPE (abfd, irel->r_info);
       if (r_type != R_MIPS_JALR)
 	continue;
@@ -8404,13 +8421,14 @@ _bfd_mips_relax_section (bfd *abfd, asection *sec,
 		 || h->root.root.type == bfd_link_hash_warning)
 	    h = (struct mips_elf_link_hash_entry *) h->root.root.u.i.link;
 
-	  /* If a symbol is undefined, or if it may be overridden,
-	     skip it.  */
+	  /* If a symbol is undefined, if it may be overridden or it
+	     points to the stub, skip it.  */
 	  if (! ((h->root.root.type == bfd_link_hash_defined
 		  || h->root.root.type == bfd_link_hash_defweak)
 		 && h->root.root.u.def.section)
 	      || (link_info->shared && ! link_info->symbolic
-		  && !h->root.forced_local))
+		  && !h->root.forced_local)
+	      || !h->root.def_regular)
 	    continue;
 
 	  sym_sec = h->root.root.u.def.section;
@@ -8452,37 +8470,69 @@ _bfd_mips_relax_section (bfd *abfd, asection *sec,
 	    + sym_sec->output_offset;
 	}
 
-      /* Compute branch offset, from delay slot of the jump to the
-	 branch target.  */
-      sym_offset = (symval + irel->r_addend)
-	- (sec_start + irel->r_offset + 4);
-
-      /* Branch offset must be properly aligned.  */
-      if ((sym_offset & 3) != 0)
-	continue;
-
-      sym_offset >>= 2;
-
-      /* Check that it's in range.  */
-      if (sym_offset < -0x8000 || sym_offset >= 0x8000)
-	continue;
-
       /* Get the section contents if we haven't done so already.  */
       if (!mips_elf_get_section_contents (abfd, sec, &contents))
 	goto relax_return;
 
       instruction = bfd_get_32 (abfd, contents + irel->r_offset);
+      /* In a shared library we can only use PC-relative branches.  */
+      if (PREFER_JUMP_OVER_BRANCH (abfd) && !link_info->shared)
+	{
+	  bfd_vma addr;
 
-      /* If it was jalr <reg>, turn it into bgezal $zero, <target>.  */
-      if ((instruction & 0xfc1fffff) == 0x0000f809)
-	instruction = 0x04110000;
-      /* If it was jr <reg>, turn it into b <target>.  */
-      else if ((instruction & 0xfc1fffff) == 0x00000008)
-	instruction = 0x10000000;
+	  addr = symval + irel->r_addend;
+
+	  /* Check that it's in range.  */
+	  if (addr >> 28 != (sec_start + irel->r_offset) >> 28)
+	    continue;
+	  /* Address must be properly aligned.  */
+	  if ((addr & 3) != 0)
+	    continue;
+
+	  addr >>= 2;
+
+	  /* If it was jalr <reg>, turn it into jal <target>.  */
+	  if ((instruction & 0xfc1fffff) == 0x0000f809)
+	    instruction = 0x0c000000;
+	  /* If it was jr <reg>, turn it into j <target>.  */
+	  else if ((instruction & 0xfc1fffff) == 0x00000008)
+	    instruction = 0x08000000;
+	  else
+	    continue;
+
+	  instruction |= addr & 0x3ffffff;
+	}
       else
-	continue;
+	{
+	  bfd_signed_vma sym_offset;
 
-      instruction |= (sym_offset & 0xffff);
+	  /* Compute branch offset, from delay slot of the jump to the
+	     branch target.  */
+	  sym_offset = (symval + irel->r_addend)
+	    - (sec_start + irel->r_offset + 4);
+
+	  /* Branch offset must be properly aligned.  */
+	  if ((sym_offset & 3) != 0)
+	    continue;
+
+	  sym_offset >>= 2;
+
+	  /* Check that it's in range.  */
+	  if (sym_offset < -0x8000 || sym_offset >= 0x8000)
+	    continue;
+
+	  /* If it was jalr <reg>, turn it into bgezal $zero, <target>.  */
+	  if ((instruction & 0xfc1fffff) == 0x0000f809)
+	    instruction = 0x04110000;
+	  /* If it was jr <reg>, turn it into b <target>.  */
+	  else if ((instruction & 0xfc1fffff) == 0x00000008)
+	    instruction = 0x10000000;
+	  else
+	    continue;
+
+	  instruction |= (sym_offset & 0xffff);
+	}
+
       bfd_put_32 (abfd, instruction, contents + irel->r_offset);
       changed_contents = TRUE;
     }
@@ -8539,7 +8589,7 @@ allocate_dynrelocs (struct elf_link_hash_entry *h, void *inf)
   if (! info->relocatable
       && hmips->possibly_dynamic_relocs != 0
       && (h->root.type == bfd_link_hash_defweak
-	  || !h->def_regular
+	  || (!h->def_regular && !ELF_COMMON_DEF_P (h))
 	  || info->shared))
     {
       bfd_boolean do_copy = TRUE;
@@ -8886,8 +8936,8 @@ mips_elf_lay_out_got (bfd *output_bfd, struct bfd_link_info *info)
     page_gotno = 0;
   else
     /* Assume there are two loadable segments consisting of contiguous
-       sections.  Is 5 enough?  */
-    page_gotno = (loadable_size >> 16) + 5;
+       sections.  Is 7 enough?  */
+    page_gotno = (loadable_size >> 16) + 7;
 
   /* Choose the smaller of the two estimates; both are intended to be
      conservative.  */
@@ -11036,6 +11086,10 @@ mips_set_isa_flags (bfd *abfd)
       val = E_MIPS_ARCH_64R2 | E_MIPS_MACH_OCTEON;
       break;
 
+    case bfd_mach_mips_octeon3:
+      val = E_MIPS_ARCH_64R2 | E_MIPS_MACH_OCTEON2;
+      break;
+
     case bfd_mach_mips_xlr:
       val = E_MIPS_ARCH_64 | E_MIPS_MACH_XLR;
       break;
@@ -11183,6 +11237,16 @@ _bfd_mips_elf_additional_program_headers (bfd *abfd,
      _bfd_mips_elf_modify_segment_map for details.  */
   if (!SGI_COMPAT (abfd)
       && bfd_get_section_by_name (abfd, ".dynamic"))
+    ++ret;
+
+  /* During section relaxation we essentially perform limited
+     relocation.  Relaxation is done before elf_discard_info decides
+     whether to add a PT_GNU_EH_FRAME segment or not.  Assume we are
+     going to if the section was created.  Once the segment is created
+     the generic code already accounts for this so don't increment in
+     that case.  */
+  if (!elf_tdata (abfd)->eh_frame_hdr
+      && bfd_get_section_by_name (abfd, ".eh_frame_hdr"))
     ++ret;
 
   return ret;
@@ -13131,7 +13195,15 @@ _bfd_mips_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 	    }
 
 	  /* Size has been set in _bfd_mips_elf_always_size_sections.  */
-	  BFD_ASSERT(o->size == sizeof (Elf32_External_RegInfo));
+	  if (o->size != sizeof (Elf32_External_RegInfo))
+	    {
+	      const char *msg =
+		_("%F%B: .reginfo is %u bytes instead of %u bytes\n");
+
+	      info->callbacks->einfo
+		(msg, abfd, (unsigned) o->size,
+		 (unsigned) sizeof (Elf32_External_RegInfo));
+	    }
 
 	  /* Skip this section later on (I don't think this currently
 	     matters, but someday it might).  */
@@ -13632,6 +13704,7 @@ struct mips_mach_extension {
 
 static const struct mips_mach_extension mips_mach_extensions[] = {
   /* MIPS64r2 extensions.  */
+  { bfd_mach_mips_octeon3, bfd_mach_mips_octeon2 },
   { bfd_mach_mips_octeon2, bfd_mach_mips_octeonp },
   { bfd_mach_mips_octeonp, bfd_mach_mips_octeon },
   { bfd_mach_mips_octeon, bfd_mach_mipsisa64r2 },
@@ -13912,8 +13985,8 @@ _bfd_mips_elf_merge_private_bfd_data (bfd *ibfd, bfd *obfd)
   if (strcmp (bfd_get_target (ibfd), bfd_get_target (obfd)) != 0)
     {
       (*_bfd_error_handler)
-	(_("%B: ABI is incompatible with that of the selected emulation"),
-	 ibfd);
+	(_("%B: ABI is incompatible with that of the selected emulation: \"%s\" != \"%s\""),
+	 ibfd, bfd_get_target (ibfd), bfd_get_target (obfd));
       return FALSE;
     }
 
