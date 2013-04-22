@@ -1518,7 +1518,6 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"tlbgwr",  "",         0x4200000e, 0xffffffff, INSN_TLB,       	0,		IVIRT  	},
 {"tlbgp",   "",         0x42000010, 0xffffffff, INSN_TLB,       	0,		IVIRT  	},
 {"tlti",    "s,j",	0x040a0000, 0xfc1f0000,	RD_s|TRAP,		0,		I2	},
-{"tlti",    "s,j",	0x040a0000, 0xfc1f0000,	RD_s|TRAP,		0,		I2	},
 {"tlt",     "s,t",	0x00000032, 0xfc00ffff, RD_s|RD_t|TRAP,		0,		I2	},
 {"tlt",     "s,t,q",	0x00000032, 0xfc00003f, RD_s|RD_t|TRAP,		0,		I2	},
 {"tlt",     "s,j",	0x040a0000, 0xfc1f0000,	RD_s|TRAP,		0,		I2	}, /* tlti */

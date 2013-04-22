@@ -1,3 +1,7 @@
+2013-04-22  Andrew Pinski  <apinski@cavium.com>
+
+	* mips-opc.c (mips_builtin_opcodes): Remove duplicated tlti.
+
 2012-08-29  Andrew Pinski  <apinski@cavium.com>
 
 	* mips-dis.c (mips_arch_choices): Set INSN_VIRT for mips32r2 and mips64r2.
