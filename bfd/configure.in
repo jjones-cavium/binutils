@@ -2,13 +2,13 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 
 AC_PREREQ(2.59)
-AC_INIT
+AC_INIT([bfd], [2.23.52])
 AC_CONFIG_SRCDIR([libbfd.c])
 
 AC_CANONICAL_TARGET
 AC_ISC_POSIX
 
-AM_INIT_AUTOMAKE(bfd, 2.23.2)
+AM_INIT_AUTOMAKE
 
 dnl These must be called before LT_INIT, because it may want
 dnl to call AC_CHECK_PROG.
@@ -110,6 +110,21 @@ if test $want_elf_stt_common = true; then
     [Define if we may generate symbols with ELF's STT_COMMON type])
 fi
 
+LTO_PLUGIN_SOURCE=.
+AC_ARG_WITH(lto-plugin-source,
+  AS_HELP_STRING([--with-lto-plugin-source=PATH], [Use the GCC LTO plugin source at PATH]),
+[case "${withval}" in
+  yes) AC_MSG_ERROR([Please supply a path to the GCC lto plugin source]) ;;
+  /*)
+    AC_DEFINE(USE_LTO_PLUGIN_SOURCE, 1, [Define if we should compile in the source to the GCC LTO PLUGIN])
+    LTO_PLUGIN_SOURCE=${withval}
+    ;;
+  no) ;;
+  *) AC_MSG_ERROR([Please supply an absolute path to the GCC lto plugin source])
+  ;;
+  esac])
+AC_SUBST(LTO_PLUGIN_SOURCE)
+	 
 ACX_PKGVERSION([GNU Binutils])
 ACX_BUGURL([http://www.sourceware.org/bugzilla/])
 
@@ -1099,6 +1114,7 @@ else
   supports_plugins=0
 fi
 AC_SUBST(supports_plugins)
+AC_SUBST(lt_cv_dlopen_libs)
 
 # Determine the host dependant file_ptr a.k.a. off_t type.  In order
 # prefer: off64_t - if ftello64 and fseeko64, off_t - if ftello and
