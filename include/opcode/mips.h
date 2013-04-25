@@ -486,6 +486,9 @@ struct mips_opcode
    "~" 12 bit offset (OP_*_OFFSET12)
    "\" 3 bit position for aset and aclr (OP_*_3BITPOS)
 
+   VIRT ASE usage:
+   "+J" 10-bit hypcall code (OP_*CODE10)
+
    UDI immediates:
    "+1" UDI immediate bits 6-10
    "+2" UDI immediate bits 6-15
@@ -528,7 +531,7 @@ struct mips_opcode
    Extension character sequences used so far ("+" followed by the
    following), for quick reference when adding more:
    "1234"
-   "ABCDEFGHIPQSTXZ"
+   "ABCDEFGHIJPQSTXZ"
    "abcpstxz"
 */
 
@@ -718,21 +721,24 @@ static const unsigned int mips_isa_table[] =
   { 0x0001, 0x0003, 0x0607, 0x1e0f, 0x3e1f, 0x0a23, 0x3e63, 0x3ebf, 0x3fff };
 
 /* Masks used for Chip specific instructions.  */
-#define INSN_CHIP_MASK		  0xc3ff0f20
+#define INSN_CHIP_MASK		  0xc3ff0f60
 
 /* Cavium Networks Octeon instructions.  */
 #define INSN_OCTEON		  0x00000800
 #define INSN_OCTEONP		  0x00000200
 #define INSN_OCTEON2		  0x00000100
+#define INSN_OCTEON3		  0x00000040
 
 /* Masks used for MIPS-defined ASEs.  */
-#define INSN_ASE_MASK		  0x3c00f010
+#define INSN_ASE_MASK		  0x3c00f090
 
 /* DSP ASE */ 
 #define INSN_DSP                  0x00001000
 #define INSN_DSP64                0x00002000
 
 /* 0x00004000 is unused.  */
+/* Virtualization ASE */
+#define INSN_VIRT		  0x00000080
 
 /* MIPS-3D ASE */
 #define INSN_MIPS3D               0x00008000
@@ -832,6 +838,7 @@ static const unsigned int mips_isa_table[] =
 #define CPU_OCTEON	6501
 #define CPU_OCTEONP	6601
 #define CPU_OCTEON2	6502
+#define CPU_OCTEON3	6503
 #define CPU_XLR     	887682   	/* decimal 'XLR'   */
 
 /* Return true if the given CPU is included in INSN_* mask MASK.  */
@@ -893,6 +900,9 @@ cpu_is_member (int cpu, unsigned int mask)
 
     case CPU_OCTEON2:
       return (mask & INSN_OCTEON2) != 0;
+
+    case CPU_OCTEON3:
+      return (mask & INSN_OCTEON3) != 0;
 
     case CPU_XLR:
       return (mask & INSN_XLR) != 0;
