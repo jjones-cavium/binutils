@@ -696,7 +696,6 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"dmaccu",  "d,s,t",	0x00000069, 0xfc0007ff,	RD_s|RD_t|WR_LO|WR_d,	0,		N412	},
 {"dmaccus", "d,s,t",	0x00000469, 0xfc0007ff,	RD_s|RD_t|WR_LO|WR_d,	0,		N412	},
 {"dmadd16", "s,t",      0x00000029, 0xfc00ffff, RD_s|RD_t|MOD_LO,       0,		N411    },
-<<<<<<< HEAD
 {"dmfc0",   "t,G",	0x40200000, 0xffe007ff,	LCD|WR_t|RD_C0,		0,		I3	},
 {"dmfc0",   "t,+D",	0x40200000, 0xffe007f8,	LCD|WR_t|RD_C0,		0,		I64	},
 {"dmfc0",   "t,G,H",	0x40200000, 0xffe007f8,	LCD|WR_t|RD_C0,		0,		I64	},
