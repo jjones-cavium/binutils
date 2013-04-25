@@ -1,6 +1,6 @@
 /* mips.h.  Mips opcode list for GDB, the GNU debugger.
    Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-   2003, 2004, 2005, 2008, 2009, 2010
+   2003, 2004, 2005, 2008, 2009, 2010, 2013
    Free Software Foundation, Inc.
    Contributed by Ralph Campbell and OSF
    Commented and modified by Ian Lance Taylor, Cygnus Support
@@ -212,6 +212,10 @@
 #define	OP_OP_SDC2		0x3e
 #define	OP_OP_SDC3		0x3f	/* a.k.a. sd */
 
+/* MIPS VIRT ASE */
+#define OP_MASK_CODE10		0x3ff
+#define OP_SH_CODE10		11
+
 /* Values in the 'VSEL' field.  */
 #define MDMX_FMTSEL_IMM_QH	0x1d
 #define MDMX_FMTSEL_IMM_OB	0x1e
@@ -255,8 +259,6 @@
    of the operand handling in GAS.  The fields below only exist
    in the microMIPS encoding, so define each one to have an empty
    range.  */
-#define OP_MASK_CODE10		0
-#define OP_SH_CODE10		0
 #define OP_MASK_TRAP		0
 #define OP_SH_TRAP		0
 #define OP_MASK_OFFSET10	0
@@ -736,7 +738,8 @@ static const unsigned int mips_isa_table[] =
 #define INSN_DSP                  0x00001000
 #define INSN_DSP64                0x00002000
 
-/* 0x00004000 is unused.  */
+/* MIPS R5900 instruction */
+#define INSN_5900                 0x00004000
 /* Virtualization ASE */
 #define INSN_VIRT		  0x00000080
 
@@ -817,6 +820,7 @@ static const unsigned int mips_isa_table[] =
 #define CPU_R5000	5000
 #define CPU_VR5400	5400
 #define CPU_VR5500	5500
+#define CPU_R5900	5900
 #define CPU_R6000	6000
 #define CPU_RM7000	7000
 #define CPU_R8000	8000
@@ -882,6 +886,9 @@ cpu_is_member (int cpu, unsigned int mask)
 
     case CPU_VR5500:
       return (mask & INSN_5500) != 0;
+
+    case CPU_R5900:
+      return (mask & INSN_5900) != 0;
 
     case CPU_LOONGSON_2E:
       return (mask & INSN_LOONGSON_2E) != 0;
@@ -1088,6 +1095,7 @@ enum
   M_LL_OB,
   M_LLD_AB,
   M_LLD_OB,
+  M_LQ_AB,
   M_LS_A,
   M_LW_A,
   M_LW_AB,
@@ -1189,6 +1197,7 @@ enum
   M_SB_AB,
   M_SH_A,
   M_SH_AB,
+  M_SQ_AB,
   M_SW_A,
   M_SW_AB,
   M_SWC0_A,
