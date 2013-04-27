@@ -1,0 +1,6 @@
+2013-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #6715
+	* elf64-aarch64.c (elf64_aarch64_finish_dynamic_sections): Change
+	reading and writing of instructions for PLTs to be always little-endian.
+
