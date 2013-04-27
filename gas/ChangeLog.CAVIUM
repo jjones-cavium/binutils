@@ -1,3 +1,9 @@
+2013-04-27  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/octeon_unsupported_insn.l: Fix
+	Error message.
+	* testsuite/gas/mips/soft-float-arch.l: Likewise.
+
 2012-08-29  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-mips.c (warn_error_unalign): New variable.
