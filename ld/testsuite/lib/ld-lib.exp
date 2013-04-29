@@ -1548,6 +1548,7 @@ proc check_gc_sections_available { } {
 
 proc check_shared_lib_support { } {
     if {![istarget arc-*-*]
+	 && ![istarget aarch64*-*-elf]
 	 && ![istarget avr-*-*]
 	 && ![istarget cr16-*-*]
 	 && ![istarget cris*-*-*]

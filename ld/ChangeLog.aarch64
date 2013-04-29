@@ -1,0 +1,4 @@
+2013-04-29  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/lib/ld-lib.exp (check_shared_lib_support): Also
+	exclude aarch64*-*-elf.
