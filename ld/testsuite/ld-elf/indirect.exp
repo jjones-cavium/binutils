@@ -26,6 +26,11 @@ if ![is_elf_format] {
     return
 }
 
+# Exclude targets which don't support shared libraries.
+if { ![check_shared_lib_support] } then {
+    return
+}
+
 # Check if compiler works
 if { [which $CC] == 0 } {
     return

@@ -1,3 +1,8 @@
+2013-04-30  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/ld-elf/indirect.exp: Return right away
+	if the target does not support shared libraries.
+
 2013-04-29  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/lib/ld-lib.exp (check_shared_lib_support): Also
