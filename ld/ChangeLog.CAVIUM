@@ -1,5 +1,10 @@
 2013-04-30  Andrew Pinski  <apinski@cavium.com>
 
+	* testsuite/ld-elf/eh5.d: Allow for 0c also.
+	* testsuite/ld-mips-elf/elf-rel-got-n64-linux.d: Fix for -msym32 change.
+
+2013-04-30  Andrew Pinski  <apinski@cavium.com>
+
 	* testsuite/ld-elf/indirect.exp: Return right away
 	if the target does not support shared libraries.
 
