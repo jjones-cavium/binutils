@@ -1,0 +1,3 @@
+2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* aarch64.h (AARCH64_FEATURE_CRC): New macro.

@@ -1,0 +1,3 @@
+2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* config/tc-aarch64.c (aarch64_features): Add the 'crc' option.

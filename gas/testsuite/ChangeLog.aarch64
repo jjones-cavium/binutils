@@ -1,0 +1,4 @@
+2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* gas/aarch64/crc32.s: New test.
+	* gas/aarch64/crc32.d: Ditto.
