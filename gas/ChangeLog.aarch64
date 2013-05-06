@@ -9,3 +9,8 @@
 	only one single value in the expected range.
 	(programmer_friendly_fixup): Remove the handling of 8-bit MOVI with
 	LSL #0 as a programmer-friendly feature.
+
+2013-01-02  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* config/tc-aarch64.c (aarch64_cpus): Add entries for "cortex-a53"
+	and "cortex57"
