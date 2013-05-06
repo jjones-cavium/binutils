@@ -2,3 +2,10 @@
 
 	* gas/aarch64/crc32.s: New test.
 	* gas/aarch64/crc32.d: Ditto.
+
+2013-01-17  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* gas/aarch64/diagnostic.l: Update.
+	* gas/aarch64/movi.s: Add tests.
+	* gas/aarch64/movi.d: Update.
+	* gas/aarch64/programmer-friendly.s: Add comment.
