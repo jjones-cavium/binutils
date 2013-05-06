@@ -62,6 +62,16 @@
 	(dwarf2_directive_loc): Push previous .locs instead of generating
 	them immediately.
 
+2013-05-07  Alan Modra  <amodra@gmail.com>
+
+	* config/tc-ppc.c (PPC_VLE_SPLIT16A): Delete unused macro.
+	(PPC_VLE_SPLIT16D, PPC_VLE_LO16A, PPC_VLE_LO16D): Likewise.
+	(PPC_VLE_HI16A, PPC_VLE_HI16D): Likewise.
+	(PPC_VLE_HA16A, PPC_VLE_HA16D): Likewise.
+	(md_apply_fix): Set fx_no_overflow for assorted relocations.
+	Shift and sign-extend fieldval for use by some VLE reloc
+	operand->insert functions.
+
 2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* config/tc-aarch64.c (parse_sys_reg): Allow the full range of CRn
