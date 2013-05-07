@@ -99,3 +99,8 @@
 	ldsmin, ldsmin, ldumaxb, ldumaxh, ldumax, ldumax, lduminb,
 	lduminh, ldumin, ldumin, swpb, swph, swp and swp.
 	* aarch64-dis-2.c: Regenerate.
+
+2013-05-07  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-opc.c (aarch64_sys_regs): Add support for GIC ICC_*
+	system registers in gas.
