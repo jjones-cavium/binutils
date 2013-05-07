@@ -1,3 +1,8 @@
+2013-05-07  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-opc.c (aarch64_sys_regs): Add support for GIC ICC_*
+	system registers in gas.
+
 2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* aarch64.h (AARCH64_FEATURE_CRC): New macro.
