@@ -1,3 +1,8 @@
+2013-05-20  Manjunath Matti  <mmatti@caviumnetworks.com>
+
+	Bug #6522
+	* readelf.c (get_machine_flags): Handle E_MIPS_MACH_OCTEON3 case.
+
 2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
 
 	* testsuite/binutils-all/mips-octeon/objdump.exp: Add cop0.s testcase.
