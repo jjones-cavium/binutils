@@ -1,0 +1,6 @@
+2013-05-20  Manjunath Matti  <mmatti@caviumnetworks.com>
+
+	Bug #6522
+	* elfxx-mips.c (_bfd_elf_mips_mach): Handle Octeon3.
+	(mips_set_isa_flags): Likewise.
+
