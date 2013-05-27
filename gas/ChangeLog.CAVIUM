@@ -1,3 +1,17 @@
+2013-05-27  manjunath Matti  <mmatti@caviumnetworks.com>
+	
+	Bug #7008
+	2013-01-07  Nick Clifton  <nickc@redhat.com>
+
+	PR gas/14887
+	* config/tc-arm.c (skip_past_char): Skip whitespace before the
+	anticipated character.
+	* config/tc-arm.c (parse_address_main): Delete skip of whitespace
+	here as it is no longer	needed.
+	
+	gas/testsuite/
+	* gas/arm/neon-ldst-es.s: Add more whitespace.
+
 2013-04-27  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/gas/mips/octeon_unsupported_insn.l: Fix
