@@ -1,3 +1,8 @@
+2013-05-28  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* gas/aarch64/tls.d: Update.
+	* gas/aarch64/tls.s: Update.
+
 2013-05-28  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* gas/aarch64/adr_1.d: New file.
