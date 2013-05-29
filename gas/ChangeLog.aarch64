@@ -1,3 +1,8 @@
+2013-05-28  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+
+	* config/tc-aarch64.c (md_apply_fix): Move value range checking
+	inside fx_done condition.
+
 2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* config/tc-aarch64.c (aarch64_features): Add the 'crc' option.
