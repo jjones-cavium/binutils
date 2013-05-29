@@ -1,3 +1,7 @@
+2013-05-29  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-aarch64.c (aarch64_cpus): Add entry for "thunder".
+
 2013-05-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* config/tc-aarch64.c (reloc_table): Update to use
