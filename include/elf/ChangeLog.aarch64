@@ -1,3 +1,7 @@
+2013-06-07  Will Newton  <will.newton@linaro.org>
+
+	* aarch64.h: Add R_AARCH64_IRELATIVE reloc
+
 2013-05-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* aarch64.h (R_AARCH64_TLSDESC_LD64_PREL19): Rename to ...
