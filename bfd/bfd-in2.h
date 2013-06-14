@@ -5143,6 +5143,11 @@ the GOT entry for this symbol.  Used in conjunction with
 BFD_RELOC_AARCH64_ADR_GOTPAGE.  */
   BFD_RELOC_AARCH64_LD64_GOT_LO12_NC,
 
+/* Unsigned 12 bit byte offset for 32 bit load/store from the page of
+the GOT entry for this symbol.  Used in conjunction with
+BFD_RELOC_AARCH64_ADR_GOTPAGE.  */
+  BFD_RELOC_AARCH64_LD32_GOT_LO12_NC,
+
 /* AArch64 unspecified load/store instruction, holding bits 0 to 11 of the
 address.  Used in conjunction with BFD_RELOC_AARCH64_ADR_HI21_PCREL.  */
   BFD_RELOC_AARCH64_LDST_LO12,
