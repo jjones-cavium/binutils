@@ -1,3 +1,16 @@
+2013-06-14  Andrew Pinski  <apinski@cavium.com>
+
+	* emulparams/aarch64elfbilp32.sh: New file.
+	* emulparams/aarch64elfilp32.sh: New file.
+	* Makefile.in: Regenerate.
+	* Makefile.am (ALL_64_EMULATION_SOURCES): Add eaarch64elfilp32.c
+	and eaarch64elfbilp32.c.
+	(eaarch64elfilp32.c): New target.
+	(eaarch64elfbilp32.c): New target.
+	* configure.tgt (aarch64_be-*-elf): Add aarch64elfilp32 and
+	aarch64elfbilp32 to targ_extra_emuls.
+	(aarch64-*-elf): Likewise.
+
 2013-06-07  Will Newton  <will.newton@linaro.org>
 
 	* emulparams/aarch64elf.sh: Add IREL_IN_PLT.
