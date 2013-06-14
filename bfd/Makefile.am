@@ -619,6 +619,7 @@ BFD32_BACKENDS_CFILES = \
 # BFD32_BACKENDS.
 BFD64_BACKENDS = \
 	elf64-aarch64.lo \
+	elf32-aarch64.lo \
 	aix5ppc-core.lo \
 	aout64.lo \
 	coff-alpha.lo \
@@ -658,6 +659,7 @@ BFD64_BACKENDS = \
 
 BFD64_BACKENDS_CFILES = \
 	elf64-aarch64.c \
+	elf32-aarch64.c \
 	aix5ppc-core.c \
 	aout64.c \
 	coff-alpha.c \

@@ -934,6 +934,12 @@ extern void bfd_elf64_aarch64_init_maps
 void bfd_elf64_aarch64_set_options
   (bfd *, struct bfd_link_info *, int, int, int);
 
+extern void bfd_elf32_aarch64_init_maps
+  (bfd *);
+
+void bfd_elf32_aarch32_set_options
+  (bfd *, struct bfd_link_info *, int, int, int);
+
 /* ELF AArch64 mapping symbol support.  */
 #define BFD_AARCH64_SPECIAL_SYM_TYPE_MAP	(1 << 0)
 #define BFD_AARCH64_SPECIAL_SYM_TYPE_TAG	(1 << 1)
@@ -952,6 +958,17 @@ extern bfd_boolean elf64_aarch64_size_stubs
    struct bfd_section * (*) (const char *, struct bfd_section *),
    void (*) (void));
 extern bfd_boolean elf64_aarch64_build_stubs
+  (struct bfd_link_info *);
+
+extern int elf32_aarch64_setup_section_lists
+  (bfd *, struct bfd_link_info *);
+extern void elf32_aarch64_next_input_section
+  (struct bfd_link_info *, struct bfd_section *);
+extern bfd_boolean elf32_aarch64_size_stubs
+  (bfd *, bfd *, struct bfd_link_info *, bfd_signed_vma,
+   struct bfd_section * (*) (const char *, struct bfd_section *),
+   void (*) (void));
+extern bfd_boolean elf32_aarch64_build_stubs
   (struct bfd_link_info *);
   
 /* TI COFF load page support.  */

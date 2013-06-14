@@ -1,3 +1,30 @@
+2013-06-14  Andrew Pinski  <apinski@cavium.com>
+
+	* elf32-aarch64.c: New file.
+	* Makefile.am (BFD64_BACKENDS): Add elf32-aarch64.lo.
+	(BFD64_BACKENDS_CFILES): Add elf32-aarch64.c.
+	* Makefile.in: Regenerate.
+	* config.bfd (aarch64-*-elf): Add bfd_elf32_littleaarch64_vec
+	and bfd_elf32_bigaarch64_vec to targ_selvecs.
+	(aarch64_be-*-elf): Likewise.
+	(aarch64-*-linux*): Likewise.
+	(aarch64_be-*-linux*): Likewise.
+	* configure.in (bfd_elf32_bigaarch64_vec): New case to support
+	ILP32 ABI on aarch64.
+	(bfd_elf32_littleaarch64_vec): Likewise.
+	* configure: Regenerate.
+	* targets.c (bfd_elf32_bigaarch64_vec): New declaration.
+	(bfd_elf32_littleaarch64_vec): Likewise.
+	(_bfd_target_vector): Add bfd_elf32_bigaarch64_vec and
+	bfd_elf32_littleaarch64_vec.
+	* bfd-in.h (bfd_elf32_aarch64_init_maps): New prototype.
+	(bfd_elf32_aarch32_set_options): Likewise.
+	(elf32_aarch64_setup_section_lists): Likewise.
+	(elf32_aarch64_next_input_section): Likewise.
+	(elf32_aarch64_size_stubs): Likewise.
+	(elf32_aarch64_build_stubs): Likewise.
+	* bfd-in2.h: Regenerate.
+
 2013-06-11  Will Newton  <will.newton@linaro.org>
 
 	* elf64-aarch64.c (elf_aarch64_get_local_sym_hash): Use
