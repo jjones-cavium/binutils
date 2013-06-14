@@ -1,5 +1,12 @@
 2013-06-14  Andrew Pinski  <apinski@cavium.com>
 
+	* reloc.c (BFD_RELOC_AARCH64_TLSDESC_LD32_LO12_NC): New enum value.
+	(BFD_RELOC_AARCH64_TLSIE_LD32_GOTTPREL_LO12_NC): Likewise.
+	* bfd-in2.h: Regenerate.
+	* libbfd.h: Likewise.
+
+2013-06-14  Andrew Pinski  <apinski@cavium.com>
+
 	* elf32-aarch64.c: New file.
 	* Makefile.am (BFD64_BACKENDS): Add elf32-aarch64.lo.
 	(BFD64_BACKENDS_CFILES): Add elf32-aarch64.c.
