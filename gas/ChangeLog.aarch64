@@ -1,3 +1,16 @@
+2013-06-14  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-aarch64.c (target_ilp32): New variable.
+	(md_apply_fix): Handle the 32bit relocs also.
+	(elf64_aarch64_target_format): Change it to be static.
+	(elf32_aarch64_target_format): New static function.
+	(elfnn_aarch64_target_format): New function.
+	(aarch64_opts): Add milp32 and mlp64 options.
+	* tc-aarch64.h (TARGET_FORMAT): Change to be
+	elfnn_aarch64_target_format.
+	(elf64_aarch64_target_format): Remove prototype.
+	(elfnn_aarch64_target_format): Add prototype.
+
 2013-05-29  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Add entry for "thunder".

@@ -61,7 +61,7 @@ struct aarch64_fix
 
 #if defined OBJ_ELF
 # define AARCH64_BI_ENDIAN
-# define TARGET_FORMAT	elf64_aarch64_target_format ()
+# define TARGET_FORMAT	elfnn_aarch64_target_format ()
 #endif
 
 #define TC_FORCE_RELOCATION(FIX) aarch64_force_relocation (FIX)
@@ -204,7 +204,7 @@ struct aarch64_segment_info_type
 
 extern long md_pcrel_from_section (struct fix *, segT);
 extern void aarch64_frag_align_code (int, int);
-extern const char * elf64_aarch64_target_format (void);
+extern const char * elfnn_aarch64_target_format (void);
 extern int aarch64_force_relocation (struct fix *);
 extern void aarch64_cleanup (void);
 extern void aarch64_start_line_hook (void);

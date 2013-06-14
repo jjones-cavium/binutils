@@ -58,6 +58,9 @@ static const aarch64_feature_set aarch64_arch_any = AARCH64_ANY;
 static const aarch64_feature_set aarch64_arch_none = AARCH64_ARCH_NONE;
 
 #ifdef OBJ_ELF
+
+static int target_ilp32 = 0;
+
 /* Pre-defined "_GLOBAL_OFFSET_TABLE_"	*/
 static symbolS *GOT_symbol;
 #endif
@@ -6503,6 +6506,7 @@ md_apply_fix (fixS * fixP, valueT * valP, segT seg)
     case BFD_RELOC_AARCH64_TLSDESC_ADR_PAGE21:
     case BFD_RELOC_AARCH64_TLSDESC_ADD_LO12_NC:
     case BFD_RELOC_AARCH64_TLSDESC_LD64_LO12_NC:
+    case BFD_RELOC_AARCH64_TLSDESC_LD32_LO12_NC:
       S_SET_THREAD_LOCAL (fixP->fx_addsy);
       /* Should always be exported to object file, see
 	 aarch64_force_relocation().  */
@@ -6666,8 +6670,10 @@ aarch64_force_relocation (struct fix *fixp)
     case BFD_RELOC_AARCH64_TLSDESC_ADR_PAGE21:
     case BFD_RELOC_AARCH64_TLSDESC_ADD_LO12_NC:
     case BFD_RELOC_AARCH64_TLSDESC_LD64_LO12_NC:
+    case BFD_RELOC_AARCH64_TLSDESC_LD32_LO12_NC:
     case BFD_RELOC_AARCH64_ADR_GOT_PAGE:
     case BFD_RELOC_AARCH64_LD64_GOT_LO12_NC:
+    case BFD_RELOC_AARCH64_LD32_GOT_LO12_NC:
     case BFD_RELOC_AARCH64_ADR_HI21_PCREL:
     case BFD_RELOC_AARCH64_ADR_HI21_NC_PCREL:
     case BFD_RELOC_AARCH64_ADD_LO12:
@@ -6689,13 +6695,30 @@ aarch64_force_relocation (struct fix *fixp)
 
 #ifdef OBJ_ELF
 
-const char *
+static const char *
 elf64_aarch64_target_format (void)
 {
   if (target_big_endian)
     return "elf64-bigaarch64";
   else
     return "elf64-littleaarch64";
+}
+
+static const char *
+elf32_aarch64_target_format (void)
+{
+  if (target_big_endian)
+    return "elf32-bigaarch64";
+  else
+    return "elf32-littleaarch64";
+}
+
+const char *
+elfnn_aarch64_target_format (void)
+{
+  if (target_ilp32)
+    return elf32_aarch64_target_format ();
+  return elf64_aarch64_target_format ();
 }
 
 void
@@ -7031,6 +7054,8 @@ static struct aarch64_option_table aarch64_opts[] = {
   {"mbig-endian", N_("assemble for big-endian"), &target_big_endian, 1, NULL},
   {"mlittle-endian", N_("assemble for little-endian"), &target_big_endian, 0,
    NULL},
+  {"milp32", N_("assemble for ilp32 ABI"), &target_ilp32, 1, NULL},
+  {"mlp64", N_("assemble for lp64 ABI"), &target_ilp32, 0, NULL},
 #ifdef DEBUG_AARCH64
   {"mdebug-dump", N_("temporary switch for dumping"), &debug_dump, 1, NULL},
 #endif /* DEBUG_AARCH64 */
