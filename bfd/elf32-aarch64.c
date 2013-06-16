@@ -1089,7 +1089,7 @@ elf32_aarch64_info_to_howto (bfd *abfd ATTRIBUTE_UNUSED, arelent *bfd_reloc,
 {
   unsigned int r_type;
 
-  r_type = ELF64_R_TYPE (elf_reloc->r_info);
+  r_type = ELF32_R_TYPE (elf_reloc->r_info);
   bfd_reloc->howto = elf32_aarch64_howto_from_type (r_type);
 }
 
@@ -1705,11 +1705,11 @@ elf_aarch64_get_local_sym_hash (struct elf32_aarch64_link_hash_table *htab,
   struct elf32_aarch64_link_hash_entry e, *ret;
   asection *sec = abfd->sections;
   hashval_t h = ELF_LOCAL_SYMBOL_HASH (sec->id,
-				       ELF64_R_SYM (rel->r_info));
+				       ELF32_R_SYM (rel->r_info));
   void **slot;
 
   e.root.indx = sec->id;
-  e.root.dynstr_index = ELF64_R_SYM (rel->r_info);
+  e.root.dynstr_index = ELF32_R_SYM (rel->r_info);
   slot = htab_find_slot_with_hash (htab->loc_hash_table, &e, h,
 				   create ? INSERT : NO_INSERT);
 
@@ -1729,7 +1729,7 @@ elf_aarch64_get_local_sym_hash (struct elf32_aarch64_link_hash_table *htab,
     {
       memset (ret, 0, sizeof (*ret));
       ret->root.indx = sec->id;
-      ret->root.dynstr_index = ELF64_R_SYM (rel->r_info);
+      ret->root.dynstr_index = ELF32_R_SYM (rel->r_info);
       ret->root.dynindx = -1;
       *slot = ret;
     }
@@ -2009,7 +2009,7 @@ aarch64_type_of_stub (struct bfd_link_info *info,
 
   branch_offset = (bfd_signed_vma) (destination - location);
 
-  r_type = ELF64_R_TYPE (rel->r_info);
+  r_type = ELF32_R_TYPE (rel->r_info);
 
   /* We don't want to redirect any old unconditional jump in this way,
      only one which is being used for a sibcall, where it is
@@ -2053,7 +2053,7 @@ elf32_aarch64_stub_name (const asection *input_section,
 	snprintf (stub_name, len, "%08x_%x:%x+%" BFD_VMA_FMT "x",
 		  (unsigned int) input_section->id,
 		  (unsigned int) sym_sec->id,
-		  (unsigned int) ELF64_R_SYM (rel->r_info),
+		  (unsigned int) ELF32_R_SYM (rel->r_info),
 		  rel->r_addend);
     }
 
@@ -2578,8 +2578,8 @@ elf32_aarch64_size_stubs (bfd *output_bfd,
 		  unsigned char st_type;
 		  bfd_size_type len;
 
-		  r_type = ELF64_R_TYPE (irela->r_info);
-		  r_indx = ELF64_R_SYM (irela->r_info);
+		  r_type = ELF32_R_TYPE (irela->r_info);
+		  r_indx = ELF32_R_SYM (irela->r_info);
 
 		  if (r_type >= (unsigned int) R_AARCH64_P32_end)
 		    {
@@ -3552,7 +3552,7 @@ elf32_aarch64_final_link_relocate (reloc_howto_type *howto,
 
   BFD_ASSERT (is_aarch64_elf (input_bfd));
 
-  r_symndx = ELF64_R_SYM (rel->r_info);
+  r_symndx = ELF32_R_SYM (rel->r_info);
 
   /* It is possible to have linker relaxations on some TLS access
      models.  Update our information here.  */
@@ -3999,7 +3999,7 @@ elf32_aarch64_tls_relax (struct elf32_aarch64_link_hash_table *globals,
 			 Elf_Internal_Rela *rel, struct elf_link_hash_entry *h)
 {
   bfd_boolean is_local = h == NULL;
-  unsigned int r_type = ELF64_R_TYPE (rel->r_info);
+  unsigned int r_type = ELF32_R_TYPE (rel->r_info);
   unsigned long insn;
 
   BFD_ASSERT (globals && input_bfd && contents && rel);
@@ -4076,7 +4076,7 @@ elf32_aarch64_tls_relax (struct elf32_aarch64_link_hash_table *globals,
 	     NOP                        => add  x0, x1, x0
 	   */
 
-	  BFD_ASSERT (ELF64_R_TYPE (rel[1].r_info) == R_AARCH64_P32_CALL26);
+	  BFD_ASSERT (ELF32_R_TYPE (rel[1].r_info) == R_AARCH64_P32_CALL26);
 
 	  /* Remove the relocation on the BL instruction.  */
 	  rel[1].r_info = ELF32_R_INFO (STN_UNDEF, R_AARCH64_P32_NONE);
@@ -4173,8 +4173,8 @@ elf32_aarch64_relocate_section (bfd *output_bfd,
       bfd_boolean unresolved_reloc = FALSE;
       char *error_message = NULL;
 
-      r_symndx = ELF64_R_SYM (rel->r_info);
-      r_type = ELF64_R_TYPE (rel->r_info);
+      r_symndx = ELF32_R_SYM (rel->r_info);
+      r_type = ELF32_R_TYPE (rel->r_info);
 
       bfd_reloc.howto = elf32_aarch64_howto_from_type (r_type);
       howto = bfd_reloc.howto;
@@ -4194,7 +4194,7 @@ elf32_aarch64_relocate_section (bfd *output_bfd,
       if (r_symndx < symtab_hdr->sh_info)
 	{
 	  sym = local_syms + r_symndx;
-	  sym_type = ELF64_ST_TYPE (sym->st_info);
+	  sym_type = ELF32_ST_TYPE (sym->st_info);
 	  sec = local_sections[r_symndx];
 
 	  /* An object file might have a reference to a local
@@ -4303,7 +4303,7 @@ elf32_aarch64_relocate_section (bfd *output_bfd,
          output of each relocation as the addend for the next.  */
       if (rel + 1 < relend
 	  && rel->r_offset == rel[1].r_offset
-	  && ELF64_R_TYPE (rel[1].r_info) != R_AARCH64_P32_NONE)
+	  && ELF32_R_TYPE (rel[1].r_info) != R_AARCH64_P32_NONE)
 	save_addend = TRUE;
       else
 	save_addend = FALSE;
@@ -4787,7 +4787,7 @@ elf32_aarch64_gc_sweep_hook (bfd *abfd,
       unsigned int r_type;
       struct elf_link_hash_entry *h = NULL;
 
-      r_symndx = ELF64_R_SYM (rel->r_info);
+      r_symndx = ELF32_R_SYM (rel->r_info);
       if (r_symndx >= symtab_hdr->sh_info)
 	{
 	  h = sym_hashes[r_symndx - symtab_hdr->sh_info];
@@ -4830,7 +4830,7 @@ elf32_aarch64_gc_sweep_hook (bfd *abfd,
 	      }
 	}
 
-      r_type = ELF64_R_TYPE (rel->r_info);
+      r_type = ELF32_R_TYPE (rel->r_info);
       r_type = aarch64_tls_transition (abfd,info, r_type, h ,r_symndx);
       switch (r_type)
 	{
@@ -5057,8 +5057,8 @@ elf32_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
       unsigned int r_type;
       Elf_Internal_Sym *isym;
 
-      r_symndx = ELF64_R_SYM (rel->r_info);
-      r_type = ELF64_R_TYPE (rel->r_info);
+      r_symndx = ELF32_R_SYM (rel->r_info);
+      r_type = ELF32_R_TYPE (rel->r_info);
 
       if (r_symndx >= NUM_SHDR_ENTRIES (symtab_hdr))
 	{
@@ -5499,7 +5499,7 @@ elf32_aarch64_post_process_headers (bfd *abfd,
 static enum elf_reloc_type_class
 elf32_aarch64_reloc_type_class (const Elf_Internal_Rela *rela)
 {
-  switch ((int) ELF64_R_TYPE (rela->r_info))
+  switch ((int) ELF32_R_TYPE (rela->r_info))
     {
     case R_AARCH64_P32_RELATIVE:
       return reloc_class_relative;
