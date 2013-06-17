@@ -11,6 +11,10 @@
 	aarch64elfbilp32 to targ_extra_emuls.
 	(aarch64-*-elf): Likewise.
 
+2013-06-14  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* emulparams/aarch64elf.sh: Add IREL_IN_PLT.
+
 2013-06-07  Will Newton  <will.newton@linaro.org>
 
 	* emulparams/aarch64elf.sh: Add IREL_IN_PLT.
