@@ -6728,6 +6728,12 @@ aarch64elf_frob_symbol (symbolS * symp, int *puntp)
 }
 #endif
 
+int
+aarch64_dwarf2_addr_size (void)
+{
+  return target_ilp32 ? 4 : 8;
+}
+
 /* MD interface: Finalization.	*/
 
 /* A good place to do this, although this was probably not intended

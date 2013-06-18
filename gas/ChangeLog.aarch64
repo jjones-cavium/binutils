@@ -1,3 +1,10 @@
+2013-06-18  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-aarch64.c (aarch64_dwarf2_addr_size): New function.
+	* config/tc-aarch64.h (aarch64_dwarf2_addr_size): New prototype.
+	(DWARF2_ADDR_SIZE): New define.
+	(DWARF2_FDE_RELOC_SIZE): Define.
+
 2013-06-14  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-aarch64.c (target_ilp32): New variable.

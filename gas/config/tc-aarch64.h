@@ -186,6 +186,9 @@ struct aarch64_segment_info_type
 /* CFI hooks.  */
 #define tc_regname_to_dw2regnum            tc_aarch64_regname_to_dw2regnum
 #define tc_cfi_frame_initial_instructions  tc_aarch64_frame_initial_instructions
+extern int aarch64_dwarf2_addr_size (void);
+#define DWARF2_ADDR_SIZE(bfd) aarch64_dwarf2_addr_size ()
+#define DWARF2_FDE_RELOC_SIZE aarch64_dwarf2_addr_size ()
 
 #else /* Not OBJ_ELF.  */
 #define GLOBAL_OFFSET_TABLE_NAME "__GLOBAL_OFFSET_TABLE_"
