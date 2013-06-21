@@ -741,6 +741,10 @@ static reloc_howto_type elf32_aarch64_howto_table[] = {
 	 0x3ffffff,		/* dst_mask */
 	 TRUE),			/* pcrel_offset */
 
+  EMPTY_HOWTO (22),
+  EMPTY_HOWTO (23),
+  EMPTY_HOWTO (24),
+
   /* Set a load-literal immediate field to bits
      0x1FFFFC of G(S)-P */
   HOWTO (R_AARCH64_P32_GOT_LD_PREL19,	/* type */
