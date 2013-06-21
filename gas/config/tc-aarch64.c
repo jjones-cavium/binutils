@@ -2482,6 +2482,20 @@ static struct reloc_table_entry reloc_table[] = {
    0},
 };
 
+static bfd_reloc_code_real_type
+maybe_convert_64_reloc_to_32 (bfd_reloc_code_real_type reloc)
+{
+  if (!target_ilp32)
+    return reloc;
+  if (reloc == BFD_RELOC_AARCH64_TLSDESC_LD64_LO12_NC)
+    return BFD_RELOC_AARCH64_TLSDESC_LD32_LO12_NC;
+  if (reloc == BFD_RELOC_AARCH64_TLSIE_LD64_GOTTPREL_LO12_NC)
+    return BFD_RELOC_AARCH64_TLSIE_LD32_GOTTPREL_LO12_NC;
+  if (reloc == BFD_RELOC_AARCH64_LD64_GOT_LO12_NC)
+    return BFD_RELOC_AARCH64_LD32_GOT_LO12_NC;
+  return reloc;
+}
+
 /* Given the address of a pointer pointing to the textual name of a
    relocation as may appear in assembler source, attempt to find its
    details in reloc_table.  The pointer will be updated to the character
@@ -2913,7 +2927,7 @@ parse_address_main (char **str, aarch64_opnd_info *operand, int reloc,
 
 	  /* #:<reloc_op>:<expr>  */
 	  /* Record the load/store relocation type.  */
-	  inst.reloc.type = entry->ldst_type;
+	  inst.reloc.type = maybe_convert_64_reloc_to_32 (entry->ldst_type);
 	  inst.reloc.pc_rel = entry->pc_rel;
 	}
       else
@@ -3023,7 +3037,7 @@ parse_address_main (char **str, aarch64_opnd_info *operand, int reloc,
 
 	      /* [Xn,#:<reloc_op>:<expr>  */
 	      /* Record the load/store relocation type.  */
-	      inst.reloc.type = entry->ldst_type;
+	      inst.reloc.type = maybe_convert_64_reloc_to_32 (entry->ldst_type);
 	      inst.reloc.pc_rel = entry->pc_rel;
 	    }
 	  else if (! my_get_expression (exp, &p, GE_OPT_PREFIX, 1))

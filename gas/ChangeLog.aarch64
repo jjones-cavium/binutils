@@ -1,3 +1,9 @@
+2013-06-20  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-aarch64.c (maybe_convert_64_reloc_to_32): New function.
+	(parse_address_main): Use maybe_convert_64_reloc_to_32 when accessing
+	ldst_type relocs.
+
 2013-06-18  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-aarch64.c (aarch64_dwarf2_addr_size): New function.
