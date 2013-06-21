@@ -1,5 +1,12 @@
 2013-06-20  Andrew Pinski  <apinski@cavium.com>
 
+	* gas/config/tc-aarch64.c (md_apply_fix):
+	Handle BFD_RELOC_AARCH64_TLSIE_LD32_GOTTPREL_LO12_NC,
+	BFD_RELOC_AARCH64_LD32_GOT_LO12_NC and
+	BFD_RELOC_AARCH64_TLSIE_LD32_GOTTPREL_LO12_NC.
+
+2013-06-20  Andrew Pinski  <apinski@cavium.com>
+
 	* config/tc-aarch64.c (maybe_convert_64_reloc_to_32): New function.
 	(parse_address_main): Use maybe_convert_64_reloc_to_32 when accessing
 	ldst_type relocs.
