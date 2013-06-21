@@ -1,5 +1,11 @@
 2013-06-16  Andrew Pinski  <apinski@cavium.com>
 
+	* elf32-aarch64.c (elf32_aarch64_howto_table): Reorder to be correct.
+	(elf32_aarch64_tls_howto_table): Add relocs 101 and 102 so the struct
+	is correct.
+
+2013-06-16  Andrew Pinski  <apinski@cavium.com>
+
 	* elf32-aarch64.c (elf32_aarch64_reloc_map):
 	Add BFD_RELOC_AARCH64_LD32_GOT_LO12_NC.
 
