@@ -1,3 +1,8 @@
+2013-06-21  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* elf/aarch64.h: Add ELF32 reloc codes and remove fake ELF64 ones.
+	(R_AARCH64_IRELATIVE): New reloc code.
+
 2013-06-19  Will Newton  <will.newton@linaro.org>
 
 	* aarch64.h: Remove R_AARCH64_IRELATIVE.
