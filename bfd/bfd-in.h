@@ -934,10 +934,10 @@ extern void bfd_elf64_aarch64_init_maps
 extern void bfd_elf32_aarch64_init_maps
   (bfd *);
 
-void bfd_elf64_aarch64_set_options
+extern void bfd_elf64_aarch64_set_options
   (bfd *, struct bfd_link_info *, int, int, int);
 
-void bfd_elf32_aarch64_set_options
+extern void bfd_elf32_aarch64_set_options
   (bfd *, struct bfd_link_info *, int, int, int);
 
 /* ELF AArch64 mapping symbol support.  */
@@ -959,6 +959,7 @@ extern bfd_boolean elf64_aarch64_size_stubs
    void (*) (void));
 extern bfd_boolean elf64_aarch64_build_stubs
   (struct bfd_link_info *);
+
 /* AArch64 stub generation support for ELF32.  Called from the linker.  */
 extern int elf32_aarch64_setup_section_lists
   (bfd *, struct bfd_link_info *);
@@ -970,7 +971,7 @@ extern bfd_boolean elf32_aarch64_size_stubs
    void (*) (void));
 extern bfd_boolean elf32_aarch64_build_stubs
   (struct bfd_link_info *);
-  
+
 /* TI COFF load page support.  */
 extern void bfd_ticoff_set_section_load_page
   (struct bfd_section *, int);

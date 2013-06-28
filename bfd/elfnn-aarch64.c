@@ -207,7 +207,7 @@
   ((HTAB)->use_rel ? ".rel" NAME : ".rela" NAME)
 
 /* Return size of a relocation entry.  HTAB is the bfd's
-   elf64_aarch64_link_hash_entry.  */
+   elf_aarch64_link_hash_entry.  */
 #define RELOC_SIZE(HTAB) (sizeof (ElfNN_External_Rela))
 
 /* Return function to swap relocations in.  HTAB is the bfd's
@@ -296,15 +296,6 @@ elfNN_aarch64_tlsdesc_small_plt_entry[PLT_TLSDESC_ENTRY_SIZE] =
 /* In case we're on a 32-bit machine, construct a 64-bit "-1" value.  */
 #define ALL_ONES (~ (bfd_vma) 0)
 
-/* Return function to swap relocations in.  HTAB is the bfd's
-   elf64_aarch64_link_hash_entry.  */
-#define SWAP_RELOC_IN(HTAB) (bfd_elf64_swap_reloca_in)
-
-/* Return function to swap relocations out.  HTAB is the bfd's
-   elf64_aarch64_link_hash_entry.  */
-#define SWAP_RELOC_OUT(HTAB) (bfd_elf64_swap_reloca_out)
-
-
 /* Indexed by the bfd internal reloc enumerators.
    Therefore, the table needs to be synced with BFD_RELOC_AARCH64_*
    in reloc.c.   */
@@ -312,24 +303,23 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
 {
   EMPTY_HOWTO (0),
   /* Basic data relocations.  */
- 
+
 #if ARCH_SIZE == 64
   HOWTO (R_AARCH64_NULL,	/* type */
- 	 0,			/* rightshift */
+	 0,			/* rightshift */
 	 0,			/* size (0 = byte, 1 = short, 2 = long) */
 	 0,			/* bitsize */
- 	 FALSE,			/* pc_relative */
- 	 0,			/* bitpos */
- 	 complain_overflow_dont,	/* complain_on_overflow */
- 	 bfd_elf_generic_reloc,	/* special_function */
+	 FALSE,			/* pc_relative */
+	 0,			/* bitpos */
+	 complain_overflow_dont,	/* complain_on_overflow */
+	 bfd_elf_generic_reloc,	/* special_function */
 	 "R_AARCH64_NULL",	/* name */
- 	 FALSE,			/* partial_inplace */
- 	 0,			/* src_mask */
+	 FALSE,			/* partial_inplace */
+	 0,			/* src_mask */
 	 0,			/* dst_mask */
- 	 FALSE),		/* pcrel_offset */
+	 FALSE),		/* pcrel_offset */
 
 #else
-
   HOWTO (R_AARCH64_NONE,	/* type */
 	 0,			/* rightshift */
 	 0,			/* size (0 = byte, 1 = short, 2 = long) */
@@ -2606,7 +2596,7 @@ elfNN_aarch64_size_stubs (bfd *output_bfd,
   if (stub_group_size == 1)
     {
       /* Default values.  */
-      /* AArch64 branch range is +-128MB. The value used is 1MB less.  */
+      /* AArch64 branch range is +-128MB. The value used is 1MB less. */
       stub_group_size = 127 * 1024 * 1024;
     }
 
@@ -4916,6 +4906,7 @@ elfNN_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
 		  htab->root.dynobj = abfd;
 		if (!_bfd_elf_create_got_section (htab->root.dynobj, info))
 		  return FALSE;
+		htab->root.sgot->size += GOT_ENTRY_SIZE;
 	      }
 	    break;
 	  }
@@ -6529,15 +6520,8 @@ elfNN_aarch64_finish_dynamic_sections (bfd *output_bfd,
       /* Fill in the first three entries in the global offset table.  */
       if (htab->root.sgotplt->size > 0)
 	{
-	  /* Set the first entry in the global offset table to the address of
-	     the dynamic section.  */
-	  if (sdyn == NULL)
-	    bfd_put_NN (output_bfd, (bfd_vma) 0,
-			htab->root.sgotplt->contents);
-	  else
-	    bfd_put_NN (output_bfd,
-			sdyn->output_section->vma + sdyn->output_offset,
-			htab->root.sgotplt->contents);
+	  bfd_put_NN (output_bfd, (bfd_vma) 0, htab->root.sgotplt->contents);
+
 	  /* Write GOT[1] and GOT[2], needed for the dynamic linker.  */
 	  bfd_put_NN (output_bfd,
 		      (bfd_vma) 0,
@@ -6545,6 +6529,16 @@ elfNN_aarch64_finish_dynamic_sections (bfd *output_bfd,
 	  bfd_put_NN (output_bfd,
 		      (bfd_vma) 0,
 		      htab->root.sgotplt->contents + GOT_ENTRY_SIZE * 2);
+	}
+
+      if (htab->root.sgot)
+	{
+	  if (htab->root.sgot->size > 0)
+	    {
+	      bfd_vma addr =
+		sdyn ? sdyn->output_section->vma + sdyn->output_offset : 0;
+	      bfd_put_NN (output_bfd, addr, htab->root.sgot->contents);
+	    }
 	}
 
       elf_section_data (htab->root.sgotplt->output_section)->
