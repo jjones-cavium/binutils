@@ -1,3 +1,50 @@
+2013-06-21  Andrew Pinski  <apinski@cavium.com>
+
+	* Makefile.am (ALL_64_EMULATION_SOURCES): Rename eaarch64linuxb32.c
+	to eaarch64linux32b.c.  Rename eaarch64elfb32.c to eaarch64elf32b.c.
+	(eaarch64elfb32.c): Rename to ...
+	(eaarch64elf32b.c): This.
+	(eaarch64linuxb32.c): Rename to ...
+	(eaarch64linux32b.c): This.
+	* Makefile.in: Regenerate.
+	* configure.tgt (aarch64_be-*-elf):
+	Rename aarch64elfb32 to aarch64elf32b.
+	(aarch64-*-elf): Likewise.
+	(aarch64_be-*-linux*): Rename aarch64elfb32 to aarch64elf32b.
+	Rename aarch64linuxb32 to aarch64linux32b.
+	* emulparams/aarch64elfb32.sh: Rename to ...
+	* emulparams/aarch64elf32b.sh: This.
+	* emulparams/aarch64linuxb32.sh: Rename to ...
+	* emulparams/aarch64linux32b.sh: This.
+
+2013-06-21  Andrew Pinski  <apinski@cavium.com>
+
+	* Makefile.am (ALL_64_EMULATION_SOURCES): Add eaarch64linuxb32.c and eaarch64linux32.c.
+	(eaarch64linux32.c): New dependency and rule.
+	(eaarch64linuxb32.c): New dependency and rule.
+	* Makefile.in: Re-generated.
+	* configure.tgt (aarch64_be-*-linux*): Add aarch64linux32
+	and aarch64linuxb32.
+	(aarch64-*-linux*): Likewise.
+
+2013-06-21  Andrew Pinski  <apinski@cavium.com>
+
+	* Makefile.am (ALL_64_EMULATION_SOURCES): Add eaarch64elfb32.c.
+	(eaarch64elfb32.c): New dependency and rule.
+	* Makefile.in: Re-generated.
+	* configure.tgt (aarch64-*-elf): Add aarch64elfb32.
+	(aarch64_be-*-elf, aarch64_be-*-linux*, aarch64-*-linux*): Likewise.
+
+	* emulparams/aarch64elf32.sh: New file.
+2013-06-21  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* Makefile.am (ALL_64_EMULATION_SOURCES): Add eaarch64elf32.c.
+	(eaarch64elf32.c): New dependency and rule.
+	* Makefile.in: Re-generated.
+	* configure.tgt (aarch64-*-elf): Add aarch64elf32.
+	(aarch64_be-*-elf, aarch64_be-*-linux*, aarch64-*-linux*): Likewise.
+	* emulparams/aarch64elf32.sh: New file.
+
 2013-06-19  Will Newton  <will.newton@linaro.org>
 
 	* emulparams/aarch64elf.sh: Remove IREL_IN_PLT.

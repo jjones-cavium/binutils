@@ -133,9 +133,7 @@
 
   elfNN_aarch64_final_link_relocate ()
 
-  Fixup the R_AARCH64_TLSGD_{ADR_PREL21, ADD_LO12_NC} relocations.
-
- */
+  Fixup the R_AARCH64_TLSGD_{ADR_PREL21, ADD_LO12_NC} relocations.  */
 
 #include "sysdep.h"
 #include "bfd.h"
@@ -1585,7 +1583,8 @@ aarch64_valid_branch_p (bfd_vma value, bfd_vma place)
 	  && offset >= AARCH64_MAX_BWD_BRANCH_OFFSET);
 }
 
-static const uint32_t aarch64_adrp_branch_stub [] = {
+static const uint32_t aarch64_adrp_branch_stub [] =
+{
   0x90000010,			/*	adrp	ip0, X */
 				/*		R_AARCH64_ADR_HI21_PCREL(X) */
   0x91000210,			/*	add	ip0, ip0, :lo12:X */
@@ -2714,7 +2713,7 @@ elfNN_aarch64_size_stubs (bfd *output_bfd,
 		      sym_sec = hdr->bfd_section;
 		      if (!sym_sec)
 			/* This is an undefined symbol.  It can never
-			   be resolved. */
+			   be resolved.  */
 			continue;
 
 		      if (ELF_ST_TYPE (sym->st_info) != STT_SECTION)
@@ -3373,7 +3372,7 @@ elfNN_aarch64_final_link_relocate (reloc_howto_type *howto,
     + input_section->output_offset + rel->r_offset;
 
   /* Get addend, accumulating the addend for consecutive relocs
-     which refer to the same offset. */
+     which refer to the same offset.  */
   signed_addend = saved_addend ? *saved_addend : 0;
   signed_addend += rel->r_addend;
 
@@ -3453,7 +3452,7 @@ elfNN_aarch64_final_link_relocate (reloc_howto_type *howto,
 	    {
 	      /* Sanity to check that we have previously allocated
 		 sufficient space in the relocation section for the
-		 number of relocations we actually want to emit. */
+		 number of relocations we actually want to emit.  */
 	      abort ();
 	    }
 
@@ -3481,7 +3480,7 @@ elfNN_aarch64_final_link_relocate (reloc_howto_type *howto,
 	/* A call to an undefined weak symbol is converted to a jump to
 	   the next instruction unless a PLT entry will be created.
 	   The jump to the next instruction is optimized as a NOP.
-	   Do the same for local undefined symbols. */
+	   Do the same for local undefined symbols.  */
 	if (weak_undef_p && ! via_plt_p)
 	  {
 	    bfd_putl32 (INSN_NOP, hit_data);
@@ -4719,6 +4718,10 @@ elfNN_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
 	  while (h->root.type == bfd_link_hash_indirect
 		 || h->root.type == bfd_link_hash_warning)
 	    h = (struct elf_link_hash_entry *) h->root.u.i.link;
+
+	  /* PR15323, ref flags aren't set for references in the same
+	     object.  */
+	  h->root.non_ir_ref = 1;
 	}
 
       /* Could be done earlier, if h were already available.  */
@@ -4776,9 +4779,9 @@ elfNN_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
 	      }
 	    else
 	      {
-		/*   Track dynamic relocs needed for local syms too.
-		     We really need local syms available to do this
-		     easily.  Oh well. */
+		/* Track dynamic relocs needed for local syms too.
+		   We really need local syms available to do this
+		   easily.  Oh well.  */
 
 		asection *s;
 		void **vpp;

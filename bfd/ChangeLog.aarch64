@@ -1,3 +1,111 @@
+2013-06-21  Yufeng Zhang <Yufen.Zhang@arm.com>
+
+        * Makefile.am (elf32-aarch64.c): Add a #line cpp directive at the
+        beginning of the generated file.
+        (elf64-aarch64.c): Likewise.
+        * Makefile.in: Re-generated.
+
+2013-06-21  Yufeng Zhang <Yufen.Zhang@arm.com>
+
+        * Makefile.am (BFD64_BACKENDS): Add elfxx-aarch64.c.
+        (BFD64_BACKENDS_CFILES): Add elfxx-aarch64.lo.
+        * Makefile.in: Re-generated.
+        * configure.in (bfd_elf64_bigaarch64_vec): Add elfxx-aarch64.lo.
+        (bfd_elf64_littleaarch64_vec): Likewise.
+        (bfd_elf32_bigaarch64_vec): Likewise.
+        (bfd_elf32_littleaarch64_vec): Likewise.
+        * configure: Re-generated.
+        * elfxx-aarch64.c: New file; split from elf64-aarch64.c.
+        * elfxx-aarch64.h: New file.
+        * elfnn-aarch64.c: Include "elfxx-aarch64.h"; move the following
+        stuff to elfxx-aarch64.c.
+        (bfd_elf_aarch64_put_addend): Removed.
+        (PG_OFFSET, PG): Likewise.
+        (elfNN_aarch64_small_plt0_entry): Support ELF32.
+        (elfNN_aarch64_tlsdesc_small_plt_entry): Likewise.
+        (elf64_aarch64_grok_prstatus): Removed.
+        (elf_backend_grok_prstatus): Removed.
+        (insn32): Likewise.
+        (aarch64_unsigned_overflow): Likewise.
+        (aarch64_signed_overflow): Likewise.
+        (aarch64_resolve_relocation): Likewise.
+        (MASK): Likewise.
+        (decode_branch_ofs_26): Likewise.
+        (decode_cond_branch_ofs_19): Likewise.
+        (decode_ld_lit_ofs_19): Likewise.
+        (decode_tst_branch_ofs_14): Likewise.
+        (decode_movw_imm): Likewise.
+        (decode_adr_imm): Likewise.
+        (decode_add_imm): Likewise.
+        (reencode_branch_ofs_26): Likewise.
+        (reencode_cond_branch_ofs_19): Likewise.
+        (reencode_ld_lit_ofs_19): Likewise.
+        (reencode_tst_branch_ofs_14): Likewise.
+        (reencode_movw_imm): Likewise.
+        (reencode_adr_imm): Likewise.
+        (reencode_ldst_pos_imm): Likewise.
+        (reencode_add_imm): Likewise.
+        (reencode_movzn_to_movz): Likewise.
+        (reencode_movzn_to_movn): Likewise.
+        (aarch64_relocate): Update to call the new function names in
+        elfxx-aarch64.c.
+        (aarch64_calculate_got_entry_vma): Likewise.
+        (elfNN_aarch64_final_link_relocate): Likewise.
+        (elf64_aarch64_update_plt_entry): Likewise; change the type of the
+        parameter 'r_type' to bfd_reloc_code_real_type; rename to ...
+        (elf_aarch64_update_plt_entry): ... this.
+        (elfNN_aarch64_create_small_pltn_entry): Update.
+        (elfNN_aarch64_init_small_plt0_entry): Remove plt_got_base; add
+        bfd_vma plt_got_2nd_ent; update to call elf_aarch64_update_plt_entry.
+        (elfNN_aarch64_finish_dynamic_sections): Add plt_entry; update to
+        call elf_aarch64_update_plt_entry.
+
+2013-06-21  Yufeng Zhang <Yufen.Zhang@arm.com>
+
+	* Makefile.am (BFD64_BACKENDS): Add elf32-aarch64.lo.
+	(BUILD_CFILES): Add elf32-aarch64.c.
+	(elf32-aarch64.c): New rule for generating from elfnn-aarch64.c.
+	* Makefile.in: Re-generated.
+	* archures.c (bfd_mach_aarch64_ilp32): New define.
+	* bfd-in.h (bfd_elf32_aarch64_init_maps): New declaration.
+	(bfd_elf32_aarch64_set_options): Ditto.
+	(elf32_aarch64_setup_section_lists): Ditto.
+	(elf32_aarch64_next_input_section): Ditto.
+	(elf32_aarch64_size_stubs): Ditto.
+	(elf32_aarch64_build_stubs): Ditto.
+	* bfd-in2.h: Re-generated.
+	* config.bfd (aarch64-*-elf): Add bfd_elf32_littleaarch64_vec
+	and bfd_elf32_bigaarch64_vec.
+	(aarch64-*-linux*): Likewise.
+	(aarch64_be-*-elf): Likewise.
+	(aarch64_be-*-linux*): Likewise.
+	* configure.in (bfd_elf32_bigaarch64_vec)
+	(bfd_elf32_littleaarch64_vec): New.
+	* configure: Re-generated.
+	* cpu-aarch64.c (compatible): Don't allow mixing ilp32 objects with
+	lp64 ones.
+	(bfd_aarch64_arch_ilp32): New.
+	(bfd_aarch64_arch): Link to bfd_aarch64_arch_ilp32.
+	* elfnn-aarch64.c (ARCH_SIZE): New define.
+	(AARCH64_R, AARCH64_R_STR, LOG_FILE_ALIGN): New defines.
+	(GOT_ENTRY_SIZE): Re-define as (ARCH_SIZE / 8).
+	(elf64_aarch64_*): Rename to elfNN_aarch64_*.
+	(ELF64_R_*): Rename to ELFNN_R_*.
+	Plus other parametrization.
+	* targets.c (bfd_elf32_bigaarch64_vec, bfd_elf32_littleaarch64_vec):
+	New declarations.
+	(_bfd_target_vector): Add bfd_elf32_bigaarch64_vec and
+	bfd_elf32_littleaarch64_vec.
+
+2013-06-21  Yufeng Zhang <Yufen.Zhang@arm.com>
+
+        * Makefile.am (BFD64_BACKENDS_CFILES): Remove elf64-aarch64.c.
+        (BUILD_CFILES): Add elf64-aarch64.c.
+        (elf64-aarch64.c): New rule for generating from elfnn-aarch64.c.
+        * Makefile.in: Re-generate.
+        * elf64-aarch64.c: Rename to ...
+        * elfnn-aarch64.c: ... this.
+
 2013-06-19  Will Newton  <will.newton@linaro.org>
 
 	* configure: Regenerated.
