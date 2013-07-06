@@ -1,5 +1,10 @@
 2013-07-05  Andrew Pinski  <apinski@cavium.com>
 
+	* elfnn-aarch64.c (elfNN_aarch64_howto_table): Correct entry
+	AARCH64_R (ABS32) for ARCH_SIZE == 32 so it is a signed integer.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
 	* elfnn-aarch64.c (elfNN_aarch64_howto_from_bfd_reloc):
 	Correctly handle BFD_RELOC_AARCH64_NONE for
 	ELF32 as the type will be 0.
