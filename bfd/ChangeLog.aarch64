@@ -1,3 +1,8 @@
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* elfnn-aarch64.c: Sync whitespace/spellings/order of cases
+	with the upstream version.
+
 2013-07-02  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* elfnn-aarch64.c (aarch64_elf_create_got_section): New.
