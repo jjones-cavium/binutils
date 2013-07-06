@@ -1,5 +1,11 @@
 2013-07-05  Andrew Pinski  <apinski@cavium.com>
 
+	* elfnn-aarch64.c (elfNN_aarch64_howto_from_bfd_reloc):
+	Correctly handle BFD_RELOC_AARCH64_NONE for
+	ELF32 as the type will be 0.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
 	* elfnn-aarch64.c: Sync whitespace/spellings/order of cases
 	with the upstream version.
 
