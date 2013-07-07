@@ -6,6 +6,22 @@
 	(elfNN_aarch64_gc_sweep_hook): Likewise.
 	(elfNN_aarch64_check_relocs): Likewise.
 
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* elfnn-aarch64.c (elfNN_aarch64_howto_table): Correct entry
+	AARCH64_R (ABS32) for ARCH_SIZE == 32 so it is a signed integer.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* elfnn-aarch64.c (elfNN_aarch64_howto_from_bfd_reloc):
+	Correctly handle BFD_RELOC_AARCH64_NONE for
+	ELF32 as the type will be 0.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* elfnn-aarch64.c: Sync whitespace/spellings/order of cases
+	with the upstream version.
+
 2013-07-02  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* elfnn-aarch64.c (aarch64_elf_create_got_section): New.

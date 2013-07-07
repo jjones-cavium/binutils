@@ -201,22 +201,9 @@
 
 #define ELIMINATE_COPY_RELOCS 0
 
-/* Return the relocation section associated with NAME.  HTAB is the
-   bfd's elf64_aarch64_link_hash_entry.  */
-#define RELOC_SECTION(HTAB, NAME) \
-  ((HTAB)->use_rel ? ".rel" NAME : ".rela" NAME)
-
 /* Return size of a relocation entry.  HTAB is the bfd's
    elf_aarch64_link_hash_entry.  */
 #define RELOC_SIZE(HTAB) (sizeof (ElfNN_External_Rela))
-
-/* Return function to swap relocations in.  HTAB is the bfd's
-   elf64_aarch64_link_hash_entry.  */
-#define SWAP_RELOC_IN(HTAB) (bfd_elf64_swap_reloca_in)
-
-/* Return function to swap relocations out.  HTAB is the bfd's
-   elf64_aarch64_link_hash_entry.  */
-#define SWAP_RELOC_OUT(HTAB) (bfd_elf64_swap_reloca_out)
 
 /* GOT Entry size - 8 bytes in ELF64 and 4 bytes in ELF32.  */
 #define GOT_ENTRY_SIZE                  (ARCH_SIZE / 8)
@@ -291,17 +278,18 @@ elfNN_aarch64_tlsdesc_small_plt_entry[PLT_TLSDESC_ENTRY_SIZE] =
 #define elf_info_to_howto_rel           elfNN_aarch64_info_to_howto
 
 #define AARCH64_ELF_ABI_VERSION		0
-#define AARCH64_ELF_OS_ABI_VERSION	0
 
 /* In case we're on a 32-bit machine, construct a 64-bit "-1" value.  */
 #define ALL_ONES (~ (bfd_vma) 0)
 
-/* Indexed by the bfd internal reloc enumerators.
+/* Indexed by the bfd interal reloc enumerators.
    Therefore, the table needs to be synced with BFD_RELOC_AARCH64_*
    in reloc.c.   */
+
 static reloc_howto_type elfNN_aarch64_howto_table[] =
 {
   EMPTY_HOWTO (0),
+
   /* Basic data relocations.  */
 
 #if ARCH_SIZE == 64
@@ -318,7 +306,6 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
 	 0,			/* src_mask */
 	 0,			/* dst_mask */
 	 FALSE),		/* pcrel_offset */
-
 #else
   HOWTO (R_AARCH64_NONE,	/* type */
 	 0,			/* rightshift */
@@ -357,7 +344,11 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
 	 32,			/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
+#if ARCH_SIZE == 64
 	 complain_overflow_unsigned,	/* complain_on_overflow */
+#else
+	 complain_overflow_signed,	/* complain_on_overflow */
+#endif
 	 bfd_elf_generic_reloc,	/* special_function */
 	 AARCH64_R_STR (ABS32),	/* name */
 	 FALSE,			/* partial_inplace */
@@ -1478,6 +1469,9 @@ elfNN_aarch64_howto_from_bfd_reloc (bfd_reloc_code_real_type code)
     if (elfNN_aarch64_howto_table[code - BFD_RELOC_AARCH64_RELOC_START].type)
       return &elfNN_aarch64_howto_table[code - BFD_RELOC_AARCH64_RELOC_START];
 
+  if (code == BFD_RELOC_AARCH64_NONE)
+    return &elfNN_aarch64_howto_table[1];
+
   return NULL;
 }
 
@@ -2596,7 +2590,7 @@ elfNN_aarch64_size_stubs (bfd *output_bfd,
   if (stub_group_size == 1)
     {
       /* Default values.  */
-      /* AArch64 branch range is +-128MB. The value used is 1MB less. */
+      /* AArch64 branch range is +-128MB. The value used is 1MB less.  */
       stub_group_size = 127 * 1024 * 1024;
     }
 
