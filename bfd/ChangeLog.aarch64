@@ -1,3 +1,11 @@
+2013-07-08  Andrew Pinski  <apinski@cavium.com>
+
+	* cpu-aarch64.c (compatible): Return a for almost
+	all arches.
+	* elfnn-aarch64.c (elfNN_aarch64_merge_private_bfd_data):
+	Add an error message about endianness.
+	Return false when the target bfd names do not match.
+
 2013-07-03  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* elfnn-aarch64.c (elfNN_aarch64_final_link_relocate): Reorder case

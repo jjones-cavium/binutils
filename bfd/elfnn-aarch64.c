@@ -4295,11 +4295,24 @@ elfNN_aarch64_merge_private_bfd_data (bfd *ibfd, bfd *obfd)
   asection *sec;
 
   /* Check if we have the same endianess.  */
-  if (!_bfd_generic_verify_endian_match (ibfd, obfd))
-    return FALSE;
+  if (! _bfd_generic_verify_endian_match (ibfd, obfd))
+    {
+      (*_bfd_error_handler)
+	(_("%B: endianness incompatible with that of the selected emulation"),
+	 ibfd);
+      return FALSE;
+    }
 
   if (!is_aarch64_elf (ibfd) || !is_aarch64_elf (obfd))
     return TRUE;
+
+  if (strcmp (bfd_get_target (ibfd), bfd_get_target (obfd)) != 0)
+    {
+      (*_bfd_error_handler)
+	(_("%B: ABI is incompatible with that of the selected emulation: \"%s\" != \"%s\""),
+	 ibfd, bfd_get_target (ibfd), bfd_get_target (obfd));
+      return FALSE;
+    }
 
   /* The input BFD must have had its flags initialised.  */
   /* The following seems bogus to me -- The flags are initialized in
