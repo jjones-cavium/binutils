@@ -1239,7 +1239,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (COPY),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_bitfield,	/* complain_on_overflow */
@@ -1253,7 +1253,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (GLOB_DAT),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_bitfield,	/* complain_on_overflow */
@@ -1267,7 +1267,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (JUMP_SLOT),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_bitfield,	/* complain_on_overflow */
@@ -1281,7 +1281,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (RELATIVE),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_bitfield,	/* complain_on_overflow */
@@ -1295,7 +1295,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (TLS_DTPMOD),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_dont,	/* complain_on_overflow */
@@ -1309,7 +1309,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (TLS_DTPREL),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_dont,	/* complain_on_overflow */
@@ -1323,7 +1323,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (TLS_TPREL),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_dont,	/* complain_on_overflow */
@@ -1337,7 +1337,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (TLSDESC),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_dont,	/* complain_on_overflow */
@@ -1351,7 +1351,7 @@ static reloc_howto_type elfNN_aarch64_howto_table[] =
   HOWTO (AARCH64_R (IRELATIVE),	/* type */
 	 0,			/* rightshift */
 	 2,			/* size (0 = byte, 1 = short, 2 = long) */
-	 64,			/* bitsize */
+	 ARCH_SIZE,		/* bitsize */
 	 FALSE,			/* pc_relative */
 	 0,			/* bitpos */
 	 complain_overflow_bitfield,	/* complain_on_overflow */
@@ -4834,7 +4834,7 @@ elfNN_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
 		  htab->root.dynobj = abfd;
 
 		sreloc = _bfd_elf_make_dynamic_reloc_section
-		  (sec, htab->root.dynobj, 3, abfd, /*rela? */ TRUE);
+		  (sec, htab->root.dynobj, LOG_FILE_ALIGN, abfd, /*rela? */ TRUE);
 
 		if (sreloc == NULL)
 		  return FALSE;

@@ -1,3 +1,13 @@
+2013-07-14  Andrew Pinski  <apinski@cavium.com>
+
+	* elfnn-aarch64.c (elfNN_aarch64_howto_table):
+	Fix bitsize for AARCH64_R (COPY), AARCH64_R (GLOB_DAT),
+	AARCH64_R (JUMP_SLOT), AARCH64_R (RELATIVE), AARCH64_R (TLS_DTPMOD),
+	AARCH64_R (TLS_DTPREL), AARCH64_R (TLS_TPREL), AARCH64_R (TLSDESC),
+	and AARCH64_R (IRELATIVE).
+	(elfNN_aarch64_check_relocs): Fix call to _bfd_elf_make_dynamic_reloc_section
+	for ILP32.
+
 2013-07-08  Andrew Pinski  <apinski@cavium.com>
 
 	* cpu-aarch64.c (compatible): Return a for almost
