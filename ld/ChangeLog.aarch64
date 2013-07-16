@@ -1,3 +1,8 @@
+2013-07-15  Andrew Pinski  <apinski@cavium.com>
+
+	* emulparams/aarch64elf32.sh (SEPARATE_GOTPLT): Change to 12 (3 words).
+	* emulparams/aarch64linux32.sh (SEPARATE_GOTPLT): Likewise.
+
 2013-06-21  Andrew Pinski  <apinski@cavium.com>
 
 	* Makefile.am (ALL_64_EMULATION_SOURCES): Rename eaarch64linuxb32.c
