@@ -36,7 +36,7 @@ aarch64_be-*-linux*)	targ_emul=aarch64linuxb
 			targ_extra_libpath=$targ_extra_emuls
 			;;
 aarch64-*-linux*)	targ_emul=aarch64linux
-			targ_extra_emuls="aarch64linux32 aarch64linux32b aarch64linuxb aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf_linux_eabi armelfb_linux_eabi armelf armelfb
+			targ_extra_emuls="aarch64linux32 aarch64linux32b aarch64linuxb aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf_linux_eabi armelfb_linux_eabi armelf armelfb"
 			targ_extra_libpath=$targ_extra_emuls
 			;;
 alpha*-*-freebsd* | alpha*-*-kfreebsd*-gnu)
