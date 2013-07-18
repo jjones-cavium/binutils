@@ -1,3 +1,8 @@
+2013-07-17  Andrew Pinski  <apinski@cavium.com>
+
+	* configure.tgt (aarch64_be-*-linux*): Set targ_extra_libpath to $targ_extra_emuls.
+	(aarch64-*-linux*): Likewise.
+
 2013-07-15  Andrew Pinski  <apinski@cavium.com>
 
 	* emulparams/aarch64elf32.sh (SEPARATE_GOTPLT): Change to 12 (3 words).
