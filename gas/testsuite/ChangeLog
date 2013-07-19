@@ -1,3 +1,7 @@
+2013-07-19  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* gas/aarch64/ilp32-basic.d (#as): Update to use -mabi=ilp32
+
 2013-06-26  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* gas/aarch64/ilp32-basic.d: New file.
