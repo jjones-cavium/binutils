@@ -1,3 +1,8 @@
+2013-07-23  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #7525
+	* mips-dis.c (is_octeon): Include CPU_OCTEON3 also.
+
 2013-04-22  Andrew Pinski  <apinski@cavium.com>
 
 	* mips-opc.c (mips_builtin_opcodes): Remove duplicated tlti.

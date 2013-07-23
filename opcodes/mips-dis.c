@@ -784,7 +784,8 @@ is_octeon (struct disassemble_info *info)
 {
   return info->mach == CPU_OCTEON
     || info->mach == CPU_OCTEONP
-    || info->mach == CPU_OCTEON2;
+    || info->mach == CPU_OCTEON2
+    || info->mach == CPU_OCTEON3;
 }
 
 /* Check if the object has microMIPS ASE code.  */
