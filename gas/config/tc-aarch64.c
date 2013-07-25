@@ -7117,7 +7117,7 @@ static const struct aarch64_cpu_option_table aarch64_cpus[] = {
   {"all", AARCH64_ANY, NULL},
   {"cortex-a53",	AARCH64_ARCH_V8, "Cortex-A53"},
   {"cortex-a57",	AARCH64_ARCH_V8, "Cortex-A57"},
-  {"thunder",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO | AARCH64_FEATURE_CRC,
+  {"thunder",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO | AARCH64_FEATURE_CRC | AARCH64_FEATURE_ATOMIC,
    "Cavium Thunder"},
   {"generic", AARCH64_ARCH_V8, NULL},
 
@@ -7151,6 +7151,7 @@ struct aarch64_option_cpu_value_table
 };
 
 static const struct aarch64_option_cpu_value_table aarch64_features[] = {
+  {"atomic",		AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0)},
   {"crc",		AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0)},
   {"crypto",		AARCH64_FEATURE (AARCH64_FEATURE_CRYPTO, 0)},
   {"fp",		AARCH64_FEATURE (AARCH64_FEATURE_FP, 0)},

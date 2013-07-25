@@ -1,3 +1,17 @@
+2013-07-25  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-dis-2.c (aarch64_opcode_lookup_1): Match the opcodes
+	for atomic instructions.
+	* aarch64-tbl.h (QL_CAS): New qualifier.
+	(aarch64_feature_atomic): Add new entry for atomic feature.
+	(ATOMIC): Define and map to aarch64_feature_atomic feature.
+	(aarch64_opcode_table): Add entries for casb, cash, cas, cas,
+	casp, ldaddb, ldaddh, ldadd, ldadd, ldclrb, ldclrh, ldclr,
+	ldclr, ldeorb, ldeorh, ldeor, ldeor, ldsetb, ldseth, ldset,
+	ldset, ldsmaxb, ldsmaxh, ldsmax, ldsmax, ldsminb, ldsminh,
+	ldsmin, ldsmin, ldumaxb, ldumaxh, ldumax, ldumax, lduminb,
+	lduminh, ldumin, ldumin, swpb, swph, swp and swp.
+
 2013-05-13  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* aarch64-asm.c (aarch64_ins_advsimd_imm_modified): Remove assertion.

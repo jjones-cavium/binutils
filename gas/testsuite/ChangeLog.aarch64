@@ -1,3 +1,10 @@
+2013-07-25  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* gas/aarch64/atomic-1.d: New file.
+	* gas/aarch64/atomic-1.s: New file.
+	* gas/aarch64/atomic.d: New file.
+	* gas/aarch64/atomic.s: New file.
+
 2013-07-03  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* gas/aarch64/reloc-insn.s (func): Replace :got_prel19: with :got:.
