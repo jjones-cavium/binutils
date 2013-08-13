@@ -500,7 +500,7 @@ _bfd_aarch64_elf_grok_prstatus (bfd *abfd, Elf_Internal_Note *note)
       default:
 	return FALSE;
 
-      case 408:		/* sizeof(struct elf_prstatus) on Linux/arm64.  */
+      case 398:		/* sizeof(struct elf_prstatus) on Linux/arm64.  */
 	/* pr_cursig */
 	elf_tdata (abfd)->core_signal
 	  = bfd_get_16 (abfd, note->descdata + 12);
@@ -514,9 +514,63 @@ _bfd_aarch64_elf_grok_prstatus (bfd *abfd, Elf_Internal_Note *note)
 	size = 272;
 
 	break;
+      case 352:		/* sizeof(struct compat_elf_prstatus) on Linux/arm64; for ILP32.  */
+	/* pr_cursig */
+	elf_tdata (abfd)->core_signal
+	  = bfd_get_16 (abfd, note->descdata + 12);
+
+	/* pr_pid */
+	elf_tdata (abfd)->core_lwpid
+	  = bfd_get_32 (abfd, note->descdata + 24);
+
+	/* pr_reg */
+	offset = 72;
+	size = 272;
+
+	break;
     }
 
   /* Make a ".reg/999" section.  */
   return _bfd_elfcore_make_pseudosection (abfd, ".reg",
 					  size, note->descpos + offset);
+}
+
+bfd_boolean
+_bfd_aarch64_elf_grok_psinfo (bfd *abfd, Elf_Internal_Note *note)
+{
+  switch (note->descsz)
+    {
+      default:
+	return FALSE;
+
+      case 128:		/* Linux/arm64 ilp32 elf_prpsinfo */
+	elf_tdata (abfd)->core_pid
+	  = bfd_get_32 (abfd, note->descdata + 16);
+	elf_tdata (abfd)->core_program
+	 = _bfd_elfcore_strndup (abfd, note->descdata + 40, 32);
+	elf_tdata (abfd)->core_command
+	 = _bfd_elfcore_strndup (abfd, note->descdata + 56, 48);
+
+      case 136:		/* Linux/arm64 elf_prpsinfo */
+	elf_tdata (abfd)->core_pid
+	  = bfd_get_32 (abfd, note->descdata + 24);
+	elf_tdata (abfd)->core_program
+	 = _bfd_elfcore_strndup (abfd, note->descdata + 40, 40);
+	elf_tdata (abfd)->core_command
+	 = _bfd_elfcore_strndup (abfd, note->descdata + 56, 56);
+    }
+
+  /* Note that for some reason, a spurious space is tacked
+     onto the end of the args in some (at least one anyway)
+     implementations, so strip it off if it exists.  */
+
+  {
+    char *command = elf_tdata (abfd)->core_command;
+    int n = strlen (command);
+
+    if (0 < n && command[n - 1] == ' ')
+      command[n - 1] = '\0';
+  }
+
+  return TRUE;
 }
