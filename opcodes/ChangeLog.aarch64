@@ -1,3 +1,8 @@
+2013-08-28  Nick Clifton  <nickc@redhat.com>
+
+	* aarch64-opc.c (aarch64_logical_immediate_p): Return FALSE if the
+	immediate is not suitable for the 32-bit ABI.
+
 2013-07-25  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64-dis-2.c (aarch64_opcode_lookup_1): Match the opcodes
