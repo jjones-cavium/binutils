@@ -7,6 +7,11 @@
 	* gas/aarch64/ilp32-basic.d: New file.
 	* gas/aarch64/ilp32-basic.s: New file.
 
+2013-06-14  Richard Sandiford  <rsandifo@linux.vnet.ibm.com>
+
+	* gas/mips/loc-swap-3.d, gas/mips/loc-swap-3.s: New test.
+	* gas/mips/mips.exp: Run it.
+
 2013-02-28  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* gas/aarch64/illegal.l: Delete the error message for
