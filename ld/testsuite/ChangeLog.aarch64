@@ -1,3 +1,8 @@
+2013-09-18  Kyrylo Tkachov  <kyrylo.tkachov@arm.com>
+
+	* ld-aarch64/eh-frame.d: Update expected output to allow for
+	64-bit addresses.
+
 2013-07-03  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* ld-aarch64/emit-relocs-309.s: Replace got_prel19 with got.
