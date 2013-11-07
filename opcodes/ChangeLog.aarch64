@@ -1,3 +1,9 @@
+2013-11-05  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* aarch64-opc.c (set_syntax_error): New function.
+	(operand_general_constraint_met_p): Replace set_other_error
+	with set_syntax_error.
+
 2013-08-28  Nick Clifton  <nickc@redhat.com>
 
 	* aarch64-opc.c (aarch64_logical_immediate_p): Return FALSE if the
