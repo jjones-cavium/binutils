@@ -1,3 +1,10 @@
+2013-11-13  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* aarch64.h: Define R_AARCH64_TLS_DTPMOD64,
+	R_AARCH64_TLS_DTPREL64 and R_AARCH64_TLS_TPREL64; guard
+	R_AARCH64_TLS_DTPMOD, R_AARCH64_TLS_DTPREL and
+	R_AARCH64_TLS_TPREL with RELOC_MACROS_GEN_FUNC.
+
 2013-06-21  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* elf/aarch64.h: Add ELF32 reloc codes and remove fake ELF64 ones.
