@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <string.h>
 #include "target.h"
+#include "target-dcache.h"
 #include "gdbcmd.h"
 #include "symtab.h"
 #include "inferior.h"
@@ -205,46 +206,6 @@ show_targetdebug (struct ui_file *file, int from_tty,
 }
 
 static void setup_target_debug (void);
-
-/* The option sets this.  */
-static int stack_cache_enabled_p_1 = 1;
-/* And set_stack_cache_enabled_p updates this.
-   The reason for the separation is so that we don't flush the cache for
-   on->on transitions.  */
-static int stack_cache_enabled_p = 1;
-
-/* This is called *after* the stack-cache has been set.
-   Flush the cache for off->on and on->off transitions.
-   There's no real need to flush the cache for on->off transitions,
-   except cleanliness.  */
-
-static void
-set_stack_cache_enabled_p (char *args, int from_tty,
-			   struct cmd_list_element *c)
-{
-  if (stack_cache_enabled_p != stack_cache_enabled_p_1)
-    target_dcache_invalidate ();
-
-  stack_cache_enabled_p = stack_cache_enabled_p_1;
-}
-
-static void
-show_stack_cache_enabled_p (struct ui_file *file, int from_tty,
-			    struct cmd_list_element *c, const char *value)
-{
-  fprintf_filtered (file, _("Cache use for stack accesses is %s.\n"), value);
-}
-
-/* Cache of memory operations, to speed up remote access.  */
-static DCACHE *target_dcache;
-
-/* Invalidate the target dcache.  */
-
-void
-target_dcache_invalidate (void)
-{
-  dcache_invalidate (target_dcache);
-}
 
 /* The user just typed 'target' without the name of a target.  */
 
@@ -1586,17 +1547,17 @@ memory_xfer_partial_1 (struct target_ops *ops, enum target_object object,
 	 the collected memory range fails.  */
       && get_traceframe_number () == -1
       && (region->attrib.cache
-	  || (stack_cache_enabled_p && object == TARGET_OBJECT_STACK_MEMORY)))
+	  || (stack_cache_enabled () && object == TARGET_OBJECT_STACK_MEMORY)))
     {
+      DCACHE *dcache = target_dcache_get_or_init ();
+
       if (readbuf != NULL)
-	res = dcache_xfer_memory (ops, target_dcache, memaddr, readbuf,
-				  reg_len, 0);
+	res = dcache_xfer_memory (ops, dcache, memaddr, readbuf, reg_len, 0);
       else
 	/* FIXME drow/2006-08-09: If we're going to preserve const
 	   correctness dcache_xfer_memory should take readbuf and
 	   writebuf.  */
-	res = dcache_xfer_memory (ops, target_dcache, memaddr,
-				  (void *) writebuf,
+	res = dcache_xfer_memory (ops, dcache, memaddr, (void *) writebuf,
 				  reg_len, 1);
       if (res <= 0)
 	return -1;
@@ -1637,11 +1598,14 @@ memory_xfer_partial_1 (struct target_ops *ops, enum target_object object,
   if (res > 0
       && inf != NULL
       && writebuf != NULL
+      && target_dcache_init_p ()
       && !region->attrib.cache
-      && stack_cache_enabled_p
+      && stack_cache_enabled ()
       && object != TARGET_OBJECT_STACK_MEMORY)
     {
-      dcache_update (target_dcache, memaddr, (void *) writebuf, res);
+      DCACHE *dcache = target_dcache_get ();
+
+      dcache_update (dcache, memaddr, (void *) writebuf, res);
     }
 
   /* If we still haven't got anything, return the last error.  We
@@ -5129,17 +5093,6 @@ Tells gdb whether to control the inferior in asynchronous mode."),
 			   &setlist,
 			   &showlist);
 
-  add_setshow_boolean_cmd ("stack-cache", class_support,
-			   &stack_cache_enabled_p_1, _("\
-Set cache use for stack access."), _("\
-Show cache use for stack access."), _("\
-When on, use the data cache for all stack access, regardless of any\n\
-configured memory regions.  This improves remote performance significantly.\n\
-By default, caching for stack access is on."),
-			   set_stack_cache_enabled_p,
-			   show_stack_cache_enabled_p,
-			   &setlist, &showlist);
-
   add_setshow_boolean_cmd ("may-write-registers", class_support,
 			   &may_write_registers_1, _("\
 Set permission to write into registers."), _("\
@@ -5193,7 +5146,4 @@ When this permission is on, GDB may interrupt/stop the target's execution.\n\
 Otherwise, any attempt to interrupt or stop will be ignored."),
 			   set_target_permissions, NULL,
 			   &setlist, &showlist);
-
-
-  target_dcache = dcache_init ();
 }

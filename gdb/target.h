@@ -37,6 +37,7 @@ struct uploaded_tp;
 struct static_tracepoint_marker;
 struct traceframe_info;
 struct expression;
+struct dcache_struct;
 
 /* This include file defines the interface between the main part
    of the debugger, and the part which is target-specific, or
@@ -1041,9 +1042,6 @@ int target_supports_disable_randomization (void);
 
 #define target_can_run_breakpoint_commands() \
   (*current_target.to_can_run_breakpoint_commands) ()
-
-/* Invalidate all target dcaches.  */
-extern void target_dcache_invalidate (void);
 
 extern int target_read_string (CORE_ADDR, char **, int, int *);
 

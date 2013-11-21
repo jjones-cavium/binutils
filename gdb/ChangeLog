@@ -1,7 +1,228 @@
-2013-11-19  Yao Qi  <yao@codesourcery.com>
+2013-11-20  Joel Brobecker  <brobecker@adacore.com>
 
-	* lib/mi-support.exp (mi_child_regexp): Remove 'whatever'.
-	(mi_list_varobj_children_range): Likewise.
+	* python/py-value.c (is_intlike): Delete.
+	(valpy_int): Replace use of CHECK_TYPEDEF and is_intlike
+	by use of is_integral_type.
+	(valpy_long): Replace use of CHECK_TYPEDEF and is_intlike
+	by use of is_integral_type and check for TYPE_CODE_PTR.
+
+2013-11-20  Tom Tromey  <tromey@redhat.com>
+
+	* gnulib/update-gnulib.sh (IMPORTED_GNULIB_MODULES): Remove
+	strerror module.
+	* gnulib/aclocal.m4: Update.
+	* gnulib/config.in: Update.
+	* gnulib/configure: Update.
+	* gnulib/import/Makefile.am: Update.
+	* gnulib/import/Makefile.in: Update.
+	* gnulib/import/errno.in.h: Remove.
+	* gnulib/import/intprops.h: Remove.
+	* gnulib/import/m4/errno_h.m4: Remove.
+	* gnulib/import/m4/gnulib-cache.m4: Update.
+	* gnulib/import/m4/gnulib-comp.m4: Update.
+	* gnulib/import/m4/strerror.m4: Remove.
+	* gnulib/import/m4/sys_socket_h.m4: Remove.
+	* gnulib/import/strerror-override.c: Remove.
+	* gnulib/import/strerror-override.h: Remove.
+	* gnulib/import/strerror.c: Remove.
+	* gnulib/update-gnulib.sh: Update.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* target-dcache.c (target_dcache_get_or_init): Call
+	set_address_space_data if 'dcache' is NULL.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* common/i386-gcc-cpuid.h (bit_MPX): Synchronize with gcc file.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* python/lib/gdb/command/bound_register.py: New file.
+	* gdb/data-directory/Makefile.in: copy bond_register.py to the right path to
+	be initialized at gdb startup.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* amd64-linux-nat.c (amd64_linux_gregset32_reg_offset):
+	Add MPX registers.
+	(amd64_linux_read_description): Add initialization for MPX and
+	AVX independently.
+	* amd64-linux-tdep.c: Includes features/i386/amd64-mpx-linux.c.
+	(amd64_linux_gregset_reg_offset): Add MPX registers.
+	(amd64_linux_core_read_description): Add initialization for MPX
+	registers.
+	(_initialize_amd64_linux_tdep): Initialize MPX targets.
+	* amd64-linux-tdep.h (AMD64_LINUX_RAX_REGNUM): Set it to the last
+	register on the list.
+	(tdesc_amd64_mpx_linux) Add new target	for MPX.
+	* amd64-tdep.c: Includes features/i386/amd64-mpx.c.
+	(amd64_mpx_names): MPX register names.
+	(amd64_init_abi): Add MPX register while initializing the ABI.
+	(_initialize_amd64_tdep): Initialize MPX targets.
+	* amd64-tdep.h (amd64_regnum): Add MPX registers.
+	(AMD64_NUM_REGS): Set number of registers taking MPX into account.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* i386-linux-nat.c (GETXSTATEREGS_SUPPLIES): Add MPX
+	registers on the range of registers to be read from
+	xsave buffer.
+	(i386_linux_read_description): Add case for MPX.
+	* i386-linux-tdep.c: Include features/i386/i386-mpx-linux.c.
+	(i386_linux_gregset_reg_offset): Add MPX registers.
+	(i386_linux_core_read_description): Initialize also MPX.
+	(_initialize_i386_linux_tdep): Add mpx initialization.
+	* i386-tdep.h (gdbarch_tdep): Add fields bnd0r_regnum, bnd0_regnum,
+	mpx_register_names.
+	(i386_regnum): Add MPX registers.
+	(I386_MPX_NUM_REGS): New macro.
+	(i386_bnd_regnum_p): New function.
+	* i386-linux-tdep.h (I386_LINUX_NUM_REGS): Set
+	number of registers to be the number of BNDSTATUS.
+	(tdesc_i386_mpx_linux): Add description for MPX Linux registers.
+	* i386-tdep.c: Include features/i386/i386-mpx.c.
+	(i386_mpx_names): Add MPX register names array.
+	(i386_bnd_names): Add bnd pseudo register names array.
+	(i386_bndr_regnum_p): Lookup register numbers for bnd raw
+	registers.
+	(i386_bndr_regnum_p): Lookup register numbers for bnd raw registers.
+	(386_mpx_ctrl_regnum_p): Lookup register numbers for MPX control
+	registers.
+	(i386_bnd_type): New function.
+	(i386_pseudo_register_type): Use i386_bnd_type for bnd pseudo
+	register types.
+	(i386_pseudo_register_read_into_value): Add bnd case.
+	(i386_pseudo_register_write): Add bnd pseudo registers.
+	(i386_register_reggroup_p): Add MPX register to the group all.
+	(i386_validate_tdesc_p): Add MPX to the target 	description
+	validation.
+	(i386_pseudo_register_name): Add bnd pseudo registers.
+	(i386_gdbarch_init): Add MPX for architecture initialization.
+	(_initia_initialize_i386_tdep): Add mpx initialization.
+	* i387-tdep.c (xsave_mpx_offset): New vector for MPX offsets on
+	XSAVE buffer.
+	(XSAVE_MPX_ADDR): New macro.
+	(i387_supply_xsave): Add MPX case.
+	(i387_collect_xsave): Add MPX case.
+	* i387-tdep.h (I387_BND0R_REGNUM): New macro.
+	(I387_BNDCFGU_REGNUM): New macro.
+	(I387_NUM_MPX_REGS): New macro.
+	(I387_NUM_BND_REGS): New macro.
+	(I387_NUM_MPX_CTRL_REGS): New macro.
+	(I387_MPXEND_REGNUM): New macro.
+	* common/i386-xstate.h (I386_XSTATE_BNDREGS): New macro.
+	(I386_XSTATE_BNDCFG): Likewise.
+	(I386_XSTATE_MPX_MASK): Likewise.
+	(I386_XSTATE_ALL_MASK): New macro represents flags for all states.
+	(I386_XSTATE_BNDREGS_SIZE): New macro.
+	(I386_XSTATE_BNDCFG_SIZE): Likewise.
+	(I386_XSTATE_SIZE): Adapt for MPX.
+	(I386_XSTATE_MAX_SIZE): Likewise.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* features/i386/Makefile: Adapts for using MPX registers.
+	* features/i386/32bit-mpx.xml: New file.
+	* features/i386/64bit-mpx.xml: Likewise.
+	* features/i386/amd64-mpx-linux.c: Likewise.
+	* features/i386/amd64-mpx-linux.xml: Likewise.
+	* features/i386/amd64-mpx.c: Likewise.
+	* features/i386/amd64-mpx.xml: Likewise.
+	* features/i386/i386-mpx-linux.c: Likewise.
+	* features/i386/i386-mpx-linux.xml: Likewise.
+	* features/i386/i386-mpx.c: Likewise.
+	* features/i386/i386-mpx.xml: Likewise.
+	* regformats/i386/amd64-mpx-linux.dat: New file.
+	* regformats/i386/amd64-mpx.dat: Likewise.
+	* regformats/i386/i386-mpx-linux.dat: Likewise.
+	* regformats/i386/i386-mpx.dat: Likewise.
+
+2013-11-20  Walfred Tedeschi  <walfred.tedeschi@intel.com>
+
+	* target-descriptions.c (maint_print_maint_print_c_tdesc_cmd):
+	Modified logic of creating a bitfield to be in sync with
+	tdesc_gdb_type.
+
+2013-11-20  Will Newton  <will.newton@linaro.org>
+
+	* arm-tdep.c (arm_get_next_pc): Remove "Infinite loop detected"
+	error message.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* progspace.h (struct address_space_data): Declare.
+	* target-dcache.c: Include "progspace.h".
+	(target_dache): Remove.
+	(target_dcache_aspace_key): New.
+	(target_dcache_cleanup): New function.
+	(target_dcache_init_p): Get data through
+	target_dcache_aspace_key.
+	(target_dcache_invalidate): Likewise.
+	(target_dcache_get): Likewise.
+	(target_dcache_get_or_init): Likewise.
+	(_initialize_target_dcache): Initialize
+	target_dcache_aspace_key.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* progspace.c (struct address_space): Update comments.
+	<REGISTRY_FIELDS>: New fields.
+	DEFINE_REGISTRY for address_space.
+	(new_address_space): Call address_space_alloc_data.
+	(free_address_space): Call address_space_free_data.
+	* progspace.h: Use DECLARE_REGISTRY.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* Makefile.in (SFILES):Add target-dcache.c.
+	(HFILES_NO_SRCDIR): Add target-dcache.h.
+	(COMMON_OBS): Add target-dcache.o.
+	* dcache.c: Remove inclusion to "target.h".  Include
+	"target-dcache.h".
+	* memattr.c: Include "target-dcache.h".
+	* top.c: Likewise.
+	* tracepoint.c: Likewise.
+	* target.c: (stack_cache_enabled_p_1): Move to
+	target-dcache.c.
+	(stack_cache_enabled_p): Likewise.
+	(set_stack_cache_enabled_p): Likewise.
+	(show_stack_cache_enabled_p): Likewise.
+	(target_dcache, target_dcache_init_p): Likewise.
+	(target_dcache_invalidate): Likewise.
+	(target_dcache_get, target_dcache_get_or_init): Likewise.
+	(memory_xfer_partial_1): Call function stack_cache_enabled.
+	(initialize_target): Move code to target-dcache.c.
+	* target.h (target_dcache_invalidate): Move to
+	target-dcache.h.
+	(target_dcache_get): Likewise.
+	* target-dcache.c: New.
+	* target-dcache.h: New.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* target.c (memory_xfer_partial_1): Update 'target_dcache' if
+	it is initialized.
+
+2013-11-20  Yao Qi  <yao@codesourcery.com>
+
+	* dcache.c (last_cache): Remove.
+	(dcache_free, dcache_init): Update.
+	(dcache_update):
+	(dcache_print_line): Add parameter 'dcache'.  Replace
+	'target_dcache' with 'dcache'.
+	(dcache_info): Move code to dcache_info_1. Call
+	'dcache_info_1'.
+	(dcache_info_1): New function.
+	(set_dcache_size): Call target_dcache_invalidate.
+	(set_dcache_line_size): Call target_dcache_invalidate.
+	* target.c (target_dcache_init_p): New function.
+	(target_dcache_invalidate): Check target_dcache_init_p first.
+	(target_dcache_get, target_dcache_get_or_init): New function.
+	(memory_xfer_partial_1): Adjust.
+	(initialize_target): Don't initialize 'target_dcache'.
+	* target.h (struct dcache_struct): Declare.
+	(target_dcache_get): Declare.
 
 2013-11-19  Yao Qi  <yao@codesourcery.com>
 
