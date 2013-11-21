@@ -1,3 +1,8 @@
+2013-11-20  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* gas/aarch64/msr.s: Add tests.
+	* gas/aarch64/msr.d: Update.
+
 2013-11-18  Zhenqiang Chen  <zhenqiang.chen@linaro.org>
 
 	* gas/testsuite/sysreg.s: Add test.
