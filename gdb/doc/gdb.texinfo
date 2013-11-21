@@ -10844,7 +10844,7 @@ rare for a running thread to modify the stack of a stopped thread
 in a way that would interfere with a backtrace, and caching of
 stack reads provides a significant speed up of remote backtraces.}.
 Other regions of memory can be explicitly marked as
-cacheable; see @pxref{Memory Region Attributes}.
+cacheable; @pxref{Memory Region Attributes}.
 
 @table @code
 @kindex set remotecache
@@ -32519,6 +32519,12 @@ Otherwise this result is not present.
 
 @item frozen
 If the variable object is frozen, this variable will be present with a value of 1.
+
+@item dynamic
+This attribute will be present and have the value @samp{1} if the
+varobj is a dynamic varobj.  If the varobj is not a dynamic varobj,
+then this attribute will not be present.
+
 @end table
 
 The result may have its own attributes:
