@@ -1398,6 +1398,35 @@ memory_xfer_live_readonly_partial (struct target_ops *ops,
   return 0;
 }
 
+/* Read memory from more than one valid target.  A core file, for
+   instance, could have some of memory but delegate other bits to
+   the target below it.  So, we must manually try all targets.  */
+
+static LONGEST
+raw_memory_xfer_partial (struct target_ops *ops, void *readbuf,
+			 const void *writebuf, ULONGEST memaddr, LONGEST len)
+{
+  LONGEST res;
+
+  do
+    {
+      res = ops->to_xfer_partial (ops, TARGET_OBJECT_MEMORY, NULL,
+				  readbuf, writebuf, memaddr, len);
+      if (res > 0)
+	break;
+
+      /* We want to continue past core files to executables, but not
+	 past a running target's memory.  */
+      if (ops->to_has_all_memory (ops))
+	break;
+
+      ops = ops->beneath;
+    }
+  while (ops != NULL);
+
+  return res;
+}
+
 /* Perform a partial memory transfer.
    For docs see target.h, to_xfer_partial.  */
 
@@ -1547,7 +1576,8 @@ memory_xfer_partial_1 (struct target_ops *ops, enum target_object object,
 	 the collected memory range fails.  */
       && get_traceframe_number () == -1
       && (region->attrib.cache
-	  || (stack_cache_enabled () && object == TARGET_OBJECT_STACK_MEMORY)))
+	  || (stack_cache_enabled_p () && object == TARGET_OBJECT_STACK_MEMORY)
+	  || (code_cache_enabled_p () && object == TARGET_OBJECT_CODE_MEMORY)))
     {
       DCACHE *dcache = target_dcache_get_or_init ();
 
@@ -1570,26 +1600,8 @@ memory_xfer_partial_1 (struct target_ops *ops, enum target_object object,
      to_xfer_partial is enough; if it doesn't recognize an object
      it will call the to_xfer_partial of the next target down.
      But for memory this won't do.  Memory is the only target
-     object which can be read from more than one valid target.
-     A core file, for instance, could have some of memory but
-     delegate other bits to the target below it.  So, we must
-     manually try all targets.  */
-
-  do
-    {
-      res = ops->to_xfer_partial (ops, TARGET_OBJECT_MEMORY, NULL,
-				  readbuf, writebuf, memaddr, reg_len);
-      if (res > 0)
-	break;
-
-      /* We want to continue past core files to executables, but not
-	 past a running target's memory.  */
-      if (ops->to_has_all_memory (ops))
-	break;
-
-      ops = ops->beneath;
-    }
-  while (ops != NULL);
+     object which can be read from more than one valid target.  */
+  res = raw_memory_xfer_partial (ops, readbuf, writebuf, memaddr, reg_len);
 
   /* Make sure the cache gets updated no matter what - if we are writing
      to the stack.  Even if this write is not tagged as such, we still need
@@ -1600,8 +1612,8 @@ memory_xfer_partial_1 (struct target_ops *ops, enum target_object object,
       && writebuf != NULL
       && target_dcache_init_p ()
       && !region->attrib.cache
-      && stack_cache_enabled ()
-      && object != TARGET_OBJECT_STACK_MEMORY)
+      && ((stack_cache_enabled_p () && object != TARGET_OBJECT_STACK_MEMORY)
+	  || (code_cache_enabled_p () && object != TARGET_OBJECT_CODE_MEMORY)))
     {
       DCACHE *dcache = target_dcache_get ();
 
@@ -1697,21 +1709,18 @@ target_xfer_partial (struct target_ops *ops,
   /* If this is a memory transfer, let the memory-specific code
      have a look at it instead.  Memory transfers are more
      complicated.  */
-  if (object == TARGET_OBJECT_MEMORY || object == TARGET_OBJECT_STACK_MEMORY)
+  if (object == TARGET_OBJECT_MEMORY || object == TARGET_OBJECT_STACK_MEMORY
+      || object == TARGET_OBJECT_CODE_MEMORY)
     retval = memory_xfer_partial (ops, object, readbuf,
 				  writebuf, offset, len);
-  else
+  else if (object == TARGET_OBJECT_RAW_MEMORY)
     {
-      enum target_object raw_object = object;
-
-      /* If this is a raw memory transfer, request the normal
-	 memory object from other layers.  */
-      if (raw_object == TARGET_OBJECT_RAW_MEMORY)
-	raw_object = TARGET_OBJECT_MEMORY;
-
-      retval = ops->to_xfer_partial (ops, raw_object, annex, readbuf,
-				     writebuf, offset, len);
+      /* Request the normal memory object from other layers.  */
+      retval = raw_memory_xfer_partial (ops, readbuf, writebuf, offset, len);
     }
+  else
+    retval = ops->to_xfer_partial (ops, object, annex, readbuf,
+				   writebuf, offset, len);
 
   if (targetdebug)
     {
@@ -1782,17 +1791,46 @@ target_read_memory (CORE_ADDR memaddr, gdb_byte *myaddr, ssize_t len)
     return TARGET_XFER_E_IO;
 }
 
+/* Like target_read_memory, but specify explicitly that this is a read
+   from the target's raw memory.  That is, this read bypasses the
+   dcache, breakpoint shadowing, etc.  */
+
+int
+target_read_raw_memory (CORE_ADDR memaddr, gdb_byte *myaddr, ssize_t len)
+{
+  /* See comment in target_read_memory about why the request starts at
+     current_target.beneath.  */
+  if (target_read (current_target.beneath, TARGET_OBJECT_RAW_MEMORY, NULL,
+		   myaddr, memaddr, len) == len)
+    return 0;
+  else
+    return TARGET_XFER_E_IO;
+}
+
 /* Like target_read_memory, but specify explicitly that this is a read from
    the target's stack.  This may trigger different cache behavior.  */
 
 int
 target_read_stack (CORE_ADDR memaddr, gdb_byte *myaddr, ssize_t len)
 {
-  /* Dispatch to the topmost target, not the flattened current_target.
-     Memory accesses check target->to_has_(all_)memory, and the
-     flattened target doesn't inherit those.  */
-
+  /* See comment in target_read_memory about why the request starts at
+     current_target.beneath.  */
   if (target_read (current_target.beneath, TARGET_OBJECT_STACK_MEMORY, NULL,
+		   myaddr, memaddr, len) == len)
+    return 0;
+  else
+    return TARGET_XFER_E_IO;
+}
+
+/* Like target_read_memory, but specify explicitly that this is a read from
+   the target's code.  This may trigger different cache behavior.  */
+
+int
+target_read_code (CORE_ADDR memaddr, gdb_byte *myaddr, ssize_t len)
+{
+  /* See comment in target_read_memory about why the request starts at
+     current_target.beneath.  */
+  if (target_read (current_target.beneath, TARGET_OBJECT_CODE_MEMORY, NULL,
 		   myaddr, memaddr, len) == len)
     return 0;
   else
@@ -1808,9 +1846,8 @@ target_read_stack (CORE_ADDR memaddr, gdb_byte *myaddr, ssize_t len)
 int
 target_write_memory (CORE_ADDR memaddr, const gdb_byte *myaddr, ssize_t len)
 {
-  /* Dispatch to the topmost target, not the flattened current_target.
-     Memory accesses check target->to_has_(all_)memory, and the
-     flattened target doesn't inherit those.  */
+  /* See comment in target_read_memory about why the request starts at
+     current_target.beneath.  */
   if (target_write (current_target.beneath, TARGET_OBJECT_MEMORY, NULL,
 		    myaddr, memaddr, len) == len)
     return 0;
@@ -1827,9 +1864,8 @@ target_write_memory (CORE_ADDR memaddr, const gdb_byte *myaddr, ssize_t len)
 int
 target_write_raw_memory (CORE_ADDR memaddr, const gdb_byte *myaddr, ssize_t len)
 {
-  /* Dispatch to the topmost target, not the flattened current_target.
-     Memory accesses check target->to_has_(all_)memory, and the
-     flattened target doesn't inherit those.  */
+  /* See comment in target_read_memory about why the request starts at
+     current_target.beneath.  */
   if (target_write (current_target.beneath, TARGET_OBJECT_RAW_MEMORY, NULL,
 		    myaddr, memaddr, len) == len)
     return 0;

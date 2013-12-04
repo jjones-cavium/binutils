@@ -1,3 +1,31 @@
+2013-11-27  Kyrylo Tkachov  <kyrylo.tkachov@arm.com>
+
+	* ld-plugin/lto.exp: Add -ffat-lto-objects.
+	* lib/ld-lib.exp (check_lto_available): Likewise.
+
+2013-11-27  Matthew Fortune <matthew.fortune@imgtec.com>
+
+	* ld-mips-elf/mips-elf.exp: Consider mips-mti-elf the same as
+	mips-sde-elf
+
+2013-11-26  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR ld/16259
+	* config/default.exp (get_target_emul): Also set HOSTING_SLIBS.
+	* lib/ld-lib.exp (default_ld_link): Use HOSTING_SLIBS for -pie.
+
+2013-11-26  Will Newton  <will.newton@linaro.org>
+
+	* ld-aarch64/aarch64-elf.exp: Add ifunc-22.
+	* ld-aarch64/ifunc-22.d: New file.
+	* ld-aarch64/ifunc-22.s: Likewise.
+
+2013-11-26  Will Newton  <will.newton@linaro.org>
+
+	* ld-aarch64/aarch64-elf.exp: Add ifunc-21 test.
+	* ld-aarch64/ifunc-21.d: New file.
+	* ld-aarch64/ifunc-21.s: Likewise.
+
 2013-11-21  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* ld-x86-64/mpx.exp: Run bnd-branch-1.

@@ -712,6 +712,10 @@ else
   fi
 fi
 
+# --------------------- #
+# Check for libpython.  #
+# --------------------- #
+
 dnl Utility to simplify finding libpython.
 dnl $1 = pythonX.Y
 dnl $2 = the shell variable to assign the result to
@@ -1049,6 +1053,10 @@ fi
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_CPPFLAGS)
 AC_SUBST(PYTHON_LIBS)
+
+# --------------------- #
+# Check for libmcheck.  #
+# --------------------- #
 
 # Enable -lmcheck by default (it provides cheap-enough memory mangling),
 # but turn it off if Python is enabled with threads, since -lmcheck is
@@ -1877,7 +1885,7 @@ AC_SUBST(WERROR_CFLAGS)
 
 # In the Cygwin environment, we need some additional flags.
 AC_CACHE_CHECK([for cygwin], gdb_cv_os_cygwin,
-[AC_EGREP_CPP(lose, [
+[AC_EGREP_CPP(^lose$, [
 #if defined (__CYGWIN__) || defined (__CYGWIN32__)
 lose
 #endif],[gdb_cv_os_cygwin=yes],[gdb_cv_os_cygwin=no])])

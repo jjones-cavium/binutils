@@ -45,6 +45,7 @@
 @dircategory Software development
 @direntry
 * Gdb: (gdb).                     The GNU debugger.
+* gdbserver: (gdb) Server.        The GNU debugging server.
 @end direntry
 
 @copying
@@ -4107,6 +4108,9 @@ Stop when @var{event} occurs.  @var{event} can be any of the following:
 @item throw @r{[}@var{regexp}@r{]}
 @itemx rethrow @r{[}@var{regexp}@r{]}
 @itemx catch @r{[}@var{regexp}@r{]}
+@kindex catch throw
+@kindex catch rethrow
+@kindex catch catch
 @cindex stop on C@t{++} exceptions
 The throwing, re-throwing, or catching of a C@t{++} exception.
 
@@ -4164,6 +4168,7 @@ You cannot install an exception handler interactively.
 @end itemize
 
 @item exception
+@kindex catch exception
 @cindex Ada exception catching
 @cindex catch Ada exceptions
 An Ada exception being raised.  If an exception name is specified
@@ -4181,18 +4186,22 @@ the command to use to catch such exceptions is @kbd{catch exception
 Pck.Constraint_Error}.
 
 @item exception unhandled
+@kindex catch exception unhandled
 An exception that was raised but is not handled by the program.
 
 @item assert
+@kindex catch assert
 A failed Ada assertion.
 
 @item exec
+@kindex catch exec
 @cindex break on fork/exec
 A call to @code{exec}.  This is currently only available for HP-UX
 and @sc{gnu}/Linux.
 
 @item syscall
 @itemx syscall @r{[}@var{name} @r{|} @var{number}@r{]} @dots{} 
+@kindex catch syscall
 @cindex break on a system call.
 A call to or return from a system call, a.k.a.@: @dfn{syscall}.  A
 syscall is a mechanism for application programs to request a service
@@ -4323,20 +4332,25 @@ Catchpoint 1 (syscall(s) 252)
 Again, in this case @value{GDBN} would not be able to display syscall's names.
 
 @item fork
+@kindex catch fork
 A call to @code{fork}.  This is currently only available for HP-UX
 and @sc{gnu}/Linux.
 
 @item vfork
+@kindex catch vfork
 A call to @code{vfork}.  This is currently only available for HP-UX
 and @sc{gnu}/Linux.
 
 @item load @r{[}regexp@r{]}
 @itemx unload @r{[}regexp@r{]}
+@kindex catch load
+@kindex catch unload
 The loading or unloading of a shared library.  If @var{regexp} is
 given, then the catchpoint will stop only if the regular expression
 matches one of the affected libraries.
 
 @item signal @r{[}@var{signal}@dots{} @r{|} @samp{all}@r{]}
+@kindex catch signal
 The delivery of a signal.
 
 With no arguments, this catchpoint will catch any signal that is not
@@ -4364,6 +4378,7 @@ commands.
 @end table
 
 @item tcatch @var{event}
+@kindex tcatch
 Set a catchpoint that is enabled only for one stop.  The catchpoint is
 automatically deleted after the first time the event is caught.
 
@@ -10842,7 +10857,8 @@ Therefore, by default, @value{GDBN} only caches data
 known to be on the stack@footnote{In non-stop mode, it is moderately
 rare for a running thread to modify the stack of a stopped thread
 in a way that would interfere with a backtrace, and caching of
-stack reads provides a significant speed up of remote backtraces.}.
+stack reads provides a significant speed up of remote backtraces.} or
+in the code segment.
 Other regions of memory can be explicitly marked as
 cacheable; @pxref{Memory Region Attributes}.
 
@@ -10860,12 +10876,24 @@ Show the current state of the obsolete remotecache flag.
 @kindex set stack-cache
 @item set stack-cache on
 @itemx set stack-cache off
-Enable or disable caching of stack accesses.  When @code{ON}, use
-caching.  By default, this option is @code{ON}.
+Enable or disable caching of stack accesses.  When @code{on}, use
+caching.  By default, this option is @code{on}.
 
 @kindex show stack-cache
 @item show stack-cache
 Show the current state of data caching for memory accesses.
+
+@kindex set code-cache
+@item set code-cache on
+@itemx set code-cache off
+Enable or disable caching of code segment accesses.  When @code{on},
+use caching.  By default, this option is @code{on}.  This improves
+performance of disassembly in remote debugging.
+
+@kindex show code-cache
+@item show code-cache
+Show the current state of target memory cache for code segment
+accesses.
 
 @kindex info dcache
 @item info dcache @r{[}line@r{]}
@@ -21363,6 +21391,39 @@ be returned in a register.
 @kindex show struct-convention
 Show the current setting of the convention to return @code{struct}s
 from functions.
+
+@cindex Intel(R) Memory Protection Extensions (MPX).
+@subsubsection Intel(R) @dfn{Memory Protection Extensions} (MPX).
+
+@item bnd0raw..bnd3raw and bnd0@dots{}bnd3 registers display.
+Memory Protection Extension (MPX) adds the bound registers @samp{BND0}
+@footnote{The register named with capital letters represent the architecture
+registers.} through @samp{BND3}.  Bound registers store a pair of 64-bit values
+which are the lower bound and upper bound.  Bounds are effective addresses or
+memory locations.  The upper bounds are architecturally represented in 1's
+complement form.  A bound having lower bound = 0, and upper bound = 0
+(1's complement of all bits set) will allow access to the entire address space.
+
+@samp{BND0} through @samp{BND3} are represented in @value{GDBN} as @samp{bnd0raw}
+through @samp{bnd3raw}.  Pseudo registers @samp{bnd0} through @samp{bnd3}
+display the upper bound performing the complement of one operation on the
+upper bound value, i.e.@ when upper bound in @samp{bnd0raw} is 0 in the
+@value{GDBN} @samp{bnd0} it will be @code{0xfff@dots{}}.  In this sense it
+can also be noted that the upper bounds are inclusive.
+
+As an example, assume that the register BND0 holds bounds for a pointer having
+access allowed for the range between 0x32 and 0x71.  The values present on
+bnd0raw and bnd registers are presented as follows:
+
+@smallexample
+	bnd0raw = @{0x32, 0xffffffff8e@}
+	bnd0 = @{lbound = 0x32, ubound = 0x71@} : size 64
+@end smallexample
+
+This way the raw value can be accessed via bnd0raw@dots{}bnd3raw.  Any change
+on bnd0@dots{}bnd3 or bnd0raw@dots{}bnd3raw is reflect on its counterpart.  When the
+bnd0@dots{}bnd3 registers are displayed via Python, the display includes the memory size,
+in bits, accessible to the pointer.
 @end table
 
 @node Alpha
@@ -26543,7 +26604,9 @@ function to a string. The value can be one of:
 No particular reason (older frames should be available).
 
 @item gdb.FRAME_UNWIND_NULL_ID
-The previous frame's analyzer returns an invalid result.
+The previous frame's analyzer returns an invalid result.  This is no
+longer used by @value{GDBN}, and is kept only for backward
+compatibility.
 
 @item gdb.FRAME_UNWIND_OUTERMOST
 This frame is the outermost.
@@ -29318,10 +29381,19 @@ which threads are resumed.
 @findex ^connected
 @value{GDBN} has connected to a remote target.
 
-@item "^error" "," @var{c-string}
+@item "^error" "," "msg=" @var{c-string} [ "," "code=" @var{c-string} ]
 @findex ^error
-The operation failed.  The @code{@var{c-string}} contains the corresponding
-error message.
+The operation failed.  The @code{msg=@var{c-string}} variable contains
+the corresponding error message.
+
+If present, the @code{code=@var{c-string}} variable provides an error
+code on which consumers can rely on to detect the corresponding
+error condition.  At present, only one error code is defined:
+
+@table @samp
+@item "undefined-command"
+Indicates that the command causing the error does not exist.
+@end table
 
 @item "^exit"
 @findex ^exit
@@ -32520,6 +32592,11 @@ Otherwise this result is not present.
 @item frozen
 If the variable object is frozen, this variable will be present with a value of 1.
 
+@item displayhint
+A dynamic varobj can supply a display hint to the front end.  The
+value comes directly from the Python pretty-printer object's
+@code{display_hint} method.  @xref{Pretty Printing API}.
+
 @item dynamic
 This attribute will be present and have the value @samp{1} if the
 varobj is a dynamic varobj.  If the varobj is not a dynamic varobj,
@@ -35078,6 +35155,57 @@ default shows this information when you start an interactive session.
 (gdb)
 @end smallexample
 
+@subheading The @code{-info-gdb-mi-command} Command
+@cindex @code{-info-gdb-mi-command}
+@findex -info-gdb-mi-command
+
+@subsubheading Synopsis
+
+@smallexample
+ -info-gdb-mi-command @var{cmd_name}
+@end smallexample
+
+Query support for the @sc{gdb/mi} command named @var{cmd_name}.
+
+Note that the dash (@code{-}) starting all @sc{gdb/mi} commands
+is technically not part of the command name (@pxref{GDB/MI Input
+Syntax}), and thus should be omitted in @var{cmd_name}.  However,
+for ease of use, this command also accepts the form with the leading
+dash.
+
+@subsubheading @value{GDBN} Command
+
+There is no corresponding @value{GDBN} command.
+
+@subsubheading Result
+
+The result is a tuple.  There is currently only one field:
+
+@table @samp
+@item exists
+This field is equal to @code{"true"} if the @sc{gdb/mi} command exists,
+@code{"false"} otherwise.
+
+@end table
+
+@subsubheading Example
+
+Here is an example where the @sc{gdb/mi} command does not exist:
+
+@smallexample
+-info-gdb-mi-command unsupported-command
+^done,command=@{exists="false"@}
+@end smallexample
+
+@noindent
+And here is an example where the @sc{gdb/mi} command is known
+to the debugger:
+
+@smallexample
+-info-gdb-mi-command symbol-list-lines
+^done,command=@{exists="true"@}
+@end smallexample
+
 @subheading The @code{-list-features} Command
 @findex -list-features
 
@@ -35124,13 +35252,15 @@ Indicates that changes to breakpoints and breakpoints created via the
 CLI will be announced via async records.
 @item ada-task-info
 Indicates support for the @code{-ada-task-info} command.
-@item ada-exceptions
-Indicates support for the following commands, all of them related to Ada
-exceptions: @code{-info-ada-exceptions}, @code{-catch-assert} and
-@code{-catch-exception}.
 @item language-option
 Indicates that all @sc{gdb/mi} commands accept the @option{--language}
 option (@pxref{Context management}).
+@item info-gdb-mi-command
+Indicates support for the @code{-info-gdb-mi-command} command.
+@item undefined-command-error-code
+Indicates support for the "undefined-command" error code in error result
+records, produced when trying to execute an undefined @sc{gdb/mi} command
+(@pxref{GDB/MI Result Records}).
 @end table
 
 @subheading The @code{-list-target-features} Command
@@ -37532,7 +37662,7 @@ compiled with the @samp{-pg} compiler option.
 @item maint set show-debug-regs
 @itemx maint show show-debug-regs
 Control whether to show variables that mirror the hardware debug
-registers.  Use @code{ON} to enable, @code{OFF} to disable.  If
+registers.  Use @code{on} to enable, @code{off} to disable.  If
 enabled, the debug registers values are shown when @value{GDBN} inserts or
 removes a hardware breakpoint or watchpoint, and when the inferior
 triggers a hardware-assisted breakpoint or watchpoint.
@@ -43142,6 +43272,16 @@ describe the upper 128 bits of @sc{ymm} registers:
 @samp{ymm0h} through @samp{ymm7h} for i386
 @item
 @samp{ymm0h} through @samp{ymm15h} for amd64
+@end itemize
+
+The @samp{org.gnu.gdb.i386.mpx} is an optional feature representing Intel(R)
+Memory Protection Extension (MPX).  It should describe the following registers:
+
+@itemize @minus
+@item
+@samp{bnd0raw} through @samp{bnd3raw} for i386 and amd64.
+@item
+@samp{bndcfgu} and @samp{bndstatus} for i386 and amd64.
 @end itemize
 
 The @samp{org.gnu.gdb.i386.linux} feature is optional.  It should
