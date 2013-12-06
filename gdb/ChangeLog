@@ -1,3 +1,24 @@
+2013-12-05  Anthony Green  <green@moxielogic.com>
+
+	* moxie-tdep.c (moxie_software_single_step): New function.
+	(INST2OFFSET): New helper macro.
+	(moxie_gdbarch_init): Call set_gdbarch_software_single_step.
+	(moxie_process_readu): Move this up in the file.
+
+2013-12-05  Doug Evans  <xdje42@gmail.com>
+
+	* auto-load.c (load_auto_scripts_for_objfile): Add some comments.
+
+2013-12-05  Joel Brobecker  <brobecker@adacore.com>
+	    Tristan Gingold  <gingold@adacore.com>
+
+	* amd64-windows-tdep.c (amd64_windows_frame_decode_insns):
+	Accept version 2.  Ignore operations using opcode 6.
+
+2013-12-05  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-lex.l (find_dot_all): Fix coding style violations.
+
 2013-12-03  Walfred Tedeschi  <walfred.tedeschi@intel.com>
 
 	* NEWS:  Add section for Intel(R) Architecture Instructions
