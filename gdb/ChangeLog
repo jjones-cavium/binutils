@@ -1,3 +1,177 @@
+2013-12-10  Yao Qi  <yao@codesourcery.com>
+
+	* amd64-tdep.c (amd64_analyze_stack_align): Call
+	target_read_code instead of target_read_memory.
+	(amd64_analyze_prologue): Call read_code_unsigned_integer
+	instead of read_memory_unsigned_integer.  Call read_code
+	instead of read_memory.
+	(amd64_skip_xmm_prologue): Likewise.
+
+2013-12-10  Yao Qi  <yao@codesourcery.com>
+
+	* corefile.c (read_code): New function.
+	(read_code_integer): New function.
+	(read_code_unsigned_integer): New function.
+	* gdbcore.h (read_code): Declare.
+	(read_code_integer): Declare.
+	(read_code_unsigned_integer): Declare.
+	* i386-tdep.c (i386_follow_jump): Call target_read_code instead
+	of target_read_memory.  Call read_code_unsigned_integer instead
+	of read_memory_unsigned_integer.
+	(i386_analyze_struct_return): Likewise.
+	(i386_skip_probe): Likewise.
+	(i386_analyze_stack_align): Likewise.
+	(i386_match_pattern): Likewise.
+	(i386_skip_noop): Likewise.
+	(i386_analyze_frame_setup): Likewise.
+	(i386_analyze_register_saves): Likewise.
+	(i386_skip_prologue): Likewise.
+	(i386_skip_main_prologue): Likewise.
+	(i386_frame_cache_1): Likewise.
+
+2013-12-10  Yao Qi  <yao@codesourcery.com>
+
+	* infrun.c: Include "target-dcache.h".
+	(prepare_for_detach): Call target_dcache_invalidate.
+	(wait_for_inferior): Likewise.
+	(fetch_inferior_event): Likewise.
+	(infrun_thread_stop_requested_callback): Likewise.  Set
+	overlay_cache_invalid to 1.
+
+2013-12-10  Joel Brobecker  <brobecker@adacore.com>
+
+	* symtab.c (symbol_find_demangled_name): Add handling of
+	Ada symbols.
+
+2013-12-10  Joel Brobecker  <brobecker@adacore.com>
+
+	* mi/mi-main.c (mi_cmd_list_features): add "exec-run-start-option".
+	* NEWS: Expand the entry documenting the new -exec-run --start
+	option to mention the corresponding new entry in the output of
+	"-list-features".
+
+2013-12-10  Joel Brobecker  <brobecker@adacore.com>
+
+	* windows-nat.c (handle_load_dll): Add comments.
+	(windows_ensure_ntdll_loaded): New function.
+	(do_initial_windows_stuff): Use windows_ensure_ntdll_loaded.
+	Add FIXME comment.
+
+2013-12-08  Joel Brobecker  <brobecker@adacore.com>
+
+	GDB 7.6.2 released.
+
+2013-12-08  Yao Qi  <yao@codesourcery.com>
+
+	* stack.c (frame_info): Initialize variable caller_pc.
+
+2013-12-06  Pedro Alves  <palves@redhat.com>
+
+	* frame.c (enum cached_copy_status): New enum.
+	(struct frame_info) <prev_pc.p>: Change type to enum
+	cached_copy_status.
+	(fprint_frame): Handle not saved and unavailable prev_pc values.
+	(frame_unwind_pc_if_available): Delete and merge contents into ...
+	(frame_unwind_pc): ... here.  Handle OPTIMIZED_OUT_ERROR.  Adjust
+	to use enum cached_copy_status.
+	(frame_unwind_caller_pc_if_available): Delete.
+	(create_new_frame): Adjust.
+	* frame.h (frame_unwind_caller_pc_if_available): Delete
+	declaration.
+	* stack.c (frame_info): Use frame_unwind_caller_pc instead of
+	frame_unwind_caller_pc_if_available, and handle
+	NOT_AVAILABLE_ERROR and OPTIMIZED_OUT_ERROR errors.
+	* valprint.c (val_print_optimized_out): Use val_print_not_saved.
+	(val_print_not_saved): New function.
+	* valprint.h (val_print_not_saved): Declare.
+
+2013-12-06  Andrew Burgess  <aburgess@broadcom.com>
+	    Pedro Alves  <palves@redhat.com>
+
+	* exceptions.h (errors): Add OPTIMIZED_OUT_ERROR.
+	* dwarf2loc.c (write_pieced_value): Throw OPTIMIZED_OUT_ERROR.
+	* frame.c (frame_unwind_register): Throw OPTIMIZED_OUT_ERROR.
+	* spu-tdep.c (spu_software_single_step): Throw
+	OPTIMIZED_OUT_ERROR.
+	* valops.c (value_assign): Throw OPTIMIZED_OUT_ERROR.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* objfiles.c (free_objfile): Update comment.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* objfiles.h (objfile_to_front): Remove.
+	* objfiles.c (objfile_to_front): Remove.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* minsyms.c (get_symbol_leading_char): Remove unnecessary
+	declaration.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* psympriv.h (struct partial_symtab) <user>: Move earlier.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* cli/cli-cmds.c (edit_command): Use paddress, not hex_string.
+	(list_command): Likewise.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* psymtab.c (allocate_psymtab): Put the filename in the filename
+	bcache.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* buildsym.c (end_symtab_from_static_block): Use obstack_copy0.
+	* symtab.h (struct symtab) <dirname>: Now const.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* symfile.c (allocate_symtab): Remove cast.
+	* symtab.h (struct symtab) <filename>: Now const.
+
+2013-12-06  Tom Tromey  <tromey@redhat.com>
+
+	* break-catch-throw.c (fetch_probe_arguments): Use
+	get_probe_argument_count and evaluate_probe_argument.
+	* elfread.c (elf_get_probe_argument_count)
+	(elf_can_evaluate_probe_arguments, elf_evaluate_probe_argument)
+	(elf_compile_to_ax): Remove.
+	(elf_probe_fns): Update.
+	* probe.c (get_probe_argument_count, can_evaluate_probe_arguments)
+	(evaluate_probe_argument): Call method on probe, not via sym
+	functions.
+	* stap-probe.c (compute_probe_arg): Use get_probe_argument_count,
+	evaluate_probe_argument.
+	(compile_probe_arg): Use get_probe_argument_count.  Call method on
+	probe, not via sym functions.
+	* symfile-debug.c (debug_sym_get_probe_argument_count)
+	(debug_can_evaluate_probe_arguments)
+	(debug_sym_evaluate_probe_argument, debug_sym_compile_to_ax):
+	Remove.
+	(debug_sym_probe_fns): Remove.
+	* symfile.h (struct sym_probe_fns) <sym_get_probe_argument_count,
+	can_evaluate_probe_arguments, sym_evaluate_probe_argument,
+	sym_compile_to_ax>: Remove fields.
+
+2013-12-06  Pierre Muller  <muller@sourceware.org>
+
+	Fix completion for pascal language.
+	* p-exp.y (exp : field_exp name): Do not call mark_struct_expression.
+	(exp : field_exp name COMPLETE): New rule.
+	(exp : SIZEOF): Set correct current_type.
+	(last_was_structop): Remove static variable.
+	(yylex): Remove saw_structop local variable.
+	Adapt code to removal of variables above.
+
+2013-12-06  Joel Brobecker  <brobecker@adacore.com>
+
+	* frame.c (get_prev_frame_1): Delete variable "this_id".
+	Replace its use by a call to get_frame_id.
+
 2013-12-05  Anthony Green  <green@moxielogic.com>
 
 	* moxie-tdep.c (moxie_software_single_step): New function.
