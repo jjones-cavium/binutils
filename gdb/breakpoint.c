@@ -1,6 +1,6 @@
 /* Everything about breakpoints, for GDB.
 
-   Copyright (C) 1986-2013 Free Software Foundation, Inc.
+   Copyright (C) 1986-2014 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -8325,10 +8325,9 @@ breakpoint_hit_catch_syscall (const struct bp_location *bl,
            VEC_iterate (int, c->syscalls_to_be_caught, i, iter);
            i++)
 	if (syscall_number == iter)
-	  break;
-      /* Not the same.  */
-      if (!iter)
-	return 0;
+	  return 1;
+
+      return 0;
     }
 
   return 1;
