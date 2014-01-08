@@ -7142,6 +7142,7 @@ static const struct aarch64_cpu_option_table aarch64_cpus[] = {
   {"cortex-a57",	AARCH64_ARCH_V8, "Cortex-A57"},
   {"thunder",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO | AARCH64_FEATURE_CRC | AARCH64_FEATURE_ATOMIC,
    "Cavium Thunder"},
+  {"xgene-1",		AARCH64_ARCH_V8, "APM X-Gene 1"},
   {"generic", AARCH64_ARCH_V8, NULL},
 
   /* These two are example CPUs supported in GCC, once we have real
