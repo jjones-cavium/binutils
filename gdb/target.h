@@ -245,7 +245,7 @@ typedef LONGEST
 			     gdb_byte *readbuf,
 			     const gdb_byte *writebuf,
 			     ULONGEST offset,
-			     LONGEST len);
+			     ULONGEST len);
 
 /* Request that OPS transfer up to LEN 8-bit bytes of the target's
    OBJECT.  The OFFSET, for a seekable object, specifies the
@@ -537,7 +537,7 @@ struct target_ops
     LONGEST (*to_xfer_partial) (struct target_ops *ops,
 				enum target_object object, const char *annex,
 				gdb_byte *readbuf, const gdb_byte *writebuf,
-				ULONGEST offset, LONGEST len);
+				ULONGEST offset, ULONGEST len);
 
     /* Returns the memory map for the target.  A return value of NULL
        means that no memory map is available.  If a memory address
@@ -1127,8 +1127,10 @@ int target_write_memory_blocks (VEC(memory_write_request_s) *requests,
 #define	target_files_info()	\
      (*current_target.to_files_info) (&current_target)
 
-/* Insert a breakpoint at address BP_TGT->placed_address in the target
-   machine.  Result is 0 for success, non-zero for error.  */
+/* Insert a hardware breakpoint at address BP_TGT->placed_address in
+   the target machine.  Returns 0 for success, and returns non-zero or
+   throws an error (with a detailed failure reason error code and
+   message) otherwise.  */
 
 extern int target_insert_breakpoint (struct gdbarch *gdbarch,
 				     struct bp_target_info *bp_tgt);
@@ -1556,6 +1558,11 @@ extern int target_insert_mask_watchpoint (CORE_ADDR, CORE_ADDR, int);
    for failure.  */
 
 extern int target_remove_mask_watchpoint (CORE_ADDR, CORE_ADDR, int);
+
+/* Insert a hardware breakpoint at address BP_TGT->placed_address in
+   the target machine.  Returns 0 for success, and returns non-zero or
+   throws an error (with a detailed failure reason error code and
+   message) otherwise.  */
 
 #define target_insert_hw_breakpoint(gdbarch, bp_tgt) \
      (*current_target.to_insert_hw_breakpoint) (gdbarch, bp_tgt)

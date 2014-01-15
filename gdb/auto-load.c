@@ -36,7 +36,6 @@
 #include "gdb_vecs.h"
 #include "readline/tilde.h"
 #include "completer.h"
-#include "observer.h"
 #include "fnmatch.h"
 #include "top.h"
 #include "filestuff.h"
@@ -596,7 +595,7 @@ get_auto_load_pspace_data (struct program_space *pspace)
   info = program_space_data (pspace, auto_load_pspace_data);
   if (info == NULL)
     {
-      info = XZALLOC (struct auto_load_pspace_info);
+      info = XCNEW (struct auto_load_pspace_info);
       set_program_space_data (pspace, auto_load_pspace_data, info);
     }
 

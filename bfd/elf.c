@@ -4184,11 +4184,7 @@ _bfd_elf_map_sections_to_segments (bfd *abfd, struct bfd_link_info *info)
 			== (SEC_LOAD | SEC_HAS_CONTENTS))
 		      break;
 
-		  if (i == (unsigned) -1)
-		    continue;
-
-		  if (m->sections[i]->vma + m->sections[i]->size
-		      >= info->relro_end)
+		  if (i != (unsigned) -1)
 		    break;
 		}
 	    }
@@ -4792,6 +4788,7 @@ assign_file_positions_for_load_sections (bfd *abfd,
 		p->p_flags |= PF_W;
 	    }
 	}
+
       off -= off_adjust;
 
       /* Check that all sections are in a PT_LOAD segment.
@@ -4993,14 +4990,11 @@ assign_file_positions_for_non_load_sections (bfd *abfd,
 		{
 		  if (lp->p_type == PT_LOAD
 		      && lp->p_vaddr < link_info->relro_end
-		      && lp->p_vaddr + lp->p_filesz >= link_info->relro_end
 		      && lm->count != 0
 		      && lm->sections[0]->vma >= link_info->relro_start)
 		    break;
 		}
 
-	      /* PR ld/14207.  If the RELRO segment doesn't fit in the
-		 LOAD segment, it should be removed.  */
 	      BFD_ASSERT (lm != NULL);
 	    }
 	  else

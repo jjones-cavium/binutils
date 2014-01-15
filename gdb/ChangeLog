@@ -1,3 +1,669 @@
+2014-01-14  Doug Evans  <dje@google.com>
+
+	* symfile.h (expand_symtabs_matching): Renamed from
+	expand_partial_symbol_names.  Update prototype.
+	(map_symbol_filenames): Renamed from map_partial_symbol_filenames.
+	* symfile.c (expand_symtabs_matching): Renamed from
+	expand_partial_symbol_names.  New args file_matcher, kind.
+	Rename arg fun to symbol_matcher.
+	(map_symbol_filenames): Renamed from map_partial_symbol_filenames.
+	* ada-lang.c (ada_complete_symbol_matcher): Renamed from
+	ada_expand_partial_symbol_name.
+	(ada_make_symbol_completion_list): Update to call
+	expand_symtabs_matching.
+	(ada_add_global_exceptions): Call expand_symtabs_matching.
+	* mi/mi-cmd-file.c (mi_cmd_file_list_exec_source_files): Update to
+	call map_symbol_filenames.
+	* symtab.c (sources_info): Update to call map_symbol_filenames.
+	(search_symbols): Call expand_symtabs_matching.
+	(symbol_completion_matcher): Renamed from expand_partial_symbol_name.
+	(default_make_symbol_completion_list_break_on): Update to call
+	expand_symtabs_matching.
+	(make_source_files_completion_list): Update to call
+	map_symbol_filenames.
+
+2014-01-14  Doug Evans  <dje@google.com>
+
+	* symfile.h (expand_symtabs_file_matcher_ftype): New typedef.
+	(expand_symtabs_symbol_matcher_ftype): New typedef.
+	(quick_symbol_functions.expand_symtabs_matching): Update to use.
+	expand_symtabs_file_matcher_ftype, expand_symtabs_symbol_matcher_ftype.
+	* symfile.c (expand_partial_symbol_names): Update to use
+	expand_symtabs_symbol_matcher_ftype.
+	* dwarf2read.c (dw2_expand_symtabs_matching): Update to use
+	expand_symtabs_file_matcher_ftype, expand_symtabs_symbol_matcher_ftype.
+	Arg name_matcher renamed to symbol_matcher.
+	* psymtab.c (recursively_search_psymtabs): Update to use
+	expand_symtabs_symbol_matcher_ftype.  Arg name_matcher renamed to
+	sym_matcher.
+	(expand_symtabs_matching_via_partial): Update to use
+	expand_symtabs_file_matcher_ftype, expand_symtabs_symbol_matcher_ftype.
+	Arg name_matcher renamed to symbol_matcher.
+
+2014-01-14  Doug Evans  <dje@google.com>
+
+	* psymtab.c (expand_partial_symbol_names): Delete, moved to symfile.c.
+	(map_partial_symbol_filenames): Ditto.
+	* psymtab.h (expand_partial_symbol_names): Delete, moved to symfile.h.
+	(map_partial_symbol_filenames): Ditto.
+	* symfile.c (expand_partial_symbol_names): Moved here from psymtab.c.
+	(map_partial_symbol_filenames): Ditto.
+	* symfile.h (expand_partial_symbol_names): Moved here from psymtab.h.
+	(map_partial_symbol_filenames): Ditto.
+	* symtab.c: Delete #include "psymtab.h".
+
+2014-01-14  Pedro Alves  <palves@redhat.com>
+	    Tom Tromey  <tromey@redhat.com>
+
+	* infrun.c (use_displaced_stepping): Use find_record_target
+	instead of RECORD_IS_USED.
+	(adjust_pc_after_break): Use record_full_is_used instead of
+	RECORD_IS_USED.
+	* record-btrace.c (record_btrace_open): Call record_preopen
+	instead of checking RECORD_IS_USED.
+	* record-full.c (record_full_shortname)
+	(record_full_core_shortname): New globals.
+	(record_full_is_used): New function.
+	(find_full_open): Call record_preopen instead of checking
+	RECORD_IS_USED.
+	(init_record_full_ops): Set the target's shortname to
+	record_full_shortname.
+	(init_record_full_core_ops): Set the target's shortname to
+	record_full_core_shortname.
+	* record-full.h (record_full_is_used): Declare.
+	* record.c (find_record_target): Make extern.
+	(record_preopen): New function.
+	* record.h (RECORD_IS_USED): Delete macro.
+	(find_record_target, record_preopen): Declare functions.
+
+2014-01-14  Yao Qi  <yao@codesourcery.com>
+
+	* gdbarch.sh (core_xfer_shared_libraries): Change its argument
+	'len''s type to ULONGEST.
+	(core_xfer_shared_libraries_aix): Likewise.
+	* gdbarch.c, gdbarch.h: Regenerated.
+	* i386-cygwin-tdep.c (windows_core_xfer_shared_libraries):
+	Change type of 'len' to ULONGEST.
+	* rs6000-aix-tdep.c (rs6000_aix_ld_info_to_xml): Likewise.
+	(rs6000_aix_core_xfer_shared_libraries_aix): Likewise.
+
+2014-01-14  Yao Qi  <yao@codesourcery.com>
+
+	* common/linux-osdata.c (linux_xfer_osdata_processes): Change
+	type of 'len' to ULONGEST.
+	(linux_xfer_osdata_processgroups): Likewise.
+	(linux_xfer_osdata_threads): Likewise.
+	(linux_xfer_osdata_fds): Likewise.
+	(linux_xfer_osdata_isockets): Likewise.
+	(linux_xfer_osdata_shm): Likewise.
+	(linux_xfer_osdata_sem): Likewise.
+	(linux_xfer_osdata_msg): Likewise.
+	(linux_common_xfer_osdata): Likewise.
+	(struct osdata_type) <getter>: Likewise.
+	* common/linux-osdata.h (linux_common_xfer_osdata): Update
+	the declaration.
+
+2014-01-14  Yao Qi  <yao@codesourcery.com>
+
+	* target.h (target_xfer_partial_ftype): Update.
+	(struct target_ops) <to_xfer_partial>: Change 'len' type to
+	ULONGEST.
+	* aix-thread.c (aix_thread_xfer_partial): Change type of
+	argument 'len' to ULONGEST.
+	* auxv.c (procfs_xfer_auxv): Likewise.
+	(ld_so_xfer_auxv): Likewise.
+	(memory_xfer_auxv): Likewise.
+	* bfd-target.c (target_bfd_xfer_partial): Likewise.
+	* bsd-kvm.c (bsd_kvm_xfer_partial): Likewise.
+	* bsd-uthread.c (bsd_uthread_xfer_partial): Likewise.
+	* corelow.c (core_xfer_partial): Likewise.
+	* ctf.c (ctf_xfer_partial): Likewise.
+	* darwin-nat.c (darwin_read_write_inferior): Likewise.  Use
+	'%u'.
+	(darwin_read_dyld_info): Likewise.
+	(darwin_xfer_partial): Likewise.
+	* exec.c (section_table_xfer_memory_partial): Likewise.
+	(exec_xfer_partial): Likewise.
+	* exec.h (section_table_xfer_memory_partial): Update
+	declaration.
+	* gnu-nat.c (gnu_xfer_memory): Likewise.  Call pulongest
+	instead of plongest.
+	(gnu_xfer_partial): Likewise.
+	* ia64-hpux-nat.c (ia64_hpux_xfer_memory): Likewise.
+	(ia64_hpux_xfer_solib_got): Likewise.
+	(ia64_hpux_xfer_partial): Likewise.
+	* ia64-linux-nat.c (ia64_linux_xfer_partial):
+	* inf-ptrace.c (inf_ptrace_xfer_partial):
+	* inf-ttrace.c (inf_ttrace_xfer_partial):
+	* linux-nat.c (linux_xfer_siginfo): Likewise.
+	(linux_nat_xfer_partial): Likewise.
+	(spu_enumerate_spu_ids, linux_proc_xfer_spu): Likewise.
+	(linux_nat_xfer_osdata, linux_xfer_partial): Likewise.
+	* monitor.c (monitor_xfer_memory): Likewise.
+	(monitor_xfer_partial): Likewise.
+	* procfs.c (procfs_xfer_partial): Likewise.
+	* record-full.c (record_full_xfer_partial): Likewise.
+	(record_full_core_xfer_partial): Likewise.
+	* remote-sim.c (gdbsim_xfer_memory): Likewise.  Call pulongest
+	instead of plongest.
+	(gdbsim_xfer_partial): Likewise.
+	* remote.c (remote_xfer_partial): Likewise.
+	* rs6000-aix-tdep.c (rs6000_aix_ld_info_to_xml): Likewise.
+	* rs6000-aix-tdep.h (rs6000_aix_ld_info_to_xml): Update
+	declaration.
+	* rs6000-nat.c (rs6000_xfer_partial): Likewise.
+	(rs6000_xfer_shared_libraries): Likewise.
+	* sol-thread.c (sol_thread_xfer_partial): Likewise.
+	* sparc-nat.c (sparc_xfer_wcookie): Likewise.
+	(sparc_xfer_partial): Likewise.
+	* spu-linux-nat.c (spu_proc_xfer_spu): Likewise.
+	(spu_xfer_partial): Likewise.
+	* spu-multiarch.c (spu_xfer_partial): Likewise.
+	* target.c (target_read_live_memory): Likewise.
+	(memory_xfer_live_readonly_partial): Likewise.
+	(memory_xfer_partial, memory_xfer_partial_1): Likewise.
+	(target_xfer_partial, default_xfer_partial): Likewise.
+	(current_xfer_partial): Likewise.
+	* tracepoint.c (tfile_xfer_partial): Likewise.
+	* windows-nat.c (windows_xfer_memory): Likewise.  Call
+	pulongest instead of plongest.
+	(windows_xfer_partial): Likewise.
+	(windows_xfer_shared_libraries): Likewise.
+
+2014-01-14  Yao Qi  <yao@codesourcery.com>
+
+	* rs6000-nat.c (rs6000_xfer_shared_libraries): Use
+	target_xfer_partial_ftype.
+
+2014-01-13  Siva Chandra Reddy  <sivachandra@google.com>
+
+	PR python/15464
+	PR python/16113
+	* valops.c (value_struct_elt_bitpos): New function
+	* py-type.c (convert_field): Set 'name' attribute of a gdb.Field
+	object to 'None' if the field name is an empty string ("").
+	* python/py-value.c (valpy_getitem): Use 'bitpos' and 'type'
+	attribute to look for a field when 'name' is 'None'.
+	(get_field_type): New function
+
+2014-01-13  Doug Evans  <dje@google.com>
+
+	PR symtab/16426
+	* dwarf2read.c (dwarf2_get_dwz_file): Call gdb_bfd_record_inclusion.
+	(try_open_dwop_file): Ditto.
+	* gdb_bfd.c: #include "vec.h".
+	(bfdp): New typedef.
+	(struct gdb_bfd_data): New member included_bfds.
+	(gdb_bfd_unref): Unref all included bfds.
+	(gdb_bfd_record_inclusion): New function.
+	* gdb_bfd.h (gdb_bfd_record_inclusion): Declare.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* gdbcore.h (deprecated_core_resize_section_table): Remove.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* defs.h (use_windows): Remove.
+	* gdb.c (main): Update.
+	* main.c (captured_main, gdb_main): Update.
+	* main.h (struct captured_main_args) <use_windows>: Remove.
+	* top.c (use_windows): Remove.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* defs.h (deprecated_flush_hook): Remove.
+
+2014-01-13  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	PR threads/16216
+	* linux-thread-db.c (try_thread_db_load): Add parameter
+	check_auto_load_safe.  Move here the file_is_auto_load_safe call.
+	(try_thread_db_load_from_pdir_1): Move it there from here.
+	(try_thread_db_load_from_sdir): Update caller.
+	(try_thread_db_load_from_dir): Move it there from here.
+
+2014-01-13  Patrick Palka  <patrick@parcs.ath.cx>
+
+	* regformats/regdat.sh: Always rewrite the register file.
+
+2014-01-13  Pedro Alves  <palves@redhat.com>
+
+        * Makefile.in (CHECK_HEADERS): New variable.
+        (check-headers:): New rule.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* cli/cli-setshow.c (do_set_command): Update.
+	* defs.h (deprecated_set_hook): Remove.
+	* top.c (deprecated_set_hook): Remove.
+
+2014-01-13  Pedro Alves  <palves@redhat.com>
+
+	* tracepoint.c (tfile_fetch_registers): Don't infer the PC from
+	the tracepoint if the PC is a pseudo-register.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* defs.h (XCALLOC): Remove.
+	* bcache.c (bcache_xmalloc): Use XCNEW, not XCALLOC.
+	(print_bcache_statistics): Use XCNEWVEC, not XCALLOC.
+	* dwarf2loc.c (allocate_piece_closure): Likewise.
+	* elfread.c (elf_symfile_segments): Likewise.
+	(elf_symfile_segments): Likewise.
+	* gdbtypes.c (copy_type_recursive): Likewise.
+	* i386-tdep.c (i386_gdbarch_init): Use XCNEW, not XCALLOC.
+	* jit.c (jit_frame_sniffer): Use XCNEWVEC, not XCALLOC.
+	* minsyms.c (prim_record_minimal_symbol_full): Use XCNEW, not
+	XCALLOC.
+	* mt-tdep.c (mt_gdbarch_init): Likewise.
+	* opencl-lang.c (allocate_lval_closure): Use XCNEWVEC, not
+	XCALLOC.
+	* psymtab.c (psymbol_compare): Use XCNEW, not XCALLOC.
+	* regcache.c (regcache_xmalloc_1): Use XCNEWVEC, not XCALLOC.
+	* registry.c (registry_alloc_data): Likewise.
+	* rs6000-tdep.c (rs6000_gdbarch_init): Use XCNEW, not XCALLOC.
+	* s390-linux-tdep.c (s390_gdbarch_init): Likewise.
+	* serial.c (serial_fdopen_ops): Likewise.
+	* solib-aix.c (solib_aix_get_section_offsets): Use XCNEWVEC, not
+	XCALLOC.
+	* spu-tdep.c (spu_gdbarch_init): Use XCNEW, not XCALLOC.
+	* symfile.c (default_symfile_segments): Use XCNEW and XCNEWVEC,
+	not XCALLOC.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* defs.h (XMALLOC): Remove.
+	* avr-tdep.c (avr_gdbarch_init): Use XNEW, not XMALLOC.
+	* bfin-tdep.c (bfin_gdbarch_init): Likewise.
+	* cli-out.c (struct ui_out *): Likewise.
+	* cli/cli-dump.c (add_dump_command): Likewise.
+	(add_dump_command): Likewise.
+	* complaints.c (get_complaints): Likewise.
+	(find_complaint): Likewise.
+	* dwarf2-frame.c (execute_cfa_program): Likewise.
+	* dwarf2read.c (abbrev_table_read_table): Likewise.
+	* gdbarch.sh: Likewise.
+	* gdbarch.c: Rebuild.
+	* inf-ttrace.c (inf_ttrace_add_page): Likewise.
+	* interps.c (interp_new): Likewise.
+	* lm32-tdep.c (lm32_gdbarch_init): Likewise.
+	* m32r-tdep.c (m32r_gdbarch_init): Likewise.
+	* mi/mi-console.c (mi_console_file_new): Likewise.
+	* mi/mi-interp.c (mi_interpreter_init): Likewise.
+	* mi/mi-out.c (mi_out_new): Likewise.
+	* mi/mi-parse.c (mi_parse): Likewise.
+	* microblaze-tdep.c (microblaze_gdbarch_init): Likewise.
+	* moxie-tdep.c (moxie_gdbarch_init): Likewise.
+	* observer.c (xalloc_observer_list_node): Likewise.
+	* regcache.c (regcache_xmalloc_1): Likewise.
+	* reggroups.c (reggroup_new): Likewise.
+	(_initialize_reggroup): Likewise.
+	* registry.c (register_data_with_cleanup): Likewise.
+	* remote.c (remote_notif_stop_alloc_reply): Likewise.
+	* ser-base.c (serial_ttystate): Likewise.
+	* ser-mingw.c (make_pipe_state): Likewise.
+	* ser-pipe.c (pipe_open): Likewise.
+	* serial.c (serial_open): Likewise.
+	* sh64-tdep.c (sh64_gdbarch_init): Likewise.
+	* tui/tui-data.c (tui_alloc_generic_win_info): Likewise.
+	(tui_alloc_win_info): Likewise.
+	(tui_add_content_elements): Likewise.
+	* tui/tui-file.c (tui_file_new): Likewise.
+	* tui/tui-out.c (tui_out_new): Likewise.
+	* ui-file.c (mem_file_new): Likewise.
+	* ui-out.c (push_level): Likewise.
+	(make_cleanup_ui_out_end): Likewise.
+	(append_header_to_list): Likewise.
+	(ui_out_new): Likewise.
+	* user-regs.c (user_reg_add_builtin): Likewise.
+
+2014-01-13  Tom Tromey  <tromey@redhat.com>
+
+	* defs.h (XZALLOC): Remove.
+	* ada-lang.c (get_ada_inferior_data): Use XCNEW, not XZALLOC.
+	* ada-tasks.c (get_ada_tasks_pspace_data): Likewise.
+	(get_ada_tasks_inferior_data): Likewise.
+	* auto-load.c (get_auto_load_pspace_data): Likewise.
+	* auxv.c (get_auxv_inferior_data): Likewise.
+	* bfd-target.c (target_bfd_reopen): Likewise.
+	* breakpoint.c (get_catch_syscall_inferior_data): Likewise.
+	(deprecated_insert_raw_breakpoint): Likewise.
+	* bsd-uthread.c (bsd_uthread_pid_to_str): Likewise.
+	* corelow.c (core_open): Likewise.
+	* darwin-nat.c (darwin_check_new_threads): Likewise.
+	(darwin_attach_pid): Likewise.
+	* dummy-frame.c (dummy_frame_push): Likewise.
+	* dwarf2-frame.c (dwarf2_frame_cache): Likewise.
+	* dwarf2loc.c (allocate_piece_closure): Likewise.
+	* elfread.c (elf_symfile_segments): Likewise.
+	* eval.c (ptrmath_type_p): Likewise.
+	* exceptions.c (EXCEPTIONS_SIGJMP_BUF): Likewise.
+	* gdbtypes.c (alloc_type_arch): Likewise.
+	(alloc_type_instance): Likewise.
+	* hppa-tdep.c (hppa_gdbarch_init): Likewise.
+	* inf-child.c (inf_child_can_use_agent): Likewise.
+	* inflow.c (get_inflow_inferior_data): Likewise.
+	* infrun.c (save_infcall_suspend_state): Likewise.
+	* jit.c (jit_reader_load): Likewise.
+	(get_jit_objfile_data): Likewise.
+	(get_jit_program_space_data): Likewise.
+	(jit_object_open_impl): Likewise.
+	(jit_symtab_open_impl): Likewise.
+	(jit_block_open_impl): Likewise.
+	(jit_frame_sniffer): Likewise.
+	* linux-fork.c (add_fork): Likewise.
+	* maint.c (make_command_stats_cleanup): Likewise.
+	* objfiles.c (get_objfile_pspace_data): Likewise.
+	* opencl-lang.c (struct lval_closure): Likewise.
+	* osdata.c (osdata_start_osdata): Likewise.
+	* progspace.c (new_address_space): Likewise.
+	(add_program_space): Likewise.
+	* remote-sim.c (get_sim_inferior_data): Likewise.
+	* sh-tdep.c (sh_gdbarch_init): Likewise.
+	* skip.c (Ignore): Likewise.
+	(skip_delete_command): Likewise.
+	* solib-aix.c (get_solib_aix_inferior_data): Likewise.
+	(library_list_start_library): Likewise.
+	(solib_aix_current_sos): Likewise.
+	* solib-darwin.c (get_darwin_info): Likewise.
+	(darwin_current_sos): Likewise.
+	* solib-dsbt.c (get_dsbt_info): Likewise.
+	* solib-ia64-hpux.c (new_so_list): Likewise.
+	(ia64_hpux_get_solib_linkage_addr): Likewise.
+	* solib-spu.c (append_ocl_sos): Likewise.
+	(spu_current_sos): Likewise.
+	* solib-svr4.c (get_svr4_info): Likewise.
+	(svr4_keep_data_in_core): Likewise.
+	(library_list_start_library): Likewise.
+	(svr4_default_sos): Likewise.
+	(svr4_read_so_list): Likewise.
+	* solib-target.c (library_list_start_library): Likewise.
+	(solib_target_current_sos): Likewise.
+	* sparc-tdep.c (sparc32_gdbarch_init): Likewise.
+	* symfile-debug.c (install_symfile_debug_logging): Likewise.
+	* symfile.c (default_symfile_segments): Likewise.
+	* target-descriptions.c (tdesc_data_init): Likewise.
+	(tdesc_create_reg): Likewise.
+	(struct tdesc_type *): Likewise.
+	(tdesc_create_vector): Likewise.
+	(tdesc_set_struct_size): Likewise.
+	(struct tdesc_type *): Likewise.
+	(tdesc_free_feature): Likewise.
+	(tdesc_create_feature): Likewise.
+	* windows-nat.c (windows_add_thread): Likewise.
+	(windows_make_so): Likewise.
+	* xml-support.c (gdb_xml_body_text): Likewise.
+	(gdb_xml_create_parser_and_cleanup): Likewise.
+	(xml_process_xincludes): Likewise.
+	* xml-syscall.c (allocate_syscalls_info): Likewise.
+	(syscall_create_syscall_desc): Likewise.
+
+2014-01-12  Sergio Durigan Junior  <sergiodj@redhat.com>
+
+	* i386-tdep.c (i386_stap_parse_special_token_triplet): New
+	function, with code from i386_stap_parse_special_token.
+	(i386_stap_parse_special_token_three_arg_disp): Likewise.
+	(i386_stap_parse_special_token): Move code to the two functions
+	above; simplify it.
+
+2014-01-09  Pedro Alves  <palves@redhat.com>
+	    Hui Zhu  <hui@codesourcery.com>
+
+	PR gdb/16101
+	* breakpoint.c (insert_bp_location): Rename hw_bp_err_string to
+	bp_err_string.  Don't mark the location shlib_disabled if the
+	error thrown wasn't a generic or memory error.  Catch errors
+	thrown while inserting breakpoints in overlayed code.  Output
+	error message of software breakpoints.
+	* remote.c (remote_insert_breakpoint): If this breakpoint has
+	target-side commands but this stub doesn't support Z0 packets,
+	throw NOT_SUPPORTED_ERROR error.
+	* exceptions.h (enum errors) <NOT_SUPPORTED_ERROR>: New error.
+	* target.h (target_insert_breakpoint): Extend comment.
+	(target_insert_hw_breakpoint): Add comment.
+
+2014-01-08  Pedro Alves  <palves@redhat.com>
+
+	* remote.c (remote_add_thread): Add threads silently if starting
+	up.
+	(remote_notice_new_inferior): If in all-stop, and starting up,
+	don't call notice_new_inferior.
+	(get_current_thread): New function, factored out from ...
+	(add_current_inferior_and_thread): ... this.  Adjust.
+	(remote_start_remote) <all-stop>: Fetch the thread list.  If we
+	found any thread, then select the remote's current thread as GDB's
+	current thread too.
+
+2014-01-08  Joel Brobecker  <brobecker@adacore.com>
+
+	* NEWS: Create a new section for the next release branch.
+	Rename the section of the current branch, now that it has
+	been cut.
+
+2014-01-08  Joel Brobecker  <brobecker@adacore.com>
+
+	GDB 7.7 branch created (79301218fa0f074c5656db0ec8972a5ddcf91fb5):
+	* version.in: Bump version to 7.7.50.DATE-cvs.
+
+2014-01-08  Yao Qi  <yao@codesourcery.com>
+
+	* spu-linux-nat.c (spu_symbol_file_add_from_memory): Change
+	type of 'id' to gdb_byte.  Cast 'id' to 'const char *'.
+	(spu_xfer_partial): Cast 'buf' to 'const char *'.
+
+2014-01-08  Yao Qi  <yao@codesourcery.com>
+
+	* spu-linux-nat.c (spu_symbol_file_add_from_memory): Pass
+	return value of bfd_get_filename to symbol_file_add_from_bfd.
+
+2014-01-08  Pierre Muller  <muller@sourceware.org>
+
+	Fix PR16201.
+	* coff-pe-read.c (struct read_pe_section_data): Add index field.
+	(add_pe_exported_sym): Use SECTION_DATA->INDEX for call
+	to prim_record_mininal_symbol_and_info.
+	(add_pe_forwarded_sym): Use known section number of forwarded symbol
+	in call to prim_record_minimal_symbol_and_info.
+	(read_pe_exported_syms): Set index field of section_data.
+
+2014-01-07  Andrew Pinski  <apinski@cavium.com>
+
+	* features/aarch64-core.xml (cpsr): Change to be 64bit.
+	* features/aarch64.c: Regenerate.
+
+2014-01-07  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* target.c (return_null): Define.
+	(update_current_target): Use it instead of return_zero for
+	functions that return a pointer.
+
+2014-01-07  Edjunior Barbosa Machado  <emachado@linux.vnet.ibm.com>
+
+	* source.c (add_path): Fix check for duplicated paths in the previously
+	included paths.
+
+2014-01-07  Honggyu Kim  <hong.gyu.kim@lge.com>
+
+	* ada-lang.c: Remove duplicated include statements.
+	* alphabsd-nat.c: Ditto.
+	* amd64-darwin-tdep.c: Ditto.
+	* amd64fbsd-nat.c: Ditto.
+	* auto-load.c: Ditto.
+	* ax-gdb.c: Ditto.
+	* breakpoint.c: Ditto.
+	* dbxread.c: Ditto.
+	* fork-child.c: Ditto.
+	* gdb_usleep.c: Ditto.
+	* i386-darwin-tdep.c: Ditto.
+	* i386fbsd-nat.c: Ditto.
+	* infcmd.c: Ditto.
+	* inferior.c: Ditto.
+	* jv-lang.c: Ditto.
+	* linux-nat.c: Ditto.
+	* linux-tdep.c: Ditto.
+	* m68kbsd-nat.c: Ditto.
+	* m68klinux-nat.c: Ditto.
+	* microblaze-tdep.c: Ditto.
+	* mips-linux-tdep.c: Ditto.
+	* mn10300-tdep.c: Ditto.
+	* nto-tdep.c: Ditto.
+	* opencl-lang.c: Ditto.
+	* osdata.c: Ditto.
+	* printcmd.c: Ditto.
+	* regcache.c: Ditto.
+	* remote-m32r-sdi.c: Ditto.
+	* remote.c: Ditto.
+	* symfile.c: Ditto.
+	* symtab.c: Ditto.
+	* tilegx-linux-nat.c: Ditto.
+	* tilegx-tdep.c: Ditto.
+	* tracepoint.c: Ditto.
+	* valops.c: Ditto.
+	* vaxbsd-nat.c: Ditto.
+	* windows-nat.c: Ditto.
+	* xtensa-tdep.c: Ditto.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* spu-linux-nat.c (_initialize_spu_nat): Declare.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+	    Joel Brobecker  <brobecker@adacore.com>
+
+	* aix-thread.c (pdc_read_regs): Cast parameter to uintptr_t.
+	(pdc_write_regs): Likewise.
+	(fetch_regs_kernel_thread): Likewise.
+	(store_regs_kernel_thread): Likewise.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-varobj.c (ada_varobj_adjust_for_child_access): Convert
+	tagged type objects to their actual type.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (print_field_values): Add "language" parameter.
+	Update calls to print_field_values and print_variant_part.
+	Pass new parameter "language" in call to val_print instead
+	of "current_language".  Replace call to ada_val_print by call
+	to val_print.
+	(print_variant_part): Add "language" parameter.
+	(ada_val_print_struct_union): Update call to print_field_values.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ui_memcpy): Delete.
+	(ada_print_floating): Update documentation.  Add empty line
+	between between function documentation and implementation.
+	Delete variable "buffer".  Use ui_file_xstrdup in place of
+	ui_file_put.  Minor adjustments following this change.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_string): New function,
+	extracted from ada_val_print_array.
+	(ada_val_print_array): Replace extracted code by call
+	to ada_val_print_string followed by a return.  Move
+	"else" branch to the function's top block.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_array): Move implementation
+	down.  Rename parameter "offset" and "val" into "offset_aligned"
+	and "original_value" respectively.  Add parameter "offset".
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_ref): Rewrite by mostly
+	re-organizing the code. Change the "???" message printed
+	when target type is a TYPE_CODE_UNDEF into
+	"<ref to undefined type>".
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (print_record): Delete, implementation inlined...
+	(ada_val_print_struct_union): ... here.  Remove call to
+	ada_check_typedef in inlined implementation.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_gnat_array): New function,
+	extracted from ada_val_print_1;
+	(ada_val_print_ptr, ada_val_print_num, ada_val_print_enum)
+	(ada_val_print_flt, ada_val_print_struct_union)
+	(ada_val_print_ref): Likewise.
+	(ada_val_print_1): Delete variables i and elttype.
+	Replace extracted-out code by call to corresponding
+	new functions.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_1): Remove call to gdb_flush.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_1): Replace calls to
+	ada_val_print_1 by calls to val_print.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (ada_val_print_1): Add parameter "language".
+	Update calls to self accordingly.  Replace calls to c_val_print
+	by calls to val_print.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* ada-valprint.c (print_record): Delete declaration.
+	(adjust_type_signedness, ada_val_print_1): Likewise.
+	(ada_val_print): Move function implementation down.
+	(print_variant_part, print_field_values, print_record):
+	Move function implementation up.
+
+2014-01-07  Joel Brobecker  <brobecker@adacore.com>
+
+	* python/py-type.c (typy_get_name): New function.
+	(type_object_getset): Add entry for attribute "name".
+	* NEWS: Add entry mentioning this new attribute.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (set_exceptions_cmd): Remove an empty body 'if'
+	statement.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (info_port_rights): Add qualifier const to
+	argument args.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (trace_me): Use 'void' for empty argument list.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (make_inf) Update declaration.
+	(make_inf): Make it static.
+	(inf_set_traced): Likewise.
+	(inf_port_to_thread, inf_task_died_status): Likewise.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (inf_tid_to_proc): Remove declaration.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gnu-nat.c (_initialize_gnu_nat): Declare.
+
+2014-01-07  Yao Qi  <yao@codesourcery.com>
+
+	* gdbarch.sh (byte_order, byte_order_for_code): Change type to
+	'enum bfd_endian'.
+	(struct gdbarch_info) <byte_order>: Change type to
+	'enum bfd_endian'.
+	<byte_order_for_code>: Likewise.
+	* gdbarch.c, gdbarch.h: Regenerated.
+
 2014-01-06  Sasha Smundak  <asmundak@google.com>
 
 	* jit.c: (jit_reader_load_command): Fix JIT reader path creation.

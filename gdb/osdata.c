@@ -45,8 +45,6 @@ osdata_parse (const char *xml)
 
 #else /* HAVE_LIBEXPAT */
 
-#include "xml-support.h"
-
 /* Internal parsing data passed to all XML callbacks.  */
 struct osdata_parsing_data
   {
@@ -69,7 +67,7 @@ osdata_start_osdata (struct gdb_xml_parser *parser,
     gdb_xml_error (parser, _("Seen more than on osdata element"));
 
   type = xml_find_attribute (attributes, "type")->value;
-  osdata = XZALLOC (struct osdata);
+  osdata = XCNEW (struct osdata);
   osdata->type = xstrdup (type);
   data->osdata = osdata;
 }
