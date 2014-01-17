@@ -1,3 +1,35 @@
+2014-01-16  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR ld/16456
+	* genscripts.sh: Don't search directory with LIBPATH_SUFFIX_SKIP
+	suffix.
+	* emulparams/elf32_x86_64.sh (LIBPATH_SUFFIX_SKIP): Set to 64
+	for elf32_x86_64 emulation.
+	* emulparams/elf_i386.sh (LIBPATH_SUFFIX_SKIP): Set to 64
+	for elf_i386 emulation.
+
+2014-01-16  Alan Modra  <amodra@gmail.com>
+
+	* ld.h (fat_section_userdata_type, get_userdata): Move to..
+	* ldlang.h (input_section_userdata_type, get_userdata): ..here.
+	* ldlang.c (init_map_userdata): Delete.  Fold into..
+	(sort_def_symbol): ..here.  Don't attach input section userdata
+	to output sections or global bfd sections.
+	(lang_map): Don't pre-allocate input section userdata.
+	(init_os): Don't allocate userdata for output sections.
+	(print_all_symbols): Update.
+
+2014-01-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* emultempl/elf32.em (gld${EMULATION_NAME}_before_allocation):
+	Silence uninitialized warning on ehdr_start_save with older
+	GCC.
+
+2014-01-15  Alan Modra  <amodra@gmail.com>
+
+	* emultempl/elf32.em (gld${EMULATION_NAME}_before_allocation): Define
+	__ehdr_start before size_dynamic_sections and restore afterwards.
+
 2014-01-10  Alan Modra  <amodra@gmail.com>
 
 	PR ld/14207
