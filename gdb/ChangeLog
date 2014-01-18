@@ -1,3 +1,34 @@
+2014-01-17  Sergio Durigan Junior  <sergiodj@redhat.com>
+
+	* breakpoint.c (insert_bp_location): Add "volatile" keyword to "struct
+	gdb_exception" declaration.
+	* remote.c (getpkt_or_notif_sane): Likewise.
+
+2014-01-17  Doug Evans  <dje@google.com>
+
+	* common/gdb_vecs.c (delim_string_to_char_ptr_vec_append): New
+	function, contents of dirnames_to_char_ptr_vec_append moved here.
+	(delim_string_to_char_ptr_vec): New function.
+	(dirnames_to_char_ptr_vec_append): Rewrite.
+	* common/gdb_vecs.h (delim_string_to_char_ptr_vec): Declare.
+
+2014-01-17  Doug Evans  <dje@google.com>
+
+	* common/common-utils.h (FUNCTION_NAME): Renamed from ASSERT_FUNCTION,
+	and moved here ...
+	* common/gdb_assert.h (ASSERT_FUNCTION): ... from here.
+	#include "common-utils.h".
+	(gdb_assert, gdb_assert_fail, gdb_assert_not_reached): Update.
+	* common/vec.h (VEC_ASSERT_PASS): Update.
+	* darwin-nat.h: Replace #include of gdb_assert.h with common-utils.h.
+	(MACH_CHECK_ERROR): Update.
+
+2014-01-17  Simon Marchi  <simon.marchi@ericsson.com>
+
+	* gdbarch.sh (gdbarch_address_class_name_to_type_flags): Add
+	comments.
+	* gdbarch.h: Regenerate.
+
 2014-01-16  Tom Tromey  <tromey@redhat.com>
 
 	* value.c (struct value) <regnum>: Move earlier.
