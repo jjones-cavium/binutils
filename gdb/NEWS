@@ -3,6 +3,14 @@
 
 *** Changes since GDB 7.7
 
+* New features in the GDB remote stub, GDBserver
+
+  ** New option --debug-format=option1[,option2,...] allows one to add
+     additional text to each output.  At present only timestamps
+     are supported: --debug-format=timestamps.
+     Timestamps can also be turned on with the
+     "monitor set debug-format timestamps" command from GDB.
+
 * The 'record instruction-history' command now starts counting instructions
   at one.  This also affects the instruction ranges reported by the
   'record function-call-history' command when given the /i modifier.
@@ -25,6 +33,8 @@
 * The btrace record target supports limited reverse execution and replay.
   The target does not record data and therefore does not allow reading
   memory or registers.
+
+* The "catch syscall" command now works on s390*-linux* targets.
 
 * New remote packets
 
