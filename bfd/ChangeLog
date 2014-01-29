@@ -1,3 +1,41 @@
+2014-01-29  Nick Clifton  <nickc@redhat.com>
+
+	PR binutils/16318
+	* elf32-metag.c (elf_metag_post_process_headers): Call
+	_bfd_elf_post_process_headers.
+	* elf32-sh64.c (sh64_elf_copy_private_data): Call
+	_bfd_elf_copy_private_data.
+	* elf64-sh64.c (sh_elf64_copy_private_data_internal): Likewise.
+
+2014-01-29  Nick Clifton  <nickc@redhat.com>
+
+	* bfd-in.h (bfd_set_section_vma): Delete.
+	(bfd_set_section_alignment): Delete.
+	(bfd_set_section_userdata): Delete.
+	(bfd_set_cacheable): Delete.
+	* bfd.c (bfd_set_cacheable): New static inline function.
+	* section.c (bfd_set_section_userdata): Likewise.
+	(bfd_set_section_vma): Likewise.
+	(bfd_set_section_alignment): Likewise.
+	* bfd-in2.h: Regenerate.
+
+2014-01-28  Nick Clifton  <nickc@redhat.com>
+
+	* dwarf2.c (find_abstract_instance_name): For DW_FORM_ref_addr
+	attributes select the CU containing the abbreviation, which may not
+	be the current CU.
+
+2014-01-24  Alan Modra  <amodra@gmail.com>
+
+	* elf64-ppc.c (ppc_build_one_stub): Correct reloc count passed
+	to get_relocs for ELFv2.
+
+2014-01-23  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR ld/16498
+	* elf.c (_bfd_elf_map_sections_to_segments): Issue a linker error
+	if TLS sections are not adjacent.
+
 2014-01-22  Alan Modra  <amodra@gmail.com>
 
 	* elflink.c (elf_link_add_object_symbols): Call minfo for --as-needed.
