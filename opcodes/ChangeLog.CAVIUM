@@ -1,3 +1,7 @@
+2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* mips-opc.c (mips_builtin_opcodes): Add syncio and syncioall.
+
 2012-07-12  Andrew Pinski  <apinski@cavium.com>
 
 	* mips-opc.c (mips_builtin_opcodes): Mark saa and saad as

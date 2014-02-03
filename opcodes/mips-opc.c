@@ -1855,6 +1855,8 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"invalidate",		"t,o(b)",	0xb8000000, 0xfc000000,	RD_1|RD_3,		0,		I2,		0,	0 }, /* same */
 {"invalidate",		"t,A(b)",	0,    (int) M_SWR_AB,	INSN_MACRO,		0,		I2,		0,	0 }, /* as swr */
 {"swxc1",		"S,t(b)",	0x4c000008, 0xfc0007ff, RD_1|RD_2|RD_3|SM|FP_S,	0,		I4_33,		0,	0 },
+{"syncio",  		"",        	0x0000004f, 0xffffffff, TRAP,                   0,		IOCT,		0,	0 },
+{"syncioall", 		"",       	0x000000cf, 0xffffffff, TRAP,                   0,		IOCT,		0,	0 },
 {"synciobdma",		"",		0x0000008f, 0xffffffff,	NODS,			0,		IOCT,		0,	0 },
 {"syncs",		"",		0x0000018f, 0xffffffff,	NODS,			0,		IOCT,		0,	0 },
 {"syncw",		"",		0x0000010f, 0xffffffff,	NODS,			0,		IOCT,		0,	0 },
