@@ -1,0 +1,117 @@
+if ![istarget mips*-octeon-*] then {
+  return
+}
+
+if {[which $OBJDUMP] == 0} then {
+    perror "$OBJDUMP does not exist"
+    return
+}
+
+# Test MIPS unaligned load/store instructions.
+# For Elf target, the assembler returns an error causing the testcase to FAIL.
+# For Linux target, MIPS unaligned load/store instructions are disassembled
+# by default.
+# The option -Mocteon-useun can be used to revert the default behaviour.
+
+if [istarget mips64*-octeon-linux*] then {
+
+  if {![binutils_assemble $srcdir/$subdir/unaligned-mips.s tmpdir/unaligned-mips.o]} then {
+    return
+  }
+
+  if [is_remote host] {
+    set objfile [remote_download host tmpdir/unaligned-mips.o]
+  } else {
+    set objfile tmpdir/unaligned-mips.o
+  }
+
+  set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d $objfile"]
+
+  set want ".*unaligned-mips.o:.*file format .*mips.*test1.*lwl.*lwr.*ldl.*ldr.*swl.*swr.*sdl.*sdr.*"
+
+  if [regexp $want $got] then {
+    pass "unaligned-mips test"
+  } else {
+    fail "unaligned-mips test"
+  }
+
+# Test the options -Mocteon-useun/-Mno-octeon-useun.
+  set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d -Mocteon-useun $objfile"]
+  set want ".*unaligned-mips.o:.*file format .*mips.*test1.*ulw.*nop.*uld.*usw.*nop.*usd.*nop.*"
+
+  if [regexp $want $got] then {
+    pass "unaligned-mips -Wocteon-useun test"
+  } else {
+    fail "unaligned-mips -Wocteon-useun test"
+  }
+}
+
+# Test Octeon unaligned load/store instructions.
+if {![binutils_assemble $srcdir/$subdir/unaligned-octeon.s tmpdir/unaligned-octeon.o]} then {
+  return
+}
+
+if [is_remote host] {
+  set objfile [remote_download host tmpdir/unaligned-octeon.o]
+} else {
+  set objfile tmpdir/unaligned-octeon.o
+}
+
+set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d $objfile"]
+
+if [istarget mips64*-octeon-linux*] then {
+  set want ".*unaligned-octeon.o:.*file format .*mips.*test1.*ldl.*ldr.*lwl.*lwr.*test2.*sdl.*sdr.*swl.*swr.*"
+} else {
+  set want ".*unaligned-octeon.o:.*file format .*mips.*test1.*uld.*ulw.*usd.*usw.*"
+}
+
+if [regexp $want $got] then {
+  pass "unaligned-octeon test"
+} else {
+  fail "unaligned-octeon test"
+}
+
+# Test the options -Mocteon-useun/-Mno-octeon-useun.
+if [istarget mips64*-octeon-linux*] then {
+  set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d -Mocteon-useun $objfile"]
+  set want ".*unaligned-octeon.o:.*file format .*mips.*test1.*uld.*nop.*ulw.*nop.*test2.*usd.*nop.*usw.*nop.*"
+} else {
+  set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d -Mno-octeon-useun $objfile"]
+  set want ".*unaligned-octeon.o:.*file format .*mips.*test1.*ldl.*lwl.*sdl.*swl.*"
+}
+
+if [regexp $want $got] then {
+  pass "unaligned-octeon -Wocteon-useun/-Wno-octeon-useun test"
+} else {
+  fail "unaligned-octeon -Wocteon-useun/-Wno-octeon-useun test"
+}
+
+# Test lcache/scache/flush. These instructions have the same opcode as 
+# unaligned load/store. For Elf target in Octeon, these instructions get
+# replaced with Octeon unaligned load/store instructions. And for Linux 
+# targets these instructions get replaced with MIPS unaligned load/store
+# instructions.
+
+if {![binutils_assemble $srcdir/$subdir/unaligned-others.s tmpdir/unaligned-others.o]} then {
+    return
+}
+
+if [is_remote host] {
+    set objfile [remote_download host tmpdir/unaligned-others.o]
+} else {
+    set objfile tmpdir/unaligned-others.o
+}
+
+set got [binutils_run $OBJDUMP "$OBJDUMPFLAGS -d $objfile"]
+
+if [istarget mipsisa64-octeon-elf*] then {
+   set want ".*unaligned-others.o:.*file format .*mips.*test1.*ulw.*usw.*nop.*"
+} else {
+   set want ".*unaligned-others.o:.*file format .*mips.*test1.*lwl.*swl.*lwr.*"
+}
+
+if [regexp $want $got] then {
+  pass "unaligned-others test"
+} else {
+  fail "unaligned-others test"
+}
