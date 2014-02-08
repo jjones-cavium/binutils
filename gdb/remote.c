@@ -1732,11 +1732,9 @@ remote_pass_signals (int numsigs, unsigned char *pass_signals)
       *p = 0;
       if (!rs->last_pass_packet || strcmp (rs->last_pass_packet, pass_packet))
 	{
-	  char *buf = rs->buf;
-
 	  putpkt (pass_packet);
 	  getpkt (&rs->buf, &rs->buf_size, 0);
-	  packet_ok (buf, &remote_protocol_packets[PACKET_QPassSignals]);
+	  packet_ok (rs->buf, &remote_protocol_packets[PACKET_QPassSignals]);
 	  if (rs->last_pass_packet)
 	    xfree (rs->last_pass_packet);
 	  rs->last_pass_packet = pass_packet;
@@ -1785,11 +1783,9 @@ remote_program_signals (int numsigs, unsigned char *signals)
       if (!rs->last_program_signals_packet
 	  || strcmp (rs->last_program_signals_packet, packet) != 0)
 	{
-	  char *buf = rs->buf;
-
 	  putpkt (packet);
 	  getpkt (&rs->buf, &rs->buf_size, 0);
-	  packet_ok (buf, &remote_protocol_packets[PACKET_QProgramSignals]);
+	  packet_ok (rs->buf, &remote_protocol_packets[PACKET_QProgramSignals]);
 	  xfree (rs->last_program_signals_packet);
 	  rs->last_program_signals_packet = packet;
 	}
@@ -3668,7 +3664,7 @@ remote_start_remote (int from_tty, struct target_ops *target, int extended_p)
   /* If we connected to a live target, do some additional setup.  */
   if (target_has_execution)
     {
-      if (exec_bfd) 	/* No use without an exec file.  */
+      if (symfile_objfile) 	/* No use without a symbol-file.  */
 	remote_check_symbols ();
     }
 
@@ -8753,7 +8749,7 @@ remote_write_qxfer (struct target_ops *ops, const char *object_name,
   int max_size = get_memory_write_packet_size (); 
 
   if (packet->support == PACKET_DISABLE)
-    return -1;
+    return TARGET_XFER_E_IO;
 
   /* Insert header.  */
   i = snprintf (rs->buf, max_size, 
@@ -8769,7 +8765,7 @@ remote_write_qxfer (struct target_ops *ops, const char *object_name,
   if (putpkt_binary (rs->buf, i + buf_len) < 0
       || getpkt_sane (&rs->buf, &rs->buf_size, 0) < 0
       || packet_ok (rs->buf, packet) != PACKET_OK)
-    return -1;
+    return TARGET_XFER_E_IO;
 
   unpack_varlen_hex (rs->buf, &n);
   return n;
@@ -8792,7 +8788,7 @@ remote_read_qxfer (struct target_ops *ops, const char *object_name,
   LONGEST i, n, packet_len;
 
   if (packet->support == PACKET_DISABLE)
-    return -1;
+    return TARGET_XFER_E_IO;
 
   /* Check whether we've cached an end-of-object packet that matches
      this request.  */
@@ -8822,12 +8818,12 @@ remote_read_qxfer (struct target_ops *ops, const char *object_name,
 	    phex_nz (n, sizeof n));
   i = putpkt (rs->buf);
   if (i < 0)
-    return -1;
+    return TARGET_XFER_E_IO;
 
   rs->buf[0] = '\0';
   packet_len = getpkt_sane (&rs->buf, &rs->buf_size, 0);
   if (packet_len < 0 || packet_ok (rs->buf, packet) != PACKET_OK)
-    return -1;
+    return TARGET_XFER_E_IO;
 
   if (rs->buf[0] != 'l' && rs->buf[0] != 'm')
     error (_("Unknown remote qXfer reply: %s"), rs->buf);
@@ -8924,7 +8920,7 @@ remote_xfer_partial (struct target_ops *ops, enum target_object object,
 				  &remote_protocol_packets
 				  [PACKET_qXfer_statictrace_read]);
       else
-	return -1;
+	return TARGET_XFER_E_IO;
     }
 
   /* Only handle flash writes.  */
@@ -8938,7 +8934,7 @@ remote_xfer_partial (struct target_ops *ops, enum target_object object,
 	  return remote_flash_write (ops, offset, len, writebuf);
 
 	default:
-	  return -1;
+	  return TARGET_XFER_E_IO;
 	}
     }
 
@@ -9006,7 +9002,7 @@ remote_xfer_partial (struct target_ops *ops, enum target_object object,
         &remote_protocol_packets[PACKET_qXfer_btrace]);
 
     default:
-      return -1;
+      return TARGET_XFER_E_IO;
     }
 
   /* Note: a zero OFFSET and LEN can be used to query the minimum
@@ -9016,7 +9012,7 @@ remote_xfer_partial (struct target_ops *ops, enum target_object object,
   /* Minimum outbuf size is get_remote_packet_size ().  If LEN is not
      large enough let the caller deal with it.  */
   if (len < get_remote_packet_size ())
-    return -1;
+    return TARGET_XFER_E_IO;
   len = get_remote_packet_size ();
 
   /* Except for querying the minimum buffer size, target must be open.  */
@@ -9048,7 +9044,7 @@ remote_xfer_partial (struct target_ops *ops, enum target_object object,
 
   i = putpkt (rs->buf);
   if (i < 0)
-    return i;
+    return TARGET_XFER_E_IO;
 
   getpkt (&rs->buf, &rs->buf_size, 0);
   strcpy ((char *) readbuf, rs->buf);
