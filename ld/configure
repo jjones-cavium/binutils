@@ -775,6 +775,7 @@ with_lib_path
 enable_targets
 enable_64_bit_bfd
 with_sysroot
+with_lto_plugin_source
 enable_gold
 enable_got
 enable_werror
@@ -1450,6 +1451,8 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-lib-path=dir1:dir2...  set default LIB_PATH
   --with-sysroot=DIR Search for usr/lib et al within DIR.
+  --with-lto-plugin-source=PATH
+                          Use the GCC LTO plugin source at PATH
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -4317,6 +4320,18 @@ fi
 
 
 
+
+
+
+# Check whether --with-lto-plugin-source was given.
+if test "${with_lto_plugin_source+set}" = set; then :
+  withval=$with_lto_plugin_source; case "${withval}" in
+  no) ;;
+  *)
+$as_echo "#define USE_LTO_PLUGIN_SOURCE 1" >>confdefs.h
+ ;;
+  esac
+fi
 
 
 # Check whether --enable-gold was given.

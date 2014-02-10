@@ -102,6 +102,7 @@ proc readelf_test { options binary_file regexp_file xfails } {
     if [istarget "mips*-*-*"] then {
 	if { [istarget "mips*-*-*linux*"]
 	     || [istarget "mips*-sde-elf*"]
+	     || [istarget "mips*-octeon-elf*"]
 	     || [istarget "mips*-mti-elf*"]
 	     || [istarget "mips*-*freebsd*"] } then {
 	    set target_machine tmips
@@ -212,6 +213,87 @@ proc readelf_wi_test {} {
 
     # All done.
     pass "readelf -wi"
+}
+
+# Testing the "readelf -wl" option is difficult because there is no guaranteed
+# order to the output. So instead of having an expected output file, like the 
+# other readelf tests, we grep for strings that really ought to be there.
+
+proc readelf_wl_test {} {
+    global READELF
+    global READELFFLAGS
+    global srcdir
+    global subdir
+    
+    # Compile the second test file.
+    if { [target_compile $srcdir/$subdir/testprog.c tmpdir/testprog.o object \
+	  debug] != "" } {
+	verbose "Unable to compile test file."
+	untested "readelf -wl"
+	return
+    }
+
+    # Download it.
+    set tempfile [remote_download host tmpdir/testprog.o]
+
+    # Run "readelf -wl" on it.
+    send_log "exec $READELF $READELFFLAGS -wl $tempfile >& readelf.out\n"
+    catch "exec $READELF $READELFFLAGS -wl $tempfile >& readelf.out" got
+
+    # Upload the results.
+    set output [remote_upload host readelf.out]
+
+    file_on_host delete $tempfile
+    
+    if ![file size $output] then {
+	# If the output file is empty, then this target does not
+	# generate dwarf2 output.  This is not a failure.
+	verbose "No output from 'readelf -wl'"
+	untested "readelf -wl"
+	return
+    }
+    
+    # Check for errors.
+    set got [grep $output \
+      ".*Error: DW_FORM_data8 is unsupported when sizeof.*unsigned long.*8.*"]
+    if {$got != ""} {
+	send_log "$got\n"
+	fail "readelf -wl: Found DW_FORM_data8"
+	return
+    }
+    pass "readelf -wl: Not found DW_FORM_data8"
+
+    # Search for strings that should be in the output.
+    set sought {
+	".*Length:.*"
+	".*DWARF Version:.*"
+	".*Prologue Length:.*"
+	".*Minimum Instruction Length:.*"
+	".*Initial value of.*"
+	".*Line Base:.*"
+	".*Line Range:.*"
+	".*Opcode Base:.*"
+	".*Line Number Statements:.*"
+	".*Extended opcode.*"
+	".*Advance Line.*"
+	".*Special opcode.*"
+	".*Advance PC by constant.*"
+	".*End of Sequence.*"
+    }
+    
+    foreach looked_for $sought {	
+	set lines [grep $output $looked_for]
+	if ![llength $lines] then {
+	    fail "readelf -wl: missing: $looked_for"
+	    send_log readelf.out
+	    return
+	}
+    }
+
+    file_on_host delete $output
+    
+    # All done.
+    pass "readelf -wl"
 }
 
 # This tests "readelf -wa", but on a file with a compressed
@@ -343,6 +425,7 @@ readelf_test -r $tempfile readelf.r  {}
 
 readelf_wi_test
 readelf_compressed_wa_test
+readelf_wl_test
 
 readelf_dump_test
 

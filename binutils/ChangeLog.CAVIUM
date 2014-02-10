@@ -1,0 +1,28 @@
+2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/binutils-all/mips-octeon/objdump.exp: Add cop0.s testcase.
+	* testsuite/binutils-all/mips-octeon/cop0.s: New.
+
+2012-07-12 Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/binutils-all/mips-octeon/unaligned-mips.s: New.
+	* testsuite/binutils-all/mips-octeon/unaligned-octeon.s: New.
+	* testsuite/binutils-all/mips-octeon/unaligned-others.s: New.
+	* testsuite/binutils-all/mips-octeon/objdump.exp: New.
+
+2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/binutils-all/readelf.exp: Use tmips target_machine for
+	mips*-octeon-elf* target.
+
+2012-07-12  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	Bug #1668
+	* testsuite/binutils-all/readelf.exp (readelf_wl_test): New function
+	to test '-wl' option of readelf.
+
+2012-07-12  Adam Nemet  <anemet@caviumnetworks.com>
+
+	Bug #1651
+	* testsuite/binutils-all/objcopy.exp (copy_setup): Link original
+	executable statically.

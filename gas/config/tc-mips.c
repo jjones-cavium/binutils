@@ -269,8 +269,14 @@ static int file_mips_gp32 = -1;
 /* True if -mfp32 was passed.  */
 static int file_mips_fp32 = -1;
 
-/* 1 if -msoft-float, 0 if -mhard-float.  The default is 0.  */
-static int file_mips_soft_float = 0;
+/* 1 if -msoft-float, 0 if -mhard-float and -1 if neither was
+   passed.  */
+static int file_mips_soft_float = -1;
+
+/* Return non-zero if CPU has no FPU.  */
+#define CPU_SOFT_FLOAT(CPU_INFO_FLAGS)         \
+  ((CPU_INFO_FLAGS) & MIPS_CPU_FLOAT_OPS_NONE)
+ 
 
 /* 1 if -msingle-float, 0 if -mdouble-float.  The default is 0.   */
 static int file_mips_single_float = 0;
@@ -891,10 +897,10 @@ static int mips_relax_branch;
    absolute one.  In SVR4 PIC, the first sequence will be for global
    symbols and the second will be for local symbols.
 
-   The frag's "subtype" is RELAX_ENCODE (FIRST, SECOND), where FIRST and
-   SECOND are the lengths of the two sequences in bytes.  These fields
-   can be extracted using RELAX_FIRST() and RELAX_SECOND().  In addition,
-   the subtype has the following flags:
+   The frag's "subtype" is RELAX_ENCODE (FIRST, SECOND, ERROR), where FIRST
+   and SECOND are the lengths of the two sequences in bytes and ERROR is
+   if RELAX_ERROR_SECOND_NOAT is set.  These fields can be extracted using
+   RELAX_FIRST() and RELAX_SECOND().  In addition, the subtype has the following flags:
 
    RELAX_USE_SECOND
 	Set if it has been decided that we should use the second
@@ -925,6 +931,10 @@ static int mips_relax_branch;
 	Like RELAX_DELAY_SLOT, but indicates that the second implementation of
 	the macro is of the wrong size for the branch delay slot.
 
+   RELAX_ERROR_SECOND_NOAT
+	Error out when the second expansion is chosen as the at register is
+	going to be used but .set noat is used.
+
    The frag's "opcode" points to the first fixup for relaxable code.
 
    Relaxable macros are generated using a sequence such as:
@@ -933,11 +943,12 @@ static int mips_relax_branch;
       ... generate first expansion ...
       relax_switch ();
       ... generate second expansion ...
-      relax_end ();
+      relax_end (error_on_second);
 
    The code and fixups for the unwanted alternative are discarded
    by md_convert_frag.  */
-#define RELAX_ENCODE(FIRST, SECOND) (((FIRST) << 8) | (SECOND))
+#define RELAX_ENCODE(FIRST, SECOND, ERROR) (((FIRST) << 8) | (SECOND) \
+					   | ((ERROR) ? RELAX_ERROR_SECOND_NOAT: 0))
 
 #define RELAX_FIRST(X) (((X) >> 8) & 0xff)
 #define RELAX_SECOND(X) ((X) & 0xff)
@@ -948,6 +959,7 @@ static int mips_relax_branch;
 #define RELAX_DELAY_SLOT_16BIT 0x100000
 #define RELAX_DELAY_SLOT_SIZE_FIRST 0x200000
 #define RELAX_DELAY_SLOT_SIZE_SECOND 0x400000
+#define RELAX_ERROR_SECOND_NOAT 0x800000
 
 /* Branch without likely bit.  If label is out of range, we turn:
 
@@ -1292,13 +1304,14 @@ static int relaxed_micromips_32bit_branch_length (fragS *, asection *, int);
 struct mips_cpu_info
 {
   const char *name;           /* CPU or ISA name.  */
-  int flags;                  /* MIPS_CPU_* flags.  */
+  int flags;                  /* ASEs available, FPU capability, ISA flag.  */
   int ase;                    /* Set of ASEs implemented by the CPU.  */
   int isa;                    /* ISA level.  */
   int cpu;                    /* CPU number (default CPU if ISA).  */
 };
 
 #define MIPS_CPU_IS_ISA		0x0001	/* Is this an ISA?  (If 0, a CPU.) */
+#define MIPS_CPU_FLOAT_OPS_NONE        0x0100  /* CPU has no FPU */
 
 static const struct mips_cpu_info *mips_parse_cpu (const char *, const char *);
 static const struct mips_cpu_info *mips_cpu_info_from_isa (int);
@@ -3895,11 +3908,11 @@ mips_compressed_mark_labels (void)
    relaxation info.  */
 
 static void
-relax_close_frag (void)
+relax_close_frag (int relax_error)
 {
   mips_macro_warning.first_frag = frag_now;
   frag_var (rs_machine_dependent, 0, 0,
-	    RELAX_ENCODE (mips_relax.sizes[0], mips_relax.sizes[1]),
+	    RELAX_ENCODE (mips_relax.sizes[0], mips_relax.sizes[1], relax_error),
 	    mips_relax.symbol, 0, (char *) mips_relax.first_fixup);
 
   memset (&mips_relax.sizes, 0, sizeof (mips_relax.sizes));
@@ -3930,10 +3943,10 @@ relax_switch (void)
 /* End the current relaxable sequence.  */
 
 static void
-relax_end (void)
+relax_end (int relax_error)
 {
   gas_assert (mips_relax.sequence == 2);
-  relax_close_frag ();
+  relax_close_frag (relax_error);
   mips_relax.sequence = 0;
 }
 
@@ -6553,7 +6566,9 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 	    if ((address_expr->X_add_number & ((1 << shift) - 1)) != 0)
 	      as_bad (_("branch to misaligned address (0x%lx)"),
 		      (unsigned long) address_expr->X_add_number);
-	    if (!mips_relax_branch)
+	    if (mips_relax_branch)
+	      ip->complete_p = 0;
+	    else
 	      {
 		if ((address_expr->X_add_number + (1 << (shift + 15)))
 		    & ~((1 << (shift + 16)) - 1))
@@ -6769,7 +6784,7 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 	     frag and record the information for the instructions we've
 	     written so far.  */
 	  if (frag_room () < 4)
-	    relax_close_frag ();
+	    relax_close_frag (0);
 	  mips_relax.sizes[mips_relax.sequence - 1] += insn_length (ip);
 	}
 
@@ -8579,7 +8594,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 	    }
 
 	  if (mips_relax.sequence)
-	    relax_end ();
+	    relax_end (0);
 	}
       else
 	{
@@ -8595,7 +8610,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 	  macro_build (ep, ADDRESS_ADDI_INSN, "t,r,j",
 		       reg, reg, BFD_RELOC_LO16);
 	  if (mips_relax.sequence)
-	    relax_end ();
+	    relax_end (0);
 	}
     }
   else if (!mips_big_got)
@@ -8634,7 +8649,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 	  macro_build (ep, ADDRESS_LOAD_INSN, "t,o(b)", reg,
 		       BFD_RELOC_MIPS_GOT_DISP, mips_gp_register);
 	  if (mips_relax.sequence)
-	    relax_end ();
+	    relax_end (0);
 	}
       else
 	{
@@ -8647,7 +8662,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 	  relax_switch ();
 	  macro_build (ep, ADDRESS_ADDI_INSN, "t,r,j", reg, reg,
 		       BFD_RELOC_LO16);
-	  relax_end ();
+	  relax_end (0);
 
 	  if (ex.X_add_number != 0)
 	    {
@@ -8704,7 +8719,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 		       BFD_RELOC_MIPS_GOT_PAGE, mips_gp_register);
 	  macro_build (ep, ADDRESS_ADDI_INSN, "t,r,j", reg, reg,
 		       BFD_RELOC_MIPS_GOT_OFST);
-	  relax_end ();
+	  relax_end (0);
 	}
       else
 	{
@@ -8730,7 +8745,7 @@ load_address (int reg, expressionS *ep, int *used_at)
 	  load_delay_nop ();
 	  macro_build (ep, ADDRESS_ADDI_INSN, "t,r,j", reg, reg,
 		       BFD_RELOC_LO16);
-	  relax_end ();
+	  relax_end (0);
 
 	  if (ex.X_add_number != 0)
 	    {
@@ -8793,7 +8808,7 @@ load_got_offset (int dest, expressionS *local)
   relax_switch ();
   macro_build (local, ADDRESS_LOAD_INSN, "t,o(b)", dest,
 	       BFD_RELOC_MIPS_GOT16, mips_gp_register);
-  relax_end ();
+  relax_end (0);
 }
 
 static void
@@ -8811,7 +8826,7 @@ add_got_offset (int dest, expressionS *local)
 	       dest, dest, BFD_RELOC_LO16);
   relax_switch ();
   macro_build (local, ADDRESS_ADDI_INSN, "t,r,j", dest, dest, BFD_RELOC_LO16);
-  relax_end ();
+  relax_end (0);
 }
 
 static void
@@ -8835,7 +8850,7 @@ add_got_offset_hilo (int dest, expressionS *local, int tmp)
   macro_build_lui (&global, tmp);
   mips_optimize = hold_mips_optimize;
   macro_build (local, ADDRESS_ADDI_INSN, "t,r,j", tmp, tmp, BFD_RELOC_LO16);
-  relax_end ();
+  relax_end (0);
 
   macro_build (NULL, ADDRESS_ADD_INSN, "d,v,t", dest, dest, tmp);
 }
@@ -9869,7 +9884,7 @@ macro (struct mips_cl_insn *ip, char *str)
 		}
 
 	      if (mips_relax.sequence)
-		relax_end ();
+		relax_end (0);
 	    }
 	  else
 	    {
@@ -9887,7 +9902,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j",
 			   tempreg, tempreg, BFD_RELOC_LO16);
 	      if (mips_relax.sequence)
-		relax_end ();
+		relax_end (0);
 	    }
 	}
       else if (!mips_big_got && !HAVE_NEWABI)
@@ -9947,7 +9962,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      load_delay_nop ();
 	      macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j",
 			   tempreg, tempreg, BFD_RELOC_LO16);
-	      relax_end ();
+	      relax_end (0);
 	      /* FIXME: If breg == 0, and the next instruction uses
 		 $tempreg, then if this variant case is used an extra
 		 nop will be generated.  */
@@ -10070,7 +10085,7 @@ macro (struct mips_cl_insn *ip, char *str)
 		  breg = 0;
 		  tempreg = op[0];
 		}
-	      relax_end ();
+	      relax_end (0);
 	    }
 	  else if (breg == 0 && (call || tempreg == PIC_CALL_REG))
 	    {
@@ -10080,7 +10095,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      relax_switch ();
 	      macro_build (&offset_expr, ADDRESS_LOAD_INSN, "t,o(b)", tempreg,
 			   BFD_RELOC_MIPS_GOT_DISP, mips_gp_register);
-	      relax_end ();
+	      relax_end (0);
 	    }
 	  else
 	    {
@@ -10242,7 +10257,7 @@ macro (struct mips_cl_insn *ip, char *str)
 			   tempreg, tempreg, AT);
 	      used_at = 1;
 	    }
-	  relax_end ();
+	  relax_end (0);
 	}
       else if (mips_big_got && HAVE_NEWABI)
 	{
@@ -10349,7 +10364,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      breg = 0;
 	      tempreg = op[0];
 	    }
-	  relax_end ();
+	  relax_end (0);
 	}
       else
 	abort ();
@@ -10530,7 +10545,7 @@ macro (struct mips_cl_insn *ip, char *str)
 		  macro_build (&offset_expr, ADDRESS_LOAD_INSN, "t,o(b)",
 			       PIC_CALL_REG, BFD_RELOC_MIPS_GOT_DISP,
 			       mips_gp_register);
-		  relax_end ();
+		  relax_end (0);
 		}
 	      else
 		{
@@ -10549,7 +10564,7 @@ macro (struct mips_cl_insn *ip, char *str)
 		  macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j",
 			       PIC_CALL_REG, PIC_CALL_REG,
 			       BFD_RELOC_MIPS_GOT_OFST);
-		  relax_end ();
+		  relax_end (0);
 		}
 
 	      macro_build_jalr (&offset_expr, 0);
@@ -10588,7 +10603,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      load_delay_nop ();
 	      macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j",
 			   PIC_CALL_REG, PIC_CALL_REG, BFD_RELOC_LO16);
-	      relax_end ();
+	      relax_end (0);
 	      macro_build_jalr (&offset_expr, mips_cprestore_offset >= 0);
 
 	      if (mips_cprestore_offset < 0)
@@ -11190,7 +11205,7 @@ macro (struct mips_cl_insn *ip, char *str)
 		}
 
 	      if (mips_relax.sequence)
-		relax_end ();
+		relax_end (0);
 	      break;
 	    }
 
@@ -11208,7 +11223,10 @@ macro (struct mips_cl_insn *ip, char *str)
 	      macro_build (&offset_expr, s, fmt, op[0],
 			   BFD_RELOC_LO16, tempreg);
 	      if (mips_relax.sequence)
-		relax_end ();
+		{
+		  relax_end (used_at && !mips_opts.at);
+                  used_at = 0;
+		}
 	    }
 	  else
 	    {
@@ -11228,7 +11246,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	      macro_build (&offset_expr, s, fmt, op[0],
 			   BFD_RELOC_LO16, tempreg);
 	      if (mips_relax.sequence)
-		relax_end ();
+		relax_end (0);
 	    }
 	}
       else if (!mips_big_got)
@@ -11279,7 +11297,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	  relax_switch ();
 	  macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j", tempreg,
 		       tempreg, BFD_RELOC_LO16);
-	  relax_end ();
+	  relax_end (0);
 	  if (breg != 0)
 	    macro_build (NULL, ADDRESS_ADD_INSN, "d,v,t",
 			 tempreg, tempreg, breg);
@@ -11327,7 +11345,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	  load_delay_nop ();
 	  macro_build (&offset_expr, ADDRESS_ADDI_INSN, "t,r,j", tempreg,
 		       tempreg, BFD_RELOC_LO16);
-	  relax_end ();
+	  relax_end (0);
 
 	  if (breg != 0)
 	    macro_build (NULL, ADDRESS_ADD_INSN, "d,v,t",
@@ -11371,7 +11389,7 @@ macro (struct mips_cl_insn *ip, char *str)
 			 tempreg, tempreg, breg);
 	  macro_build (&offset_expr, s, fmt, op[0],
 		       BFD_RELOC_MIPS_GOT_OFST, tempreg);
-	  relax_end ();
+	  relax_end (0);
 	}
       else
 	abort ();
@@ -11766,7 +11784,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	  macro_build (&offset_expr, s, fmt, coproc ? op[0] : op[0] + 1,
 		       BFD_RELOC_LO16, AT);
 	  if (mips_relax.sequence)
-	    relax_end ();
+	    relax_end (0);
 	}
       else if (!mips_big_got)
 	{
@@ -11811,7 +11829,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	  offset_expr.X_add_number += 4;
 	  macro_build (&offset_expr, s, fmt, coproc ? op[0] : op[0] + 1,
 		       BFD_RELOC_LO16, AT);
-	  relax_end ();
+	  relax_end (0);
 
 	  mips_optimize = hold_mips_optimize;
 	}
@@ -11888,7 +11906,7 @@ macro (struct mips_cl_insn *ip, char *str)
 	  macro_build (&offset_expr, s, fmt, coproc ? op[0] : op[0] + 1,
 		       BFD_RELOC_LO16, AT);
 	  mips_optimize = hold_mips_optimize;
-	  relax_end ();
+	  relax_end (0);
 	}
       else
 	abort ();
@@ -13994,6 +14012,9 @@ mips_after_parse_args (void)
 
   /* End of GCC-shared inference code.  */
 
+  if (file_mips_soft_float == -1)
+    file_mips_soft_float = CPU_SOFT_FLOAT (arch_info->flags);
+
   /* This flag is set when we have a 64-bit capable CPU but use only
      32-bit wide registers.  Note that EABI does not use it.  */
   if (ISA_HAS_64BIT_REGS (mips_opts.isa)
@@ -15025,6 +15046,7 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
   else if (strncmp (name, "mips", 4) == 0 || strncmp (name, "arch=", 5) == 0)
     {
       int reset = 0;
+      const struct mips_cpu_info *arch_info = NULL;
 
       /* Permit the user to change the ISA and architecture on the fly.
 	 Needless to say, misuse can cause serious problems.  */
@@ -15036,28 +15058,24 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
 	}
       else if (strncmp (name, "arch=", 5) == 0)
 	{
-	  const struct mips_cpu_info *p;
-
-	  p = mips_parse_cpu("internal use", name + 5);
-	  if (!p)
+          arch_info = mips_parse_cpu("internal use", name + 5);
+          if (!arch_info)
 	    as_bad (_("unknown architecture %s"), name + 5);
 	  else
 	    {
-	      mips_opts.arch = p->cpu;
-	      mips_opts.isa = p->isa;
+              mips_opts.arch = arch_info->cpu;
+              mips_opts.isa = arch_info->isa;
 	    }
 	}
       else if (strncmp (name, "mips", 4) == 0)
 	{
-	  const struct mips_cpu_info *p;
-
-	  p = mips_parse_cpu("internal use", name);
-	  if (!p)
+          arch_info = mips_parse_cpu("internal use", name);
+          if (!arch_info)
 	    as_bad (_("unknown ISA level %s"), name + 4);
 	  else
 	    {
-	      mips_opts.arch = p->cpu;
-	      mips_opts.isa = p->isa;
+              mips_opts.arch = arch_info->cpu;
+              mips_opts.isa = arch_info->isa;
 	    }
 	}
       else
@@ -15093,10 +15111,19 @@ s_mipsset (int x ATTRIBUTE_UNUSED)
 	  as_bad (_("unknown ISA level %s"), name + 4);
 	  break;
 	}
+
+      /* Update soft-float based on the arch of if reset to the
+        file-default.  */
+       if (arch_info)
+        mips_opts.soft_float = CPU_SOFT_FLOAT (arch_info->flags);
+       else
+        mips_opts.soft_float = file_mips_soft_float;
+
       if (reset)
 	{
 	  mips_opts.gp32 = file_mips_gp32;
 	  mips_opts.fp32 = file_mips_fp32;
+	  mips_opts.soft_float = file_mips_soft_float;
 	}
     }
   else if (strcmp (name, "autoextend") == 0)
@@ -17115,6 +17142,11 @@ md_convert_frag (bfd *abfd ATTRIBUTE_UNUSED, segT asec, fragS *fragp)
       second = RELAX_SECOND (subtype);
       fixp = (fixS *) fragp->fr_opcode;
 
+      if ((fragp->fr_subtype & RELAX_USE_SECOND) != 0
+          && (fragp->fr_subtype & RELAX_ERROR_SECOND_NOAT) != 0)
+        as_bad_where (fragp->fr_file, fragp->fr_line,
+		      _("Macro used $at after \".set noat\""));
+
       /* If the delay slot chosen does not match the size of the instruction,
          then emit a warning.  */
       if ((!use_second && (subtype & RELAX_DELAY_SLOT_SIZE_FIRST) != 0)
@@ -17909,9 +17941,9 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
   /* MIPS 64 Release 2 */
 
   /* Cavium Networks Octeon CPU core */
-  { "octeon",	      0, 0,			ISA_MIPS64R2, CPU_OCTEON },
-  { "octeon+",	      0, 0,			ISA_MIPS64R2, CPU_OCTEONP },
-  { "octeon2",	      0, 0,			ISA_MIPS64R2, CPU_OCTEON2 },
+  { "octeon",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEON },
+  { "octeon+",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEONP },
+  { "octeon2",	      MIPS_CPU_FLOAT_OPS_NONE, 0,			ISA_MIPS64R2, CPU_OCTEON2 },
 
   /* RMI Xlr */
   { "xlr",	      0, 0,			ISA_MIPS64,   CPU_XLR },

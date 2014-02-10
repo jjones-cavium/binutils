@@ -1,0 +1,115 @@
+2012-10-11  Andrew Pinski  <apinski@cavium.com>
+
+	* configure: Regerate.
+	* configure.in: Also mips*-montavista-* should default to octeon.
+	mips*-montavista-linux* defaults to n64.
+	* configure.tgt: Match mips*-montavista-linux-gnu* and mips*-octeon-linux-gnu*
+	as what was mips64-octeon-linux-gnu.
+	Match mips*el-montavista-linux-gnu* and mips*el-octeon-linux-gnu* as
+	what was mips64el-octeon-linux-gnu.
+
+2012-07-18  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/mips.exp: Auto Detect octeon target.
+
+2012-07-17      Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* configure.in (mips64*-octeon-linux*): New case.
+	* configure: Regenerate.
+
+2012-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/gas/mips/cp0sel-names-octeon.d: New test.
+	* testsuite/gas/mips/cp0-names-octeon.d: Likewise.
+	* testsuite/gas/mips/mips.exp: Run cp0-names-octeon and cp0sel-names-octeon.
+
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+        * testsuite/gas/mips/mips.exp: Use traditional mips reference file
+        for simple exec toolchain as some tests have different reference file
+        for traditional mips bfd target.
+
+2012-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* config.in: Regenerate.
+
+2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+	    Adam Nemet <anemet@caviumnetworks.com>
+
+	* configure.tgt (mips*-octeon-elf*): Set em=tmips.
+	* configure.in: Detect octeon from the target_vendor.
+	(mipsisa64*-octeon-elf*): New case.
+
+2012-07-16  Adam Nemet  <anemet@caviumnetworks.com>
+	Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-mips.c (file_mips_soft_float): Initialize it to -1.
+	Change comment.
+	(CPU_SOFT_FLOAT): New macro.
+	(struct mips_cpu_info): Update documentation of field flags.
+	(MIPS_CPU_FLOAT_OPS_NONE): New macro.
+	(mips_cpu_info_table): Use it for octeon, octeon+, and octeon2.
+	(mips_after_parse_args): If -msoft-float is not passed infer it
+	from the architecture.
+	(s_mipsset): Set soft-float after changing architecture.
+	* testsuite/gas/mips/soft-float-arch.s,
+	testsuite/gas/mips/soft-float-arch.l: New test.
+	* testsuite/gas/mips/mips.exp: Run it.  Document soft_float
+	architecture property.  Add soft_float property to octeon, octeon+ and octeon2.
+	(24k-triple-stores-4): Don't run for octeon.
+	(24k-triple-stores-5): Likewise.
+	(24k-triple-stores-6): Likewise.
+	(24k-triple-stores-7): Likewise.
+	(relax): Don't run for soft-float.
+	(relax-at): Likewise.
+	(alnv_ps-swap): Likewise.
+	(mips1-fp): Likewise.
+	(l_d*): Likewise.
+	(s_d*): Likewise.
+	(ldc1*): Likewise.
+	(sdc1*): Likewise.
+	(mips4-fp): Likewise.
+	(mips4-branch-likely): Likewise.
+	(mips5-fp): Likewise.
+	(mips*-sf32): Likewise.
+	(mips32r2-ill-fp64): Likewise.
+	(elf${el}-rel2): Likewise.
+	(mips-double-float-flag): Likewise.
+	(alnv_ps-swap): Likewise.
+	(mips*-sf32): Add a soft-float version to run.
+	(mips32r2-ill-nofp): Run on soft-float targets.
+	(illegal): Use run_list_test_arches and disable it for mips16.
+	(fpr-names-numeric): Don't run on soft-float or micromips.
+	(fpr-names-32): Likewise.
+	(fpr-names-n32): Likewise.
+	(fpr-names-64): Likewise.
+	(octeon_unsupported_insn): Add test.
+	(mips-macro-ill-nofp): Likewise.
+	(soft-float-arch): Likewise.
+
+2012-07-15  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4316
+	* config/tc-mips.c (append_insn): Fix handling of BFD_RELOC_MIPS_JMP,
+	BFD_RELOC_MIPS16_JMP, and BFD_RELOC_16_PCREL_S2 with constant
+operands.
+
+ 2012-07-16  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+2012-07-15  Andrew Pinski  <apinski@caviumnetworks.com>
+
+	Bug #2780
+	* config/tc-mips.c (RELAX_ENCODE): Add error argument.
+	(RELAX_ERROR_SECOND_NOAT): New macro.
+	(relax_close_frag): Add new argument, relax_error.
+	(relax_end): Likewise.  Update call to relax_close_frag.
+	(append_insn): Update call to relax_close_frag.
+	(load_address): Update calls to relax_end.
+	(load_got_offset): Likewise.
+	(add_got_offset): Likewise.
+	(add_got_offset_hilo): Likewise.
+	(macro): Likewise.  If we are trying to use GP, set
+	used_at to false and pass if we want to error out if noat is used
+	when at is used.
+	(md_convert_frag): Error out if the second alternative is used and
+	RELAX_ERROR_SECOND_NOAT was set.
+

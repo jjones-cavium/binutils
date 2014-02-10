@@ -577,7 +577,10 @@ proc copy_setup { } {
 
     if { [istarget *-*-linux*]
 	 || [istarget *-*-gnu*] } {
-	foreach i $gcc_gas_flag {
+	# Link statically so that we don't create the empty eh_frame
+	# program header.  The eh_frame segment remains unused and is
+	# stripped by objcopy resulting in a difference.
+	foreach i [append $gcc_gas_flag "-static"] {
 	    set flags "additional_flags=$i $flags"
 	}
     }

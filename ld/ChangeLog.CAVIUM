@@ -1,0 +1,78 @@
+2012-11-05  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5113
+	* config.in: Regenerate.
+	* configure: Regenerate.
+	* configure.in (--with-lto-plugin-source): New option.
+	* plugin.c (struct plugin): Add internal_bfd_gcc_lto_plugin field
+	if USE_LTO_PLUGIN_SOURCE is defined.
+	(plugin_opt_plugin): Set internal_bfd_gcc_lto_plugin to true
+	if plugin contains "liblto_plugin".
+	(plugin_load_plugins): Use __bfd_gcc_lto_onload if internal_bfd_gcc_lto_plugin
+	is true.
+	(plugin_call_cleanup): Don't call dlclose if internal_bfd_gcc_lto_plugin
+	is true.
+
+2012-10-11  Andrew Pinski  <apinski@cavium.com>
+
+	* configure.tgt: Match mips*-montavista-linux-gnu* and mips*-octeon-linux-gnu*
+	as what was mips64-octeon-linux-gnu.
+	Match mips*el-montavista-linux-gnu* and mips*el-octeon-linux-gnu* as
+	what was mips64el-octeon-linux-gnu.
+
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+            Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* testsuite/ld-mips-elf/reginfo-size-n32.d,
+	testsuite/ld-mips-elf/reginfo-size-n32.ld,
+	testsuite/ld-mips-elf/reginfo-size.d,
+	testsuite/ld-mips-elf/reginfo-size.ld,
+	testsuite/ld-mips-elf/reginfo-size.s: New test. 
+
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	Bug #1039
+	* testsuite/ld-mips-elf/octeon.exp: New file.
+	* testsuite/ld-mips-elf/common-1.c: New file.
+	* testsuite/ld-mips-elf/common-2.c: New file.
+	* testsuite/ld-mips-elf/common-3.c: New file.
+
+2012-07-19  Adam Nemet  <anemet@caviumnetworks.com>
+
+	Bug #1650
+	* testsuite/ld-mips-elf/relax-jalr-n32.d,
+	testsuite/ld-mips-elf/relax-jalr-n64.d: Also accept jal besides
+	bal.
+
+2012-07-19  Andrew Pinski  <apinski@cavium.com>
+
+	* testsuite/config/default.exp: Set the ABI to 64 for Octeon Linux's.
+
+2012-07-19  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Adam Nemet  <anemet@caviumnetworks.com>
+            Roy Franz  <Roy.Franz@caviumnetworks.com>
+
+	* Makefile.am: New emulations, eelf32ebocteon.o eelf32elocteon.o
+	eelf32ebocteonn32.o eelf32elocteonn32.o eelf64ebocteon.o and
+        eelf64elocteon.o.
+	Also added rules to build the emulations.
+	* Makefile.in: Regenerate it.
+	* configure.tgt (mipsisa64*-octeon-elf*): New target.
+	(mips64-octeon-linux-gnu*): New target for Linux toolchain.
+	* emulparams/elf32ebocteon.sh: New emulation for EABI ABI (elf).
+	* emulparams/elf32elocteon.sh: Ditto.
+	* emulparams/elf32ebocteonn32.sh: New emulation for N32 ABI (elf)
+	* emulparams/elf32elocteonn32.sh: Ditto.
+        * emulparams/elf64ebocteon.sh: New emulation for N64 ABI (elf).
+        * emulparams/elf64elocteon.sh: Ditto.
+	* scripttempt/elf.sc: Add OCTEON_SPECIAL_SECTIONS.
+        * emultempl/mipself.em: Source $EXTRA_MIPS_EM_FILE if exists.
+
+2012-07-19  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+            Adam Nemet  <anemet@caviumnetworks.com>
+
+        * configure.tgt (mips64-octeon-linux-gnu*): New target for
+	Linux toolchain.
+
+

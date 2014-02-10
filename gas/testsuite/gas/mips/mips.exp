@@ -87,6 +87,9 @@
 #	nollsc
 #		The CPU doesn't support ll, sc, lld and scd instructions.
 #
+#      soft_float
+#              The architecture provides no FPU.
+#
 # as_flags: The assembler flags used when assembling tests for this
 # architecture.
 #
@@ -419,7 +422,7 @@ mips_arch_create mips32r2 32	mips32	{ fpisa3 fpisa4 fpisa5 ror } \
 			{ mipsisa32r2-*-* mipsisa32r2el-*-* }
 mips_arch_create mips64	64	mips5	{ mips32 } \
 			{ -march=mips64 -mtune=mips64 } { -mmips:isa64 } \
-			{ mipsisa64-*-* mipsisa64el-*-* }
+			{ mipsisa64-unknown-* mipsisa64el-unknown-* }
 mips_arch_create mips64r2 64	mips64	{ mips32r2 ror } \
 			{ -march=mips64r2 -mtune=mips64r2 } \
 			{ -mmips:isa64r2 } \
@@ -440,13 +443,13 @@ mips_arch_create vr5400	64	mips4	{ ror } \
 mips_arch_create sb1 	64	mips64	{ mips3d } \
 			{ -march=sb1 -mtune=sb1 } { -mmips:sb1 } \
 			{ mipsisa64sb1-*-* mipsisa64sb1el-*-* }
-mips_arch_create octeon 64	mips64r2 {} \
+mips_arch_create octeon 64	mips64r2 { soft_float} \
 			{ -march=octeon -mtune=octeon } { -mmips:octeon } \
-			{ mips64octeon*-*-* }
-mips_arch_create octeonp 64	octeon {} \
+			{ mipsisa64*-octeon-elf* mips64*-octeon-linux-gnu* mips64octeon*-*-* }
+mips_arch_create octeonp 64	octeon { soft_float } \
 			{ -march=octeon+ -mtune=octeon+ } { -mmips:octeon+ } \
 			{ }
-mips_arch_create octeon2 64	octeonp {} \
+mips_arch_create octeon2 64	octeonp { soft_float } \
 			{ -march=octeon2 -mtune=octeon2 } { -mmips:octeon2 } \
 			{ }
 mips_arch_create xlr 	64	mips64	{} \
@@ -472,6 +475,7 @@ if { [istarget mips*-*-vxworks*] } {
     if { [istarget "mips*-*-*linux*"]
 	 || [istarget "mips*-sde-elf*"]
 	 || [istarget "mips*-mti-elf*"]
+         || [istarget "mipsisa64*-octeon-elf*"]
 	 || [istarget "mips*-*-*bsd*"] } then {
 	set tmips "t"
     } else {
@@ -487,9 +491,13 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test_arches "abs"		[mips_arch_list_matching mips1]
     run_dump_test_arches "add"		[mips_arch_list_matching mips1]
     run_dump_test_arches "and"		[mips_arch_list_matching mips1]
-    run_dump_test_arches "mips1-fp"	[mips_arch_list_matching mips1]
+    run_dump_test_arches "mips1-fp"    [mips_arch_list_matching mips1 \
+                                            !soft_float]
     run_list_test_arches "mips1-fp" "-32 -msoft-float" \
 					[mips_arch_list_matching mips1]
+    run_list_test_arches "mips1-fp" "-32" \
+                                       [mips_arch_list_matching mips1 \
+                                            soft_float]
     run_dump_test "break20"
     run_dump_test "trap20"
 
@@ -546,13 +554,13 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test_arches "24k-triple-stores-3" \
 					[mips_arch_list_matching mips2]
     run_dump_test_arches "24k-triple-stores-4" \
-					[mips_arch_list_matching mips2 !singlefloat]
+					[mips_arch_list_matching mips2 !singlefloat !octeon]
     run_dump_test_arches "24k-triple-stores-5" \
 					[mips_arch_list_matching mips1]
     run_dump_test_arches "24k-triple-stores-6" \
-					[mips_arch_list_matching mips2 !singlefloat]
+					[mips_arch_list_matching mips2 !singlefloat !octeon]
     run_dump_test_arches "24k-triple-stores-7" \
-					[mips_arch_list_matching mips2 !singlefloat]
+					[mips_arch_list_matching mips2 !singlefloat !octeon]
     run_dump_test_arches "24k-triple-stores-8" \
 					[mips_arch_list_matching mips1]
     run_dump_test_arches "24k-triple-stores-9" \
@@ -587,16 +595,16 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test_arches "ld-forward" 	[mips_arch_list_matching mips1]
     run_dump_test_arches "sd"		[mips_arch_list_matching mips1]
     run_dump_test_arches "sd-forward" 	[mips_arch_list_matching mips1]
-    run_dump_test_arches "l_d" 		[mips_arch_list_matching mips1 !singlefloat]
+    run_dump_test_arches "l_d" 		[mips_arch_list_matching mips1 !singlefloat !soft_float]
     run_dump_test_arches "l_d-single"	[mips_arch_list_matching mips1 singlefloat]
-    run_dump_test_arches "l_d-forward"	[mips_arch_list_matching mips1 !singlefloat]
-    run_dump_test_arches "s_d"		[mips_arch_list_matching mips1 !singlefloat]
+    run_dump_test_arches "l_d-forward"	[mips_arch_list_matching mips1 !singlefloat !soft_float]
+    run_dump_test_arches "s_d"		[mips_arch_list_matching mips1 !singlefloat !soft_float] 
     run_dump_test_arches "s_d-single"	[mips_arch_list_matching mips1 singlefloat]
-    run_dump_test_arches "s_d-forward" 	[mips_arch_list_matching mips1 !singlefloat]
-    run_dump_test_arches "ldc1"		[mips_arch_list_matching mips2 !singlefloat]
-    run_dump_test_arches "ldc1-forward" [mips_arch_list_matching mips2 !singlefloat]
-    run_dump_test_arches "sdc1"		[mips_arch_list_matching mips2 !singlefloat]
-    run_dump_test_arches "sdc1-forward" [mips_arch_list_matching mips2 !singlefloat]
+    run_dump_test_arches "s_d-forward" 	[mips_arch_list_matching mips1 !singlefloat !soft_float]
+    run_dump_test_arches "ldc1"		[mips_arch_list_matching mips2 !singlefloat !soft_float]
+    run_dump_test_arches "ldc1-forward" [mips_arch_list_matching mips2 !singlefloat !soft_float]
+    run_dump_test_arches "sdc1"		[mips_arch_list_matching mips2 !singlefloat !soft_float]
+    run_dump_test_arches "sdc1-forward" [mips_arch_list_matching mips2 !singlefloat !soft_float]
     if $has_newabi {
 	run_dump_test_arches "ld-n32" 	[mips_arch_list_matching mips3]
 	run_dump_test_arches "ld-forward-n32" \
@@ -604,36 +612,36 @@ if { [istarget mips*-*-vxworks*] } {
 	run_dump_test_arches "sd-n32" 	[mips_arch_list_matching mips3]
 	run_dump_test_arches "sd-forward-n32" \
 					[mips_arch_list_matching mips3]
-	run_dump_test_arches "l_d-n32" 	[mips_arch_list_matching mips3 !singlefloat]
+	run_dump_test_arches "l_d-n32" 	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "l_d-forward-n32" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "s_d-n32" 	[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "s_d-n32" 	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "s_d-forward-n32" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "ldc1-n32" [mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "ldc1-n32" [mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "ldc1-forward-n32" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "sdc1-n32" [mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "sdc1-n32" [mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "sdc1-forward-n32" \
-					[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "ld-n64"	[mips_arch_list_matching mips3]
 	run_dump_test_arches "ld-forward-n64" \
 					[mips_arch_list_matching mips3]
 	run_dump_test_arches "sd-n64"	[mips_arch_list_matching mips3]
 	run_dump_test_arches "sd-forward-n64" \
 					[mips_arch_list_matching mips3]
-	run_dump_test_arches "l_d-n64"	[mips_arch_list_matching mips3 !singlefloat]
+	run_dump_test_arches "l_d-n64"	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "l_d-forward-n64" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "s_d-n64"	[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "s_d-n64"	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "s_d-forward-n64" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "ldc1-n64"	[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "ldc1-n64"	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "ldc1-forward-n64" \
-					[mips_arch_list_matching mips3 !singlefloat]
-	run_dump_test_arches "sdc1-n64"	[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
+	run_dump_test_arches "sdc1-n64"	[mips_arch_list_matching mips3 !singlefloat !soft_float]
 	run_dump_test_arches "sdc1-forward-n64" \
-					[mips_arch_list_matching mips3 !singlefloat]
+					[mips_arch_list_matching mips3 !singlefloat !soft_float]
     }
     run_dump_test_arches "ld-zero"	[mips_arch_list_matching mips1]
     run_dump_test_arches "ld-zero-2"	[mips_arch_list_matching mips2 !nollsc]
@@ -648,19 +656,19 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "lif-xgot"
     run_dump_test_arches "mips4"	[mips_arch_list_matching mips4]
     run_dump_test_arches "mips4-fp" "-32" \
-					[mips_arch_list_matching fpisa4]
+					[mips_arch_list_matching fpisa4 !soft_float]
     run_dump_test_arches "mips4-fp" "-mabi=o64" \
-					[mips_arch_list_matching fpisa4 gpr64]
+					[mips_arch_list_matching fpisa4 gpr64 !soft_float]
     run_list_test_arches "mips4-fp" "-32 -msoft-float" \
 					[mips_arch_list_matching fpisa4]
     run_dump_test_arches "mips4-branch-likely" \
-					[mips_arch_list_matching mips4]
+					[mips_arch_list_matching mips4 !soft_float]
     run_list_test_arches "mips4-branch-likely" "-32 -msoft-float" \
 					[mips_arch_list_matching mips4]
     run_dump_test_arches "mips5-fp" "-32" \
-					[mips_arch_list_matching fpisa5]
+					[mips_arch_list_matching fpisa5 !soft_float]
     run_dump_test_arches "mips5-fp" "-mabi=o64" \
-					[mips_arch_list_matching fpisa5 gpr64]
+					[mips_arch_list_matching fpisa5 gpr64 !soft_float]
     run_dump_test "mul"
 
     run_dump_test_arches "rol"		[mips_arch_list_matching mips1 !ror]
@@ -727,9 +735,13 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test_arches "mips32"	[mips_arch_list_matching mips32]
     run_dump_test_arches "mips32-imm"	[mips_arch_list_matching mips32]
 
-    run_dump_test_arches "mips32-sf32"	[mips_arch_list_matching mips32]
+    run_dump_test_arches "mips32-sf32" [mips_arch_list_matching mips32 \
+                                           !soft_float]
     run_list_test_arches "mips32-sf32" "-32 -msoft-float" \
 					[mips_arch_list_matching mips32]
+    run_list_test_arches "mips32-sf32" "-32" \
+                                       [mips_arch_list_matching mips32\
+                                           soft_float]
     run_dump_test_arches "mips32-cp2"	[mips_arch_list_matching mips32 \
 					    !octeon]
 
@@ -737,15 +749,21 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test_arches "mips32r2-cp2"	[mips_arch_list_matching mips32r2 \
 					    !octeon]
     run_dump_test_arches "mips32r2-fp32" \
-					[mips_arch_list_matching mips32r2]
+                                       [mips_arch_list_matching mips32r2 \
+                                           !soft_float]
     run_list_test_arches "mips32r2-fp32" "-32 -msoft-float" \
 					[mips_arch_list_matching mips32r2]
+    run_list_test_arches "mips32r2-fp32" "-32" \
+                                       [mips_arch_list_matching mips32r2 \
+                                           soft_float]
     run_list_test_arches "mips32r2-ill" "-32" \
 			[mips_arch_list_matching mips32r2 gpr32]
     run_list_test_arches "mips32r2-ill-fp64" "-mabi=o64" \
-			[mips_arch_list_matching mips32r2 gpr64]
+                       [mips_arch_list_matching mips32r2 gpr64 !soft_float]
     run_list_test_arches "mips32r2-ill-nofp" "-32 -msoft-float" \
 			[mips_arch_list_matching mips32r2]
+    run_list_test_arches "mips32r2-ill-nofp" "-32" \
+                       [mips_arch_list_matching mips32r2 soft_float]
 
     run_dump_test_arches "mips64"	[mips_arch_list_matching mips64]
     run_dump_test_arches "mips64-cp2"	[mips_arch_list_matching mips64 \
@@ -766,8 +784,8 @@ if { [istarget mips*-*-vxworks*] } {
 	run_dump_test "xlr-ext"
     }
 
-    run_dump_test_arches "relax"	[mips_arch_list_matching mips2]
-    run_dump_test_arches "relax-at"	[mips_arch_list_matching mips2]
+    run_dump_test_arches "relax"       [mips_arch_list_matching mips2 !soft_float]
+    run_dump_test_arches "relax-at"    [mips_arch_list_matching mips2 !soft_float]
     run_dump_test "relax-swap1-mips1"
     run_dump_test "relax-swap1-mips2"
     run_dump_test "relax-swap2"
@@ -781,7 +799,7 @@ if { [istarget mips*-*-vxworks*] } {
 
     run_dump_test_arches "eva"		[mips_arch_list_matching mips32r2 !octeon]
 
-    run_list_test "illegal" "-32"
+    run_list_test_arches "illegal" "-32" [mips_arch_list_matching !soft_float !mips16]
     run_list_test "baddata1" "-32"
     run_list_test "jalr" ""
 
@@ -829,7 +847,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "mips-abi32-pic2"
 
     run_dump_test "elf${el}-rel"
-    run_dump_test_arches "elf${el}-rel2" [mips_arch_list_matching gpr64 !singlefloat]
+    run_dump_test_arches "elf${el}-rel2" [mips_arch_list_matching gpr64 !singlefloat !soft_float]
     run_dump_test "e32${el}-rel2"
     run_dump_test "elf${el}-rel3"
     run_dump_test_arches "elf-rel4" [mips_arch_list_matching gpr64]
@@ -947,10 +965,14 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "gpr-names-n32"
     run_dump_test "gpr-names-64"
 
-    run_dump_test "fpr-names-numeric"
-    run_dump_test "fpr-names-32"
-    run_dump_test "fpr-names-n32"
-    run_dump_test "fpr-names-64"
+    run_dump_test_arches "fpr-names-numeric" \
+                               [mips_arch_list_matching mips64 !soft_float !micromips]
+    run_dump_test_arches "fpr-names-32" \
+                               [mips_arch_list_matching mips64 !soft_float !micromips]
+    run_dump_test_arches "fpr-names-n32" \
+                               [mips_arch_list_matching mips64 !soft_float !micromips]
+    run_dump_test_arches "fpr-names-64" \
+                               [mips_arch_list_matching mips64 !soft_float !micromips]
 
     run_dump_test "cp0-names-numeric"
     run_dump_test "cp0-names-r3000"
@@ -962,6 +984,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "cp0-names-mips32r2"
     run_dump_test "cp0-names-mips64"
     run_dump_test "cp0-names-mips64r2"
+    run_dump_test "cp0-names-octeon"
     run_dump_test "cp0-names-sb1"
 
     run_dump_test "cp0sel-names-numeric"
@@ -969,6 +992,7 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "cp0sel-names-mips32r2"
     run_dump_test "cp0sel-names-mips64"
     run_dump_test "cp0sel-names-mips64r2"
+    run_dump_test "cp0sel-names-octeon"
     run_dump_test "cp0sel-names-sb1"
 
     run_dump_test "cp1-names-numeric"
@@ -1053,6 +1077,7 @@ if { [istarget mips*-*-vxworks*] } {
     if $has_newabi {
 	run_dump_test "mips16-dwarf2-n32"
     }
+    run_list_test_arches "octeon_unsupported_insn" "" [mips_arch_list_matching octeon]
     run_dump_test "mips16-stabs"
 
     run_dump_test "mips16e-jrc"
@@ -1079,20 +1104,26 @@ if { [istarget mips*-*-vxworks*] } {
 					[mips_arch_list_matching mips2]
     run_list_test_arches "mips-macro-ill-nofp" "-32 -msoft-float" \
 					[mips_arch_list_matching mips2]
+    run_list_test_arches "mips-macro-ill-nofp" "-32" \
+                                       [mips_arch_list_matching mips2 \
+                                           soft_float]
 
     run_list_test_arches "mips-hard-float-flag" \
 	"-32 -msoft-float -mhard-float" \
 	[mips_arch_list_matching mips1 !singlefloat]
     run_list_test_arches "mips-double-float-flag" \
 	"-32 -msingle-float -mdouble-float" \
-	[mips_arch_list_matching mips1 !singlefloat]
+	[mips_arch_list_matching mips1 !singlefloat !soft_float] 
+
+    run_list_test_arches "soft-float-arch" "-32" \
+                                       [mips_arch_list_matching soft_float]
 
     run_dump_test "mips16-vis-1"
     run_dump_test "call-nonpic-1"
     run_dump_test "mips32-sync"
     run_dump_test_arches "mips32r2-sync" \
 					[mips_arch_list_matching mips32r2]
-    run_dump_test_arches "alnv_ps-swap" [mips_arch_list_matching fpisa5]
+    run_dump_test_arches "alnv_ps-swap" [mips_arch_list_matching fpisa5 !soft_float]
     run_dump_test_arches "cache" [lsort -dictionary -unique [concat \
 					[mips_arch_list_matching mips3] \
 					[mips_arch_list_matching mips32] ] ]
