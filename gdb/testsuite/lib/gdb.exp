@@ -3711,7 +3711,8 @@ proc gdb_finish { } {
     global cleanfiles
 
     # Give persistent gdbserver a chance to terminate before GDB is killed.
-    if {[info exists gdbserver_reconnect_p] && $gdbserver_reconnect_p} {
+    if {[info exists gdbserver_reconnect_p] && $gdbserver_reconnect_p
+	&& [info exists gdb_spawn_id]} {
 	send_gdb "kill\n";
 	gdb_expect 10 {
 	    -re "y or n" {
@@ -4397,6 +4398,23 @@ proc get_hexadecimal_valueof { exp default } {
 
 proc get_sizeof { type default } {
     return [get_integer_valueof "sizeof (${type})" $default]
+}
+
+proc get_target_charset { } {
+    global gdb_prompt
+
+    gdb_test_multiple "show target-charset" "" {
+	-re "The target character set is \"auto; currently (\[^\"\]*)\".*$gdb_prompt $" {
+	    return $expect_out(1,string)
+	}
+	-re "The target character set is \"(\[^\"\]*)\".*$gdb_prompt $" {
+	    return $expect_out(1,string)
+	}
+    }
+
+    # Pick a reasonable default.
+    warning "Unable to read target-charset."
+    return "UTF-8"
 }
 
 # Get the current value for remotetimeout and return it.

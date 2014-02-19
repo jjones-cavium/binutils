@@ -1,3 +1,29 @@
+2014-02-17  Alan Modra  <amodra@gmail.com>
+
+	* emultemps/ppc64elf.em (params): New static struct replacing
+	various other static vars.  Adjust code throughout file.
+
+2014-02-17  Alan Modra  <amodra@gmail.com>
+
+	* emultempl/ppc32elf.em (ppc_after_open_output): Really enable
+	ppc476 workaround for ld -r.
+
+2014-02-12  Alan Modra  <amodra@gmail.com>
+
+	* emultempl/ppc32elf.em (pagesize): New static var.
+	(ppc_after_open_output): Set params.pagesize_p2 from pagesize.
+	(PARSE_AND_LIST_ARGS_CASES): Adjust to use pagesize.
+
+2014-02-11  Andrew Pinski  <apinski@cavium.com>
+
+	* emulparams/aarch64linux32.sh (LIBPATH_SUFFIX): Change to ilp32.
+	(ELF_INTERPRETER_NAME): Define.
+	* emulparams/aarch64linux32b.sh (ELF_INTERPRETER_NAME): Define.
+
+2014-02-10  Alan Modra  <amodra@gmail.com>
+
+	* po/ld.pot: Regenerate.
+
 2014-02-03  Alan Modra  <amodra@gmail.com>
 
 	* emultempl/ppc32elf.em (no_tls_get_addr_opt, emit_stub_syms)
