@@ -90,6 +90,10 @@ enum aarch64_field_kind
   FLD_b5,
   FLD_b40,
   FLD_scale,
+  FLD_Rt0,
+  FLD_Rt1,
+  FLD_Rs0,
+  FLD_Rs1,
 };
 
 /* Field description.  */

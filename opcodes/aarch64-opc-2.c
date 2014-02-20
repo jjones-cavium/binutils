@@ -111,6 +111,10 @@ const struct aarch64_operand aarch64_operands[] =
   {AARCH64_OPND_CLASS_SYSTEM, "BARRIER", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {}, "a barrier option name"},
   {AARCH64_OPND_CLASS_SYSTEM, "BARRIER_ISB", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {}, "the ISB option name SY or an optional 4-bit unsigned immediate"},
   {AARCH64_OPND_CLASS_SYSTEM, "PRFOP", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {}, "an prefetch operation specifier"},
+  {AARCH64_OPND_CLASS_INT_REG, "Rt0", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {FLD_Rt0}, "an integer register"},
+  {AARCH64_OPND_CLASS_INT_REG, "Rt1", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {FLD_Rt1}, "an integer register"},
+  {AARCH64_OPND_CLASS_INT_REG, "Rs0", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {FLD_Rs0}, "an integer register"},
+  {AARCH64_OPND_CLASS_INT_REG, "Rs1", OPD_F_HAS_INSERTER | OPD_F_HAS_EXTRACTOR, {FLD_Rs1}, "an integer register"},
   {AARCH64_OPND_CLASS_NIL, "", 0, {0}, "DUMMY"},
 };
 
