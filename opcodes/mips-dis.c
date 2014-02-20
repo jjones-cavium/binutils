@@ -41,6 +41,13 @@
 /* Mips instructions are at maximum this many bytes long.  */
 #define INSNLEN 4
 
+/* Generate Octeon/MIPS unaligned load and store instructions. */
+#ifdef INCLUDE_OCTEON_USEUN
+int octeon_use_unalign = 1;
+#else
+int octeon_use_unalign = 0;
+#endif
+
 
 /* FIXME: These should be shared with gdb somehow.  */
 
@@ -765,6 +772,15 @@ is_newabi (Elf_Internal_Ehdr *header)
   return 0;
 }
 
+static int
+is_octeon (struct disassemble_info *info)
+{
+  return info->mach == CPU_OCTEON
+    || info->mach == CPU_OCTEONP
+    || info->mach == CPU_OCTEON2
+    || info->mach == CPU_OCTEON3;
+}
+
 /* Check if the object has microMIPS ASE code.  */
 
 static int
@@ -840,6 +856,17 @@ parse_mips_dis_option (const char *option, unsigned int len)
   const char *val;
   const struct mips_abi_choice *chosen_abi;
   const struct mips_arch_choice *chosen_arch;
+
+  if (strcmp ("octeon-useun", option) == 0)
+    {
+      octeon_use_unalign = 1;
+      return;
+    }
+  if (strcmp ("no-octeon-useun", option) == 0)
+    {
+      octeon_use_unalign = 0;
+      return;
+    }
 
   /* Try to match options that are simple flags */
   if (CONST_STRNEQ (option, "no-aliases"))
@@ -1545,6 +1572,27 @@ print_insn_mips (bfd_vma memaddr,
 		  && strcmp (op->name, "jalx"))
 		continue;
 
+	      if (is_octeon (info) && octeon_use_unalign)
+                {
+                  if (strcmp (op->name, "lwl") == 0
+                      || strcmp (op->name, "ldl") == 0
+                      || strcmp (op->name, "swl") == 0
+                      || strcmp (op->name, "sdl") == 0
+                      || strcmp (op->name, "lcache") == 0
+                      || strcmp (op->name, "scache") == 0
+                      || strcmp (op->name, "flush") == 0)
+                    continue;
+                                                                                
+                  if (strcmp (op->name, "ldr") == 0
+                       || strcmp (op->name, "lwr") == 0
+                       || strcmp (op->name, "swr") == 0
+                       || strcmp (op->name, "sdr") == 0)
+                    {
+                      (*info->fprintf_func) (info->stream, "nop");
+                      return INSNLEN;
+                    }
+                }
+
 	      /* Figure out instruction type and branch delay information.  */
 	      if ((op->pinfo & INSN_UNCOND_BRANCH_DELAY) != 0)
 	        {
@@ -2247,6 +2295,12 @@ with the -M switch (multiple options should be separated by commas):\n"));
 
   fprintf (stream, _("\n\
   virt            Recognize the virtualization ASE instructions.\n"));
+
+  fprintf (stream, _("\n\
+  octeon-useun             Disassemble Octeon unaligned load/store instructions.\n"));
+
+  fprintf (stream, _("\n\
+  no-octeon-useun          Disassemble mips unaligned load/store instructions.\n"));
 
   fprintf (stream, _("\n\
   gpr-names=ABI            Print GPR names according to  specified ABI.\n\
