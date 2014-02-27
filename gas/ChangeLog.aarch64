@@ -1,3 +1,14 @@
+2014-02-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-aarch64.c (casp_int_reg_or_fail): New. Check if the
+	1st and 3rd operand of casp instruction satisfies.
+	(casp1_int_reg_or_fail): New. Check if the 2nd and 4th operand 
+	of casp instruction satisfies.
+	(process_omitted_operand): Process the operands AARCH64_OPND_Rt0,
+	AARCH64_OPND_Rt1, AARCH64_OPND_Rs0 and AARCH64_OPND_Rs1.
+	(parse_operands): Parse the operands AARCH64_OPND_Rt0,
+	AARCH64_OPND_Rt1, AARCH64_OPND_Rs0 and AARCH64_OPND_Rs1.
+
 2013-01-07  Philipp Tomsich  <philipp.tomsich@theobroma-systems.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Add entry for "xgene-1"

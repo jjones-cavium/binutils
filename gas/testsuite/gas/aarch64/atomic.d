@@ -10,8 +10,8 @@ Disassembly of section \.text:
    4:	48a47ce2 	cash	w2, w4, x7
    8:	88a17cc2 	cas	w2, w1, x6
    c:	c8a57d23 	cas	x3, x5, x9
-  10:	082b7d41 	casp	w1, w11, x10
-  14:	88217d62 	casp	x2, x1, x11
+  10:	08287d42 	casp	w2, w3, w8, w9, x10
+  14:	88267d62 	casp	x2, x3, x6, x7, x11
   18:	382b00a1 	ldaddb	w1, w11, x5
   1c:	78260042 	ldaddh	w2, w6, x2
   20:	b8250042 	ldadd	w2, w5, x2

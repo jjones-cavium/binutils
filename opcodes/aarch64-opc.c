@@ -198,6 +198,10 @@ const aarch64_field fields[] =
     { 31,  1 },	/* b5: in the test bit and branch instructions.  */
     { 19,  5 },	/* b40: in the test bit and branch instructions.  */
     { 10,  6 },	/* scale: in the fixed-point scalar to fp converting inst.  */
+    {  0,  5 },	/* Rt0: in casp instructions.  */
+    {  0,  5 },	/* Rt1: in casp instructions.  */
+    { 16,  5 },	/* Rs0: in casp instructions.  */
+    { 16,  5 },	/* Rs1: in casp instructions.  */
 };
 
 enum aarch64_operand_class
@@ -2320,8 +2324,12 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
     case AARCH64_OPND_Rn:
     case AARCH64_OPND_Rm:
     case AARCH64_OPND_Rt:
+    case AARCH64_OPND_Rt0:
+    case AARCH64_OPND_Rt1:
     case AARCH64_OPND_Rt2:
     case AARCH64_OPND_Rs:
+    case AARCH64_OPND_Rs0:
+    case AARCH64_OPND_Rs1:
     case AARCH64_OPND_Ra:
     case AARCH64_OPND_Rt_SYS:
       /* The optional-ness of <Xt> in e.g. IC <ic_op>{, <Xt>} is determined by
@@ -2337,6 +2345,12 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
 	      || opnd->qualifier == AARCH64_OPND_QLF_X);
       snprintf (buf, size, "%s",
 		get_int_reg_name (opnd->reg.regno, opnd->qualifier, 0));
+      if (opnd->type == AARCH64_OPND_Rt1)
+      snprintf (buf, size, "%s",
+		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
+      if (opnd->type == AARCH64_OPND_Rs1)
+      snprintf (buf, size, "%s",
+		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
       break;
 
     case AARCH64_OPND_Rd_SP:
