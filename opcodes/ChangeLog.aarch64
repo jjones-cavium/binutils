@@ -1,3 +1,8 @@
+2014-02-27  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* aarch64-opc.c (print_register_offset_address): Call
+	get_int_reg_name to prepare the register name.
+
 2014-02-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64-asm-2.c (aarch64_insert_operand): Add case entries
