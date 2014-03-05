@@ -198,11 +198,6 @@ enum aarch64_opnd
   AARCH64_OPND_BARRIER,		/* Barrier operand.  */
   AARCH64_OPND_BARRIER_ISB,	/* Barrier operand for ISB.  */
   AARCH64_OPND_PRFOP,		/* Prefetch operation.  */
-
-  AARCH64_OPND_Rt0,		/* Integer register used in casp instructions.  */
-  AARCH64_OPND_Rt1,		/* Integer register used in casp instructions.  */
-  AARCH64_OPND_Rs0,		/* Integer register used in casp instructions.  */
-  AARCH64_OPND_Rs1,		/* Integer register used in casp instructions.  */
 };
 
 /* Qualifier constrains an operand.  It either specifies a variant of an

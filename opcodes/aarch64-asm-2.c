@@ -270,10 +270,6 @@ aarch64_insert_operand (const aarch64_operand *self,
     case 26:
     case 34:
     case 35:
-    case 87:
-    case 88:
-    case 89:
-    case 90:
       return aarch64_ins_regno (self, info, code, inst);
     case 11:
       return aarch64_ins_reg_extended (self, info, code, inst);

@@ -8,14 +8,6 @@
 	* gas/aarch64/ldst-reg-reg-offset.s: Add tests.
 	* gas/aarch64/ldst-reg-reg-offset.d: Update.
 
-2014-02-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
-
-	* gas/aarch64/atomic-1.d: Modify casp instruction as per the
-	new assembler manual.
-	* gas/aarch64/atomic-1.s: Likewise.
-	* gas/aarch64/atomic.d: Likewise.
-	* gas/aarch64/atomic.s: Likewise.
-
 2013-12-18  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* gas/aarch64/rm-simd-ext.d: New file.

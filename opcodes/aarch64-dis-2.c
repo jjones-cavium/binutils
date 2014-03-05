@@ -8106,10 +8106,6 @@ aarch64_extract_operand (const aarch64_operand *self,
     case 26:
     case 34:
     case 35:
-    case 87:
-    case 88:
-    case 89:
-    case 90:
       return aarch64_ext_regno (self, info, code, inst);
     case 8:
       return aarch64_ext_regrt_sysins (self, info, code, inst);

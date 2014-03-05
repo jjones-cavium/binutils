@@ -184,8 +184,8 @@
 /* e.g. CAS <Xd>, <Xn>, <Xm|SP>.  */
 #define QL_CAS                  \
 {                               \
-  QLF5(W,W,W,W,X),              \
-  QLF5(X,X,X,X,X),              \
+  QLF3(W,W,X),                  \
+  QLF3(X,X,X),                  \
 }
 
 /* e.g. UDIV <Xd>, <Xn>, <Xm>.  */
@@ -2127,7 +2127,7 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"cash", 0x48a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"cas", 0x88a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"cas", 0xc8a07c00, 0xffe08000, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"casp", 0x08207c00, 0x7fe0fc00, atomiccas, 0, ATOMIC, OP5 (Rt0, Rt1, Rs0, Rs1, Rn_SP), QL_CAS, F_SF},
+  {"casp", 0x08207c00, 0x7fe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_CAS, F_SF},
   /* Atomic LD.  */
   {"ldaddb", 0x38200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"ldaddh", 0x78200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
@@ -2333,8 +2333,4 @@ struct aarch64_opcode aarch64_opcode_table[] =
     Y(SYSTEM, barrier, "BARRIER_ISB", 0, F(),				\
       "the ISB option name SY or an optional 4-bit unsigned immediate")	\
     Y(SYSTEM, prfop, "PRFOP", 0, F(),					\
-      "an prefetch operation specifier")				\
-    Y(INT_REG, regno, "Rt0", 0, F(FLD_Rt0), "an integer register")	\
-    Y(INT_REG, regno, "Rt1", 0, F(FLD_Rt1), "an integer register")	\
-    Y(INT_REG, regno, "Rs0", 0, F(FLD_Rs0), "an integer register")	\
-    Y(INT_REG, regno, "Rs1", 0, F(FLD_Rs1), "an integer register")	
+      "an prefetch operation specifier")
