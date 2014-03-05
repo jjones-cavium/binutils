@@ -33,12 +33,6 @@
 	* config/tc-aarch64.c (parse_operands): Avoid trying to
 	parse a vector register as an immediate.
 
-2013-07-25  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
-
-	* config/tc-aarch64.c (aarch64_cpus): Add entry for "atomic"
-	feature in thunder.
-	(aarch64_features): Add entry for atomic feature in thunder.
-	
 2013-07-03  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* config/tc-aarch64.c (reloc_table): Merge got_prel19 into got.
