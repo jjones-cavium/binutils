@@ -1,3 +1,7 @@
+2014-03-04  Andrew Pinski  <apinski@cavium.com>
+
+	* plugin.c (try_load_plugin): Handle USE_LTO_PLUGIN_SOURCE.
+
 2013-05-20  Manjunath Matti  <mmatti@caviumnetworks.com>
 
 	Bug #6522

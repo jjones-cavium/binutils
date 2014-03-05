@@ -165,6 +165,15 @@ try_load_plugin (const char *pname)
   ld_plugin_onload onload;
   enum ld_plugin_status status;
 
+#ifdef USE_LTO_PLUGIN_SOURCE
+  if (strstr (pname, "liblto_plugin") != NULL)
+    {
+      extern enum ld_plugin_status __bfd_gcc_lto_onload (struct ld_plugin_tv *tv);
+      onload = __bfd_gcc_lto_onload;
+    }
+  else
+    {
+#endif
   plugin_handle = dlopen (pname, RTLD_NOW);
   if (!plugin_handle)
     {
@@ -172,9 +181,14 @@ try_load_plugin (const char *pname)
       return 0;
     }
 
+
   onload = dlsym (plugin_handle, "onload");
   if (!onload)
     goto err;
+
+#ifdef USE_LTO_PLUGIN_SOURCE
+    }
+#endif
 
   i = 0;
   tv[i].tv_tag = LDPT_MESSAGE;
