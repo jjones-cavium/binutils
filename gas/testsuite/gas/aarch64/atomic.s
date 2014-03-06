@@ -24,8 +24,8 @@
 	cash	w2, w4, x7
 	cas	w2, w1, x6
 	cas	x3, x5, x9
-	casp	w2, w3, w8, w9, x10
-	casp	x2, x3, x6, x7, x11
+	casp	w1, w11, x10
+	casp	x2, x1, x11
 
 	ldaddb	w1, w11, x5
 	ldaddh	w2, w6, x2

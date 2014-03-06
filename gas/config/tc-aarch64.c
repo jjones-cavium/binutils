@@ -3377,41 +3377,6 @@ parse_sys_ins_reg (char **str, struct hash_control *sys_ins_regs)
       info->qualifier = AARCH64_OPND_QLF_X;			\
   } while (0)
 
-#define casp_int_reg_or_fail(reject_sp, reject_rz) do {         \
-    val = aarch64_reg_parse_32_64 (&str, reject_sp, reject_rz,  \
-				   &isreg32, &isregzero);	\
-    if (val == PARSE_FAIL)					\
-      {								\
-	set_default_error ();					\
-	goto failure;						\
-      }								\
-    if (val % 2 != 0)						\
-      {								\
-	set_fatal_syntax_error (_("Even number register expected"));\
-	goto failure;						\
-      }								\
-    info->reg.regno = val;					\
-    if (isreg32)						\
-      info->qualifier = AARCH64_OPND_QLF_W;			\
-    else							\
-      info->qualifier = AARCH64_OPND_QLF_X;			\
-  } while (0)
-
-#define casp1_int_reg_or_fail(reject_sp, reject_rz) do {        \
-    val1 = aarch64_reg_parse_32_64 (&str, reject_sp, reject_rz, \
-				    &isreg32, &isregzero);	\
-    if (val1 == PARSE_FAIL)					\
-      {								\
-	set_default_error ();					\
-	goto failure;						\
-      }								\
-    if (val1 != val + 1)					\
-      {								\
-	set_fatal_syntax_error (_("Register should be consecutive with the previous"));	\
-	goto failure;						\
-      }								\
-  } while (0)
-
 #define po_imm_nc_or_fail() do {				\
     if (! parse_constant_immediate (&str, &val))		\
       goto failure;						\
@@ -4369,12 +4334,8 @@ process_omitted_operand (enum aarch64_opnd type, const aarch64_opcode *opcode,
     case AARCH64_OPND_Rn:
     case AARCH64_OPND_Rm:
     case AARCH64_OPND_Rt:
-    case AARCH64_OPND_Rt0:
-    case AARCH64_OPND_Rt1:
     case AARCH64_OPND_Rt2:
     case AARCH64_OPND_Rs:
-    case AARCH64_OPND_Rs0:
-    case AARCH64_OPND_Rs1:
     case AARCH64_OPND_Ra:
     case AARCH64_OPND_Rt_SYS:
     case AARCH64_OPND_Rd_SP:
@@ -4607,7 +4568,7 @@ parse_operands (char *str, const aarch64_opcode *opcode)
 
   for (i = 0; operands[i] != AARCH64_OPND_NIL; i++)
     {
-      int64_t val, val1;
+      int64_t val;
       int isreg32, isregzero;
       int comma_skipped_p = 0;
       aarch64_reg_type rtype;
@@ -4647,16 +4608,6 @@ parse_operands (char *str, const aarch64_opcode *opcode)
 	case AARCH64_OPND_Ra:
 	case AARCH64_OPND_Rt_SYS:
 	  po_int_reg_or_fail (1, 0);
-	  break;
-
-	case AARCH64_OPND_Rt0:
-	case AARCH64_OPND_Rs0:
-	  casp_int_reg_or_fail (1, 0);
-	  break;
-
-	case AARCH64_OPND_Rt1:
-	case AARCH64_OPND_Rs1:
-	  casp1_int_reg_or_fail (1, 0);
 	  break;
 
 	case AARCH64_OPND_Rd_SP:

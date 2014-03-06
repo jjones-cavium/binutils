@@ -24,8 +24,8 @@
 	cash	w2, w4, sp
 	cas	w2, w1, sp
 	cas	x3, x5, sp
-	casp	w4, w5, w8, w9, sp
-	casp	x2, x3, x12, x13, sp
+	casp	w1, w11, sp
+	casp	x2, x1, sp
 
 	ldaddb	w1, w11, sp
 	ldaddh	w2, w6, sp
