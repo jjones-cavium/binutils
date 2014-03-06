@@ -151,6 +151,8 @@ const aarch64_field fields[] =
     {  0,  5 },	/* Rt: in load/store instructions.  */
     {  0,  5 },	/* Rd: in many integer instructions.  */
     {  5,  5 },	/* Rn: in many integer instructions.  */
+    {  0,  5 }, /* Rt0: in casp instructions.  */
+    {  0,  5 }, /* Rt1: in casp instructions.  */
     { 10,  5 },	/* Rt2: in load/store pair instructions.  */
     { 10,  5 },	/* Ra: in fp instructions.  */
     {  5,  3 },	/* op2: in the system instructions.  */
@@ -166,6 +168,8 @@ const aarch64_field fields[] =
     { 13,  2 },	/* len: in advsimd tbl/tbx instructions.  */
     { 16,  5 },	/* Rm: in ld/st reg offset and some integer inst.  */
     { 16,  5 },	/* Rs: in load/store exclusive instructions.  */
+    { 16,  5 }, /* Rs0: in casp instructions.  */
+    { 16,  5 }, /* Rs1: in casp instructions.  */
     { 13,  3 },	/* option: in ld/st reg offset + add/sub extended reg inst.  */
     { 12,  1 },	/* S: in load/store reg offset instructions.  */
     { 21,  2 },	/* hw: in move wide constant instructions.  */
@@ -2323,8 +2327,12 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
     case AARCH64_OPND_Rn:
     case AARCH64_OPND_Rm:
     case AARCH64_OPND_Rt:
+    case AARCH64_OPND_Rt0:
+    case AARCH64_OPND_Rt1:
     case AARCH64_OPND_Rt2:
     case AARCH64_OPND_Rs:
+    case AARCH64_OPND_Rs0:
+    case AARCH64_OPND_Rs1:
     case AARCH64_OPND_Ra:
     case AARCH64_OPND_Rt_SYS:
       /* The optional-ness of <Xt> in e.g. IC <ic_op>{, <Xt>} is determined by
@@ -2340,6 +2348,12 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
 	      || opnd->qualifier == AARCH64_OPND_QLF_X);
       snprintf (buf, size, "%s",
 		get_int_reg_name (opnd->reg.regno, opnd->qualifier, 0));
+      if (opnd->type == AARCH64_OPND_Rt1)
+      snprintf (buf, size, "%s",
+		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
+      if (opnd->type == AARCH64_OPND_Rs1)
+      snprintf (buf, size, "%s",
+		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
       break;
 
     case AARCH64_OPND_Rd_SP:
