@@ -1,5 +1,23 @@
 2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
+	* aarch64-opc.c (aarch64_field): Add the field entries for
+	new fields Rt0, Rt1, Rs0 and Rs1.
+	(aarch64_print_operand): Handle print of newly defined
+	operands.
+	* aarch64-opc.h (aarch64_field_kind): New fields FLD_Rt0,
+	FLD_Rt1, FLD_Rs0 and FLD_Rs1.
+	* aarch64-tbl.h (QL_CASPW): New Qualifier.
+	(QL_CASPX): New Qualifier.
+	(aarch64_opcode_table): Modify the semantics of casp instruction
+	as per new assembler manual.
+	(aarch64_opcode_table): Handle new fields FLD_Rt0, FLD_Rt1,
+	FLD_Rs0 and FLD_Rs1.
+	* aarch64-asm-2.c: Regenerate.
+	* aarch64-dis-2.c: Regenerate.
+	* aarch64-opc-2.c: Regenerate.
+
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
 	* aarch64-tbl.h (aarch64_feature_atomic): Add new entry for
 	atomic feature.
 	(ATOMIC): Define and map to aarch64_feature_atomic feature.

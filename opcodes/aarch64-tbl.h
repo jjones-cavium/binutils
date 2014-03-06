@@ -181,6 +181,18 @@
   QLF3(W,W,X),			\
 }
 
+/* e.g. CASP <Wd>, <Wn>, <Wm|SP>.  */
+#define QL_CASPW                \
+{                               \
+  QLF5(W,W,W,W,X),              \
+}
+
+/* e.g. CASP <Xd>, <Xn>, <Xm|SP>.  */
+#define QL_CASPX                \
+{                               \
+  QLF5(X,X,X,X,X),              \
+}
+
 /* e.g. UDIV <Xd>, <Xn>, <Xm>.  */
 #define QL_I3SAMER		\
 {				\
@@ -2120,8 +2132,8 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"cash", 0x48a07c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"cas", 0x88a07c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"cas", 0xc8a07c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"casp", 0x08207c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"casp", 0x48207c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
+  {"casp", 0x08207c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP5 (Rt0, Rt1, Rs0, Rs1, Rn_SP), QL_CASPW, 0},
+  {"casp", 0x48207c00, 0xffa07c00, atomiccas, 0, ATOMIC, OP5 (Rt0, Rt1, Rs0, Rs1, Rn_SP), QL_CASPX, 0},
   /* Atomic LD.  */
   {"ldaddb", 0x38200000, 0xff20fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
   {"ldaddh", 0x78200000, 0xff20fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
@@ -2185,8 +2197,12 @@ struct aarch64_opcode aarch64_opcode_table[] =
     Y(INT_REG, regno, "Rn", 0, F(FLD_Rn), "an integer register")	\
     Y(INT_REG, regno, "Rm", 0, F(FLD_Rm), "an integer register")	\
     Y(INT_REG, regno, "Rt", 0, F(FLD_Rt), "an integer register")	\
+    Y(INT_REG, regno, "Rt0", 0, F(FLD_Rt0), "an integer register")      \
+    Y(INT_REG, regno, "Rt1", 0, F(FLD_Rt1), "an integer register")      \
     Y(INT_REG, regno, "Rt2", 0, F(FLD_Rt2), "an integer register")	\
     Y(INT_REG, regno, "Rs", 0, F(FLD_Rs), "an integer register")	\
+    Y(INT_REG, regno, "Rs0", 0, F(FLD_Rs0), "an integer register")      \
+    Y(INT_REG, regno, "Rs1", 0, F(FLD_Rs1), "an integer register")	\
     Y(INT_REG, regno, "Ra", 0, F(FLD_Ra), "an integer register")	\
     X(INT_REG, ins_regno, ext_regrt_sysins, "Rt_SYS", 0, F(FLD_Rt),	\
       "an integer register")						\

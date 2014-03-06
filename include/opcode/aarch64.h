@@ -100,8 +100,12 @@ enum aarch64_opnd
   AARCH64_OPND_Rn,	/* Integer register as source.  */
   AARCH64_OPND_Rm,	/* Integer register as source.  */
   AARCH64_OPND_Rt,	/* Integer register used in ld/st instructions.  */
+  AARCH64_OPND_Rt0,             /* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rt1,             /* Integer register used in casp instructions.  */
   AARCH64_OPND_Rt2,	/* Integer register used in ld/st pair instructions.  */
   AARCH64_OPND_Rs,	/* Integer register used in ld/st exclusive.  */
+  AARCH64_OPND_Rs0,             /* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rs1,             /* Integer register used in casp instructions.  */
   AARCH64_OPND_Ra,	/* Integer register used in ddp_3src instructions.  */
   AARCH64_OPND_Rt_SYS,	/* Integer register used in system instructions.  */
 

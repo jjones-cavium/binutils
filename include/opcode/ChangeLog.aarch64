@@ -1,0 +1,4 @@
+2014-02-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64.h (aarch64_opnd): New operands AARCH64_OPND_Rt0,
+	AARCH64_OPND_Rt1, AARCH64_OPND_Rs0 and AARCH64_OPND_Rs1.
