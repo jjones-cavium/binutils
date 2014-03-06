@@ -181,13 +181,6 @@
   QLF3(W,W,X),			\
 }
 
-/* e.g. CAS <Xd>, <Xn>, <Xm|SP>.  */
-#define QL_CAS                  \
-{                               \
-  QLF3(W,W,X),                  \
-  QLF3(X,X,X),                  \
-}
-
 /* e.g. UDIV <Xd>, <Xn>, <Xm>.  */
 #define QL_I3SAMER		\
 {				\
@@ -1220,15 +1213,12 @@ static const aarch64_feature_set aarch64_feature_crypto =
   AARCH64_FEATURE (AARCH64_FEATURE_CRYPTO, 0);
 static const aarch64_feature_set aarch64_feature_crc =
   AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0);
-static const aarch64_feature_set aarch64_feature_atomic =
-  AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0);
 
 #define CORE	&aarch64_feature_v8
 #define FP	&aarch64_feature_fp
 #define SIMD	&aarch64_feature_simd
 #define CRYPTO	&aarch64_feature_crypto
 #define CRC	&aarch64_feature_crc
-#define ATOMIC	&aarch64_feature_atomic
 
 struct aarch64_opcode aarch64_opcode_table[] =
 {
@@ -2122,50 +2112,7 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"blt", 0x5400000b, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
   {"bgt", 0x5400000c, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
   {"ble", 0x5400000d, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
-  /* Atomic CAS.  */
-  {"casb", 0x08a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"cash", 0x48a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"cas", 0x88a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"cas", 0xc8a07c00, 0xffe08000, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"casp", 0x08207c00, 0x7fe0fc00, atomiccas, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_CAS, F_SF},
-  /* Atomic LD.  */
-  {"ldaddb", 0x38200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldaddh", 0x78200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldadd", 0xb8200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldadd", 0xf8200000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldclrb", 0x38201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldclrh", 0x78201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldclr", 0xb8201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldclr", 0xf8201000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldeorb", 0x38202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldeorh", 0x78202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldeor", 0xb8202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldeor", 0xf8202000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldsetb", 0x38203000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldseth", 0x78203000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldset", 0xb8203000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldset", 0xf8203000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldsmaxb", 0x38204000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsmaxh", 0x78204000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsmax", 0xb8204000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsmax", 0xf8204000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldsminb", 0x38205000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsminh", 0x78205000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsmin", 0xb8205000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldsmin", 0xf8205000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"ldumaxb", 0x38206000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldumaxh", 0x78206000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldumax", 0xb8206000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldumax", 0xf8206000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  {"lduminb", 0x38207000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"lduminh", 0x78207000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldumin", 0xb8207000, 0x7fe0fc00, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"ldumin", 0xf8207000, 0xffe08000, atomicld, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
-  /* Atomic SWAP.  */
-  {"swpb", 0x38208000, 0x7fe0fc00, atomicswp, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"swph", 0x78208000, 0x7fe0fc00, atomicswp, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"swp", 0xb8208000, 0x7fe0fc00, atomicswp, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3WWX, 0},
-  {"swp", 0xf8208000, 0xffe08000, atomicswp, 0, ATOMIC, OP3 (Rd, Rm, Rn_SP), QL_I3SAMEX, 0},
+
   {0, 0, 0, 0, 0, 0, {}, {}, 0},
 };
 
