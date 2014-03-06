@@ -1,3 +1,10 @@
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* gas/aarch64/atomic-1.d: New file.
+	* gas/aarch64/atomic-1.s: New file.
+	* gas/aarch64/atomic.d: New file.
+	* gas/aarch64/atomic.s: New file.
+
 2014-02-27  Jiong Wang  <jiong.wang@arm.com>
 
 	* gas/aarch64/fp-const0-parsing.s: New test.

@@ -171,7 +171,6 @@ static const unsigned op_enum_table [] =
   506,
   507,
   768,
-  125,
   526,
   529,
   532,

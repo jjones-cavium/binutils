@@ -1,3 +1,9 @@
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-aarch64.c (aarch64_cpus): Add entry for "atomic"
+	feature in thunder.
+	(aarch64_features): Add entry for atomic feature in thunder.
+
 2013-01-07  Philipp Tomsich  <philipp.tomsich@theobroma-systems.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Add entry for "xgene-1"
