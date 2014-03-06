@@ -1,5 +1,13 @@
 2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
+        * aarch64-tbl.h ((aarch64_opcode_table): Add entries for
+        SQRDMLAH and SQRDMLSH instructions.
+        * aarch64-asm-2.c: Regenerate.
+        * aarch64-dis-2.c: Regenerate.
+        * aarch64-opc-2.c: Regenerate.
+
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
 	* aarch64-opc.c (aarch64_field): Add the field entries for
 	new fields Rt0, Rt1, Rs0 and Rs1.
 	(aarch64_print_operand): Handle print of newly defined
