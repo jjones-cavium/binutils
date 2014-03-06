@@ -1,0 +1,12 @@
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-tbl.h (aarch64_feature_atomic): Add new entry for
+	atomic feature.
+	(ATOMIC): Define and map to aarch64_feature_atomic feature.
+	(aarch64_opcode_table): Add entries for casb, cash, cas, cas,
+	casp, ldaddb, ldaddh, ldadd, ldadd, ldclrb, ldclrh, ldclr,
+	ldclr, ldeorb, ldeorh, ldeor, ldeor, ldsetb, ldseth, ldset,
+	ldset, ldsmaxb, ldsmaxh, ldsmax, ldsmax, ldsminb, ldsminh,
+	ldsmin, ldsmin, ldumaxb, ldumaxh, ldumax, ldumax, lduminb,
+	lduminh, ldumin, ldumin, swpb, swph, swp and swp.
+	* aarch64-dis-2.c: Regenerate.

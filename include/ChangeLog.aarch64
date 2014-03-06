@@ -1,0 +1,5 @@
+2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* opcode/aarch64.h: Define AARCH64_FEATURE_ATOMIC.
+	(aarch64_insn_class): Add new entries for atomiccas, atomicld
+	and atomicswp instruction classes.
