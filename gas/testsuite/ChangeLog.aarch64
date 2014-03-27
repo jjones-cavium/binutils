@@ -1,3 +1,11 @@
+2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+    
+	* gas/aarch64/atomic-1.d: Modify atomic instructions that accepts
+	order final operand wrapped with [].
+	* gas/aarch64/atomic-1.s: Likewise.
+	* gas/aarch64/atomic.d: Likewise.
+	* gas/aarch64/atomic.s: Likewise.
+
 2014-03-18  Jiong Wang  <jiong.wang@arm.com>
 
 	* gas/aarch64/illegal.d: Pass -mno-verbose-error.

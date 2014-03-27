@@ -1,3 +1,36 @@
+2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-tbl.h (QL_ATOMIC_W, QL_ATOMIC_X): New Qualifiers.
+	(QL_CASPW, QL_CASPX): Modify to suit last operands to be
+	wrapped with [].
+	(aarch64_opcode_table): Add entries for casb, casab, caslb,
+	casalb, cash, casah, caslh, casalh, cas, casa, casl, casal,
+	cas, casa, casl, casal, casp, caspa, caspl, caspal, casp,
+	caspa, caspl, caspal, ldaddb, ldaddab, ldaddlb, ldaddalb,
+	ldaddh, ldaddah, ldaddlh, ldaddalh, ldadd, ldadda, ldaddl,
+	ldaddal, ldadd, ldadda, ldaddl, ldaddal, ldclrb, ldclrab,
+	ldclrlb, ldclralb, ldclrh, ldclrah, ldclrlh, ldclralh, ldclr,
+	ldclra, ldclrl, ldclral, ldclr, ldclra, ldclrl, ldclral,
+	ldeorb, ldeorab, ldeorlb, ldeoralb, ldeorh, ldeorah, ldeorlh,
+	ldeoralh, ldeor, ldeora, ldeorl, ldeoral, ldeor, ldeora,
+	ldeorl, ldeoral, ldsetb, ldsetab, ldsetlb, ldsetalb, ldseth,
+	ldsetah, ldsetlh, ldsetalh, ldset, ldseta, ldsetl, ldsetal,
+	ldset, ldseta, ldsetl, ldsetal, ldsmaxb, ldsmaxab, ldsmaxlb,
+	ldsmaxalb, ldsmaxh, ldsmaxah, ldsmaxlh, ldsmaxalh, ldsmax,
+	ldsmaxa, ldsmaxl, ldsmaxal, ldsmax, ldsmaxa, ldsmaxl, ldsmaxal,
+	ldsminb, ldsminab, ldsminlb, ldsminalb, ldsminh, ldsminah,
+	ldsminlh, ldsminalh, ldsmin, ldsmina, ldsminl, ldsminal, ldsmin,
+	ldsmina, ldsminl, ldsminal, ldsmin, ldsmina, ldsminl, ldsminal,
+	ldumaxb, ldumaxab, ldumaxlb, ldumaxalb, ldumaxh, ldumaxah,
+	ldumaxlh, ldumaxalh, ldumax, ldumaxa, ldumaxl, ldumaxal, ldumax,
+	ldumaxa, ldumaxl, ldumaxal, ldumax, ldumaxa, ldumaxl, ldumaxal,
+	lduminb, lduminab, lduminlb, lduminalb, lduminh, lduminah,
+	lduminlh, lduminalh, ldumin, ldumina, lduminl, lduminal, ldumin,
+	ldumina, lduminl, lduminal, swpb, swpab, swplb, swpalb, swph,
+	swpah, swplh, swpalh, swp, swpa, swpl, swpal, swp, swpa, swpl
+	and swpal.
+	* aarch64-dis-2.c: Regenerate.
+
 2014-03-26  Jiong Wang  <jiong.wang@arm.com>
 
 	* aarch64-dis.c (aarch64_ext_ldst_elemlist): Check H/S undefined
