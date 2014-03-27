@@ -1,3 +1,8 @@
+2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-aarch64.c (parse_operands): Modify AARCH64_OPND_Rt0
+	and AARCH64_OPND_Rs0 to reject wzr/xzr registers.
+
 2014-03-06  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* config/tc-aarch64.c (casp_int_reg_or_fail): New. Check if the
