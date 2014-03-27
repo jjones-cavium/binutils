@@ -1,0 +1,5 @@
+2014-03-26  Jiong Wang  <jiong.wang@arm.com>
+
+	* binutils-all/aarch64/aarch64.exp: New test driver for AArch64.
+	* binutils-all/aarch64/unallocated-encoding.s: New testcase.
+	* binutils-all/aarch64/unallocated-encoding.d: Ditto.
