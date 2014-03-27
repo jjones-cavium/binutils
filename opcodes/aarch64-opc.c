@@ -2348,10 +2348,10 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
 	      || opnd->qualifier == AARCH64_OPND_QLF_X);
       snprintf (buf, size, "%s",
 		get_int_reg_name (opnd->reg.regno, opnd->qualifier, 0));
-      if (opnd->type == AARCH64_OPND_Rt1)
+      if (opnd->type == AARCH64_OPND_Rt1 && opnd->reg.regno != 31)
       snprintf (buf, size, "%s",
 		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
-      if (opnd->type == AARCH64_OPND_Rs1)
+      if (opnd->type == AARCH64_OPND_Rs1 && opnd->reg.regno != 31)
       snprintf (buf, size, "%s",
 		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
       break;

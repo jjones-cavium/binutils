@@ -1,5 +1,10 @@
 2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
+	* aarch64-opc.c (aarch64_print_operand): Modify to reject
+	printing the register when Rs/Rt is wzr/xzr register.
+
+2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
 	* aarch64-tbl.h (QL_ATOMIC_W, QL_ATOMIC_X): New Qualifiers.
 	(QL_CASPW, QL_CASPX): Modify to suit last operands to be
 	wrapped with [].

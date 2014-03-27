@@ -4691,7 +4691,7 @@ parse_operands (char *str, const aarch64_opcode *opcode)
 
 	case AARCH64_OPND_Rt0:
 	case AARCH64_OPND_Rs0:
-	  casp_int_reg_or_fail (1, 0);
+	  casp_int_reg_or_fail (1, 1);
 	  break;
 
 	case AARCH64_OPND_Rt1:
