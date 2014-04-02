@@ -1,3 +1,28 @@
+2014-04-02  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+    
+	* aarch64-tbl.h (QL_ATOMIC_ST_W, QL_ATOMIC_ST_X): New Qualifiers.
+	(aarch64_opcode_table): Create alias for ldaddb, ldaddlb, ldaddh,
+	ldaddlh, ldadd, ldaddl, ldadd, ldaddl, ldclrb, ldclrlb, ldclrh, 
+        ldclrlh, ldclr, ldclrl, ldclr, ldclrl, ldeorb, ldeorlb, ldeorh, 
+        ldeorlh, ldeor, ldeorl, ldeor, ldeorl, ldsetb, ldsetlb, ldseth, 
+        ldsetlh, ldset, ldsetl, ldset, ldsetl, ldsmaxb, ldsmaxlb,
+	ldsmaxh, ldsmaxlh, ldsmax, ldsmaxl, ldsmax, ldsmaxl, ldsminb,
+	ldsminlb, ldsminh, ldsminlh, ldsmin, ldsminl, ldsmin, ldsminl,
+	ldumaxb, ldumaxlb, ldumaxh, ldumaxlh, ldumax, ldumaxl, ldumax,
+	ldumaxl, lduminb, lduminlb, lduminh, lduminlh, ldumin, lduminl,
+	ldumin and lduminl.
+	Add entries for staddb, staddlb, staddh, staddlh, stadd, staddl,
+	stadd, staddl, stclrb, stclrlb, stclrh, stclrlh, stclr, stclrl,
+	stclr, stclrl, steorb, steorlb, steorh, steorlh, steor, steorl,
+	steor, steorl, stsetb, stsetlb, stseth, stsetlh, stset, stsetl,
+	stset, stsetl, stsmaxb, stsmaxlb, stsmaxh, stsmaxlh, stsmax,
+	stsmaxl, stsmax, stsmaxl, stsminb, stsminlb, stsminh, stsminlh,
+	stsmin, stsminl, stsmin, stsminl, stumaxb, stumaxlb, stumaxh,
+	stumaxlh, stumax, stumaxl, stumax, stumaxl, stuminb, stuminlb,
+	stuminh, stuminlh, stumin, stuminl, stumin and stuminl.
+	* aarch64-asm-2.c: Regenerate.
+	* aarch64-dis-2.c: Regenerate.
+
 2014-03-27  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64-opc.c (aarch64_print_operand): Modify to reject
