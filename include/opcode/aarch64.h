@@ -304,6 +304,7 @@ enum aarch64_insn_class
   asisdshf,
   atomiccas,
   atomicld,
+  atomicst,
   atomicswp,
   bitfield,
   branch_imm,
