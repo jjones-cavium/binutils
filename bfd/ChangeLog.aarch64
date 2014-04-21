@@ -1,3 +1,7 @@
+2014-04-15  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+
+	* (elfNN_aarch64_tls_relax): Fix instruction mask.
+
 2014-03-25  Will Newton  <will.newton@linaro.org>
 
 	 * elfnn-aarch64.c (elfNN_aarch64_finish_dynamic_sections):
