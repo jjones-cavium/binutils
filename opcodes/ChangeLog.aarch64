@@ -1,11 +1,26 @@
+2014-04-22  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-asm.c (convert_stop_to_ldop): New assembler function
+	to alias st<op> to ld<op>.
+	(convert_to_real): Add cases for all operations mentioned in
+	the include/opcode/aarch64.h to alias st<op> to ld<op>.
+	* aarch64-dis.c (convert_ldop_to_stop): New disassembler
+	function to alias ld<op> to st<op>.
+	(convert_to_alias): Add cases for all operations mentioned in
+	the include/opcode/aarch64.h to alias ld<op> to st<op>.
+	* aarch64-opc-2.c: Regenerate.
+	* aarch64-tbl.h (aarch64_opcode_table): Update all atomic
+	instructions to interchange the source and destination operands
+	as per the assembler manual.
+
 2014-04-02  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
     
 	* aarch64-tbl.h (QL_ATOMIC_ST_W, QL_ATOMIC_ST_X): New Qualifiers.
 	(aarch64_opcode_table): Create alias for ldaddb, ldaddlb, ldaddh,
 	ldaddlh, ldadd, ldaddl, ldadd, ldaddl, ldclrb, ldclrlb, ldclrh, 
-        ldclrlh, ldclr, ldclrl, ldclr, ldclrl, ldeorb, ldeorlb, ldeorh, 
-        ldeorlh, ldeor, ldeorl, ldeor, ldeorl, ldsetb, ldsetlb, ldseth, 
-        ldsetlh, ldset, ldsetl, ldset, ldsetl, ldsmaxb, ldsmaxlb,
+	ldclrlh, ldclr, ldclrl, ldclr, ldclrl, ldeorb, ldeorlb, ldeorh, 
+	ldeorlh, ldeor, ldeorl, ldeor, ldeorl, ldsetb, ldsetlb, ldseth, 
+	ldsetlh, ldset, ldsetl, ldset, ldsetl, ldsmaxb, ldsmaxlb,
 	ldsmaxh, ldsmaxlh, ldsmax, ldsmaxl, ldsmax, ldsmaxl, ldsminb,
 	ldsminlb, ldsminh, ldsminlh, ldsmin, ldsminl, ldsmin, ldsminl,
 	ldumaxb, ldumaxlb, ldumaxh, ldumaxlh, ldumax, ldumaxl, ldumax,

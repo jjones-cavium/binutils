@@ -100,12 +100,12 @@ enum aarch64_opnd
   AARCH64_OPND_Rn,	/* Integer register as source.  */
   AARCH64_OPND_Rm,	/* Integer register as source.  */
   AARCH64_OPND_Rt,	/* Integer register used in ld/st instructions.  */
-  AARCH64_OPND_Rt0,             /* Integer register used in casp instructions.  */
-  AARCH64_OPND_Rt1,             /* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rt0,	/* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rt1,	/* Integer register used in casp instructions.  */
   AARCH64_OPND_Rt2,	/* Integer register used in ld/st pair instructions.  */
   AARCH64_OPND_Rs,	/* Integer register used in ld/st exclusive.  */
-  AARCH64_OPND_Rs0,             /* Integer register used in casp instructions.  */
-  AARCH64_OPND_Rs1,             /* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rs0,	/* Integer register used in casp instructions.  */
+  AARCH64_OPND_Rs1,	/* Integer register used in casp instructions.  */
   AARCH64_OPND_Ra,	/* Integer register used in ddp_3src instructions.  */
   AARCH64_OPND_Rt_SYS,	/* Integer register used in system instructions.  */
 
@@ -440,6 +440,71 @@ enum aarch64_op
   OP_SXTL2,
   OP_UXTL,
   OP_UXTL2,
+
+  OP_ADDB,
+  OP_ADDLB,
+  OP_ADDH,
+  OP_ADDLH,
+  OP_ADD1,
+  OP_ADDL,
+  OP_ADD2,
+  OP_ADDL1,
+  OP_CLRB,
+  OP_CLRLB,
+  OP_CLRH,
+  OP_CLRLH,
+  OP_CLR,
+  OP_CLRL,
+  OP_CLR1,
+  OP_CLRL1,
+  OP_SETB,
+  OP_SETLB,
+  OP_SETH,
+  OP_SETLH,
+  OP_SET,
+  OP_SETL,
+  OP_SET1,
+  OP_SETL1,
+  OP_EORB,
+  OP_EORLB,
+  OP_EORH,
+  OP_EORLH,
+  OP_EOR,
+  OP_EORL,
+  OP_EOR1,
+  OP_EORL1,
+  OP_SMAXB,
+  OP_SMAXLB,
+  OP_SMAXH,
+  OP_SMAXLH,
+  OP_SMAX,
+  OP_SMAXL,
+  OP_SMAX1,
+  OP_SMAXL1,
+  OP_SMINB,
+  OP_SMINLB,
+  OP_SMINH,
+  OP_SMINLH,
+  OP_SMIN,
+  OP_SMINL,
+  OP_SMIN1,
+  OP_SMINL1,
+  OP_UMAXB,
+  OP_UMAXLB,
+  OP_UMAXH,
+  OP_UMAXLH,
+  OP_UMAX,
+  OP_UMAXL,
+  OP_UMAX1,
+  OP_UMAXL1,
+  OP_UMINB,
+  OP_UMINLB,
+  OP_UMINH,
+  OP_UMINLH,
+  OP_UMIN,
+  OP_UMINL,
+  OP_UMIN1,
+  OP_UMINL1,
 
   OP_TOTAL_NUM,		/* Pseudo.  */
 };
