@@ -1,3 +1,9 @@
+2014-04-22  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* gas/aarch64/atomic-1.d: Update test for changing the operand
+	order for atomic instructions.
+	* gas/aarch64/atomic.d: Likewise.
+
 2014-04-02  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* gas/aarch64/atomic-1.d: Add test for atomic store instructions.
