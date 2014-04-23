@@ -1,3 +1,8 @@
+2014-04-22  Will Newton  <will.newton@linaro.org>
+
+	* elfnn-aarch64.c (elfNN_aarch64_section_flags): Remove
+	function.  (elf_backend_section_flags): Remove define.
+
 2014-04-15  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* (elfNN_aarch64_tls_relax): Fix instruction mask.
