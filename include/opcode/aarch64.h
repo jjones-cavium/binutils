@@ -39,6 +39,7 @@ typedef uint32_t aarch64_insn;
 #define AARCH64_FEATURE_SIMD	0x00040000	/* SIMD instructions.  */
 #define AARCH64_FEATURE_CRC	0x00080000	/* CRC instructions.  */
 #define AARCH64_FEATURE_ATOMIC	0x00100000	/* ATOMIC instructions.  */
+#define AARCH64_FEATURE_CACHE	0x00200000	/* CACHE instructions.  */
 
 /* Architectures are the sum of the base and extensions.  */
 #define AARCH64_ARCH_V8		AARCH64_FEATURE (AARCH64_FEATURE_V8, \
@@ -107,6 +108,7 @@ enum aarch64_opnd
   AARCH64_OPND_Rs0,	/* Integer register used in casp instructions.  */
   AARCH64_OPND_Rs1,	/* Integer register used in casp instructions.  */
   AARCH64_OPND_Ra,	/* Integer register used in ddp_3src instructions.  */
+  AARCH64_OPND_Rz,	/* Zero Register.  */
   AARCH64_OPND_Rt_SYS,	/* Integer register used in system instructions.  */
 
   AARCH64_OPND_Rd_SP,	/* Integer Rd or SP.  */
@@ -203,6 +205,8 @@ enum aarch64_opnd
   AARCH64_OPND_SYSREG_DC,	/* System register <dc_op> operand.  */
   AARCH64_OPND_SYSREG_IC,	/* System register <ic_op> operand.  */
   AARCH64_OPND_SYSREG_TLBI,	/* System register <tlbi_op> operand.  */
+  AARCH64_OPND_CACHEREG,	/* Cache register operand.  */
+  AARCH64_OPND_CACHEZERO,	/* Cache zero register operand.  */
   AARCH64_OPND_BARRIER,		/* Barrier operand.  */
   AARCH64_OPND_BARRIER_ISB,	/* Barrier operand for ISB.  */
   AARCH64_OPND_PRFOP,		/* Prefetch operation.  */
@@ -313,6 +317,7 @@ enum aarch64_insn_class
   bitfield,
   branch_imm,
   branch_reg,
+  cache,
   compbranch,
   condbranch,
   condcmp_imm,
@@ -710,6 +715,8 @@ extern const aarch64_sys_ins_reg aarch64_sys_regs_ic [];
 extern const aarch64_sys_ins_reg aarch64_sys_regs_dc [];
 extern const aarch64_sys_ins_reg aarch64_sys_regs_at [];
 extern const aarch64_sys_ins_reg aarch64_sys_regs_tlbi [];
+extern const aarch64_sys_ins_reg aarch64_cache_regs [];
+extern const aarch64_sys_ins_reg aarch64_cache_zeros [];
 
 /* Shift/extending operator kinds.
    N.B. order is important; keep aarch64_operand_modifiers synced.  */
@@ -810,6 +817,8 @@ struct aarch64_opnd_info
       /* The encoding of the PSTATE field.  */
       aarch64_insn pstatefield;
       const aarch64_sys_ins_reg *sysins_op;
+      const aarch64_sys_ins_reg *cache_op;
+      const aarch64_sys_ins_reg *cache_zeroop;
       const struct aarch64_name_value_pair *barrier;
       const struct aarch64_name_value_pair *prfop;
     };

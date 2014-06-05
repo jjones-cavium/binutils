@@ -415,6 +415,8 @@ static struct hash_control *aarch64_sys_regs_ic_hsh;
 static struct hash_control *aarch64_sys_regs_dc_hsh;
 static struct hash_control *aarch64_sys_regs_at_hsh;
 static struct hash_control *aarch64_sys_regs_tlbi_hsh;
+static struct hash_control *aarch64_cache_regs_hsh;
+static struct hash_control *aarch64_cache_zeros_hsh;
 static struct hash_control *aarch64_reg_hsh;
 static struct hash_control *aarch64_barrier_opt_hsh;
 static struct hash_control *aarch64_nzcv_hsh;
@@ -3383,6 +3385,51 @@ parse_sys_ins_reg (char **str, struct hash_control *sys_ins_regs)
   *str = q;
   return o;
 }
+
+/* Parse a cache register.  */
+static const aarch64_sys_ins_reg *
+parse_cache_reg (char **str, struct hash_control *cache_regs)
+{
+  char *p, *q;
+  char buf[32];
+  const aarch64_sys_ins_reg *o;
+
+  p = buf;
+  for (q = *str; ISALNUM (*q) || *q == '_'; q++)
+    if (p < buf + 31)
+      *p++ = TOLOWER (*q);
+  *p = '\0';
+
+  o = hash_find (cache_regs, buf);
+  if (!o)
+    return NULL;
+
+  *str = q;
+  return o;
+}
+
+/* Parse a cache reg with XZR as destination.  */
+static const aarch64_sys_ins_reg *
+parse_cache_zero (char **str, struct hash_control *cache_zeros)
+{
+  char *p, *q;
+  char buf[32];
+  const aarch64_sys_ins_reg *o;
+
+  p = buf;
+  for (q = *str; ISALNUM (*q) || *q == '_'; q++)
+    if (p < buf + 31)
+      *p++ = TOLOWER (*q);
+  *p = '\0';
+
+  o = hash_find (cache_zeros, buf);
+  if (!o)
+    return NULL;
+
+  *str = q;
+  return o;
+}
+
 
 #define po_char_or_fail(chr) do {				\
     if (! skip_past_char (&str, chr))				\
@@ -3411,6 +3458,22 @@ parse_sys_ins_reg (char **str, struct hash_control *sys_ins_regs)
       info->qualifier = AARCH64_OPND_QLF_W;			\
     else							\
       info->qualifier = AARCH64_OPND_QLF_X;			\
+  } while (0)
+
+/* Check whether destination reg is XZR for some sys instructions.  */
+#define zero_reg_or_fail(reject_sp, reject_rz) do {	    	\
+    val1 = aarch64_reg_parse_32_64 (&str, reject_sp, reject_rz, \
+				   &isreg32, &isregzero);      	\
+    if (val1 == PARSE_FAIL)				    	\
+      {								\
+	set_default_error ();				   	\
+	goto failure;					   	\
+      }								\
+    if (val1 != 31)					    	\
+      {								\
+	set_fatal_syntax_error (_("Dest Reg should be XZR"));	\
+	goto failure;					   	\
+      }								\
   } while (0)
 
 #define casp_int_reg_or_fail(reject_sp, reject_rz) do {         \
@@ -4412,6 +4475,7 @@ process_omitted_operand (enum aarch64_opnd type, const aarch64_opcode *opcode,
     case AARCH64_OPND_Rs0:
     case AARCH64_OPND_Rs1:
     case AARCH64_OPND_Ra:
+    case AARCH64_OPND_Rz:
     case AARCH64_OPND_Rt_SYS:
     case AARCH64_OPND_Rd_SP:
     case AARCH64_OPND_Rn_SP:
@@ -4698,6 +4762,10 @@ parse_operands (char *str, const aarch64_opcode *opcode)
 	case AARCH64_OPND_Rd_SP:
 	case AARCH64_OPND_Rn_SP:
 	  po_int_reg_or_fail (0, 1);
+	  break;
+
+	case AARCH64_OPND_Rz:
+	  zero_reg_or_fail (1, 0);
 	  break;
 
 	case AARCH64_OPND_Rm_EXT:
@@ -5305,6 +5373,16 @@ sys_reg_ins:
 	      set_fatal_syntax_error ( _("unknown or missing operation name"));
 	      goto failure;
 	    }
+	  break;
+
+	case AARCH64_OPND_CACHEREG:
+	  inst.base.operands[i].cache_op =
+	    parse_cache_reg (&str, aarch64_cache_regs_hsh);
+	  break;
+
+	case AARCH64_OPND_CACHEZERO:
+	  inst.base.operands[i].cache_zeroop =
+	    parse_cache_zero (&str, aarch64_cache_zeros_hsh);
 	  break;
 
 	case AARCH64_OPND_BARRIER:
@@ -7045,6 +7123,8 @@ md_begin (void)
       || (aarch64_sys_regs_dc_hsh = hash_new ()) == NULL
       || (aarch64_sys_regs_at_hsh = hash_new ()) == NULL
       || (aarch64_sys_regs_tlbi_hsh = hash_new ()) == NULL
+      || (aarch64_cache_regs_hsh = hash_new ()) == NULL
+      || (aarch64_cache_zeros_hsh = hash_new ()) == NULL
       || (aarch64_reg_hsh = hash_new ()) == NULL
       || (aarch64_barrier_opt_hsh = hash_new ()) == NULL
       || (aarch64_nzcv_hsh = hash_new ()) == NULL
@@ -7081,6 +7161,14 @@ md_begin (void)
     checked_hash_insert (aarch64_sys_regs_tlbi_hsh,
 			 aarch64_sys_regs_tlbi[i].template,
 			 (void *) (aarch64_sys_regs_tlbi + i));
+
+  for (i = 0; aarch64_cache_regs[i].template != NULL; i++)
+    checked_hash_insert (aarch64_cache_regs_hsh, aarch64_cache_regs[i].template,
+			 (void *) (aarch64_cache_regs + i));
+
+  for (i = 0; aarch64_cache_zeros[i].template != NULL; i++)
+    checked_hash_insert (aarch64_cache_zeros_hsh, aarch64_cache_zeros[i].template,
+			 (void *) (aarch64_cache_zeros + i));
 
   for (i = 0; i < ARRAY_SIZE (reg_names); i++)
     checked_hash_insert (aarch64_reg_hsh, reg_names[i].name,
@@ -7224,8 +7312,9 @@ static const struct aarch64_cpu_option_table aarch64_cpus[] = {
   {"all", AARCH64_ANY, NULL},
   {"cortex-a53",	AARCH64_ARCH_V8, "Cortex-A53"},
   {"cortex-a57",	AARCH64_ARCH_V8, "Cortex-A57"},
-  {"thunder",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO | AARCH64_FEATURE_CRC | AARCH64_FEATURE_ATOMIC,
-   "Cavium Thunder"},
+  {"thunder",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO \
+			| AARCH64_FEATURE_CRC | AARCH64_FEATURE_ATOMIC \
+			| AARCH64_FEATURE_CACHE, "Cavium Thunder"},
   {"xgene-1", AARCH64_ARCH_V8, "APM X-Gene 1"},
   {"generic", AARCH64_ARCH_V8, NULL},
 
@@ -7260,6 +7349,7 @@ struct aarch64_option_cpu_value_table
 
 static const struct aarch64_option_cpu_value_table aarch64_features[] = {
   {"atomic",		AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0)},
+  {"cache",		AARCH64_FEATURE (AARCH64_FEATURE_CACHE, 0)},
   {"crc",		AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0)},
   {"crypto",		AARCH64_FEATURE (AARCH64_FEATURE_CRYPTO, 0)},
   {"fp",		AARCH64_FEATURE (AARCH64_FEATURE_FP, 0)},

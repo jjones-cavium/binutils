@@ -1,3 +1,13 @@
+2014-06-05  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* opcode/aarch64.h: Define new feature AARCH64_FEATURE_CACHE.
+	(aarch64_opnd): Define new operands AARCH64_OPND_Rz,
+	AARCH64_OPND_CACHEREG and AARCH64_OPND_CACHEZERO.
+	(aarch64_insn_class): Define new instruction class cache.
+	(aarch64_cache_regs, aarch64_cache_zeros): New funxtions.
+	(aarch64_opnd_info): Add new varaibles cache_op and
+	cache_zeroop.
+
 2014-04-22  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* opcode/aarch64.h (aarch64_op): Define new operations OP_ADDB,

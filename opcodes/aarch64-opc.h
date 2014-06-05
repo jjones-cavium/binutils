@@ -47,6 +47,7 @@ enum aarch64_field_kind
   FLD_Rt1,
   FLD_Rt2,
   FLD_Ra,
+  FLD_Rz,
   FLD_op2,
   FLD_CRm,
   FLD_CRn,

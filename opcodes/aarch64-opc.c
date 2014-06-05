@@ -155,6 +155,7 @@ const aarch64_field fields[] =
     {  0,  5 }, /* Rt1: in casp instructions.  */
     { 10,  5 },	/* Rt2: in load/store pair instructions.  */
     { 10,  5 },	/* Ra: in fp instructions.  */
+    {  0,  5 },	/* Rz: XZR Register.  */
     {  5,  3 },	/* op2: in the system instructions.  */
     {  8,  4 },	/* CRm: in the system instructions.  */
     { 12,  4 },	/* CRn: in the system instructions.  */
@@ -2356,6 +2357,10 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
 		get_int_reg_name (opnd->reg.regno + 1, opnd->qualifier, 0));
       break;
 
+    case AARCH64_OPND_Rz:
+      snprintf (buf, size, "%s", "xzr");
+      break;
+
     case AARCH64_OPND_Rd_SP:
     case AARCH64_OPND_Rn_SP:
       assert (opnd->qualifier == AARCH64_OPND_QLF_W
@@ -2661,6 +2666,14 @@ aarch64_print_operand (char *buf, size_t size, bfd_vma pc,
     case AARCH64_OPND_SYSREG_IC:
     case AARCH64_OPND_SYSREG_TLBI:
       snprintf (buf, size, "%s", opnd->sysins_op->template);
+      break;
+
+    case AARCH64_OPND_CACHEREG:
+      snprintf (buf, size, "%s", opnd->cache_op->template);
+      break;
+
+    case AARCH64_OPND_CACHEZERO:
+      snprintf (buf, size, "%s", opnd->cache_zeroop->template);
       break;
 
     case AARCH64_OPND_BARRIER:
@@ -3181,6 +3194,33 @@ const aarch64_sys_ins_reg aarch64_sys_regs_tlbi[] =
     { "vale3",     CPENS(6,C8,C7,5), 1 },
     { "vaale1",    CPENS(0,C8,C7,7), 1 },
     { 0,       CPENS(0,0,0,0), 0 }
+};
+
+const aarch64_sys_ins_reg aarch64_cache_regs[] =
+{
+    { "cvmcacheltgic",         CPENC(1,0,C0,C0,1), 0 },
+    { "cvmcacheltgdc",         CPENC(1,0,C0,C0,3), 0 },
+    { "cvmcachewbil2i",        CPENC(1,0,C0,C0,5), 0 },
+    { "cvmcachewbl2i",         CPENC(1,0,C0,C0,6), 0 },
+    { "cvmcacheltgl2i",        CPENC(1,0,C0,C0,7), 0 },
+    { "cvmcachestgl2i",        CPENC(1,0,C0,C1,0), 0 },
+    { "cvmcacheinvl2",         CPENC(1,0,C0,C1,1), 0 },
+    { "cvmcachewbil2",         CPENC(1,0,C0,C1,2), 0 },
+    { "cvmcachewbl2",          CPENC(1,0,C0,C1,3), 0 },
+    { "cvmcachelckl2",         CPENC(1,0,C0,C1,4), 0 },
+    { "cvmcacherdutlb",        CPENC(1,0,C0,C1,5), 0 },
+    { "cvmcacherdmtlb",        CPENC(1,0,C0,C1,6), 0 },
+    { "cvmcacherdwcu",         CPENC(1,0,C0,C1,7), 0 },
+    { "cvmcacheprefutlb",      CPENC(1,0,C0,C2,0), 0 },
+    { 0, CPENC(1,0,0,0,0), 0 }
+};
+
+const aarch64_sys_ins_reg aarch64_cache_zeros[] =
+{
+    { "cvmcacheinvallic",      CPENC(1,0,C0,C0,0), 0 },
+    { "cvmcacheinvalldc",      CPENC(1,0,C0,C0,2), 0 },
+    { "cvmcacheinvvirtdc",     CPENC(1,0,C0,C0,4), 0 },
+    { 0, CPENC(1,0,0,0,0), 0 }
 };
 
 #undef C0
