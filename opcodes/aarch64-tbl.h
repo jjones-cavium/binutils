@@ -1251,6 +1251,8 @@ static const aarch64_feature_set aarch64_feature_crc =
   AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0);
 static const aarch64_feature_set aarch64_feature_atomic =
   AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0);
+static const aarch64_feature_set aarch64_feature_cache =
+  AARCH64_FEATURE (AARCH64_FEATURE_CACHE, 0);
 
 #define CORE	&aarch64_feature_v8
 #define FP	&aarch64_feature_fp
@@ -1258,6 +1260,7 @@ static const aarch64_feature_set aarch64_feature_atomic =
 #define CRYPTO	&aarch64_feature_crypto
 #define CRC	&aarch64_feature_crc
 #define ATOMIC	&aarch64_feature_atomic
+#define CACHE	&aarch64_feature_cache
 
 struct aarch64_opcode aarch64_opcode_table[] =
 {
@@ -2394,6 +2397,8 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"swpa", 0xf8a08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
   {"swpl", 0xf8608000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
   {"swpal", 0xf8e08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
+  {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEREG, Rt), QL_SRC_X, F_ALIAS},
+  {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEZERO, Rz), QL_SRC_X, F_ALIAS},
   {0, 0, 0, 0, 0, 0, {}, {}, 0},
 };
 
@@ -2426,6 +2431,7 @@ struct aarch64_opcode aarch64_opcode_table[] =
     Y(INT_REG, regno, "Rs0", 0, F(FLD_Rs0), "an integer register")      \
     Y(INT_REG, regno, "Rs1", 0, F(FLD_Rs1), "an integer register")      \
     Y(INT_REG, regno, "Ra", 0, F(FLD_Ra), "an integer register")	\
+    Y(INT_REG, regno, "Rz", 0, F(FLD_Rz), "XZR register")		\
     X(INT_REG, ins_regno, ext_regrt_sysins, "Rt_SYS", 0, F(FLD_Rt),	\
       "an integer register")						\
     Y(INT_REG, regno, "Rd_SP", OPD_F_MAYBE_SP, F(FLD_Rd),		\
@@ -2560,6 +2566,8 @@ struct aarch64_opcode aarch64_opcode_table[] =
       "an instructin cache maintenance operation specifier")		\
     Y(SYSTEM, sysins_op, "SYSREG_TLBI", 0, F(),				\
       "a TBL invalidation operation specifier")				\
+    Y(SYSTEM, cachereg, "CACHEREG", 0, F(), "a cache register")		\
+    Y(SYSTEM, cachezero, "CACHEZERO", 0, F(), "a cache register")	\
     Y(SYSTEM, barrier, "BARRIER", 0, F(),				\
       "a barrier option name")						\
     Y(SYSTEM, barrier, "BARRIER_ISB", 0, F(),				\

@@ -1,3 +1,26 @@
+2014-06-05  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-asm.c (aarch64_ins_cachereg, aarch64_ins_cachezero):
+	New assembler functions to handle cache instructions.
+	* aarch64-asm.h (ins_cachereg, ins_cachezero): New definitions.
+	* aarch64-dis.c (aarch64_ext_cachezero, aarch64_ext_cachereg):
+	New disassembler functions to handle cache instructions.
+	* aarch64-asm.h (ext_cachereg, ext_cachezero): New definitions.
+	* aarch64-opc.c (aarch64_field): Add field value for FLD_Rz.
+	(aarch64_print_operand): Handle operands AARCH64_OPND_Rz,
+	AARCH64_OPND_CACHEREG and AARCH64_OPND_CACHEZERO.
+	(aarch64_cache_regs): Define cache register names.
+	(aarch64_cache_zeros): Define cache register names that expect
+	only xzr as destination.
+	* aarch64-opc.h (FLD_Rz): New field.
+	* aarch64-tbl.h (aarch64_feature_cache): New feature.
+	(aarch64_feature_set): Define CACHE.
+	(aarch64_opcode): Define new opcode sys for cache instructions.
+	Define new operands Rz, CACHEREG and CACHEZERO.
+	* aarch64-asm-2.c: Regenerate.
+	* aarch64-dis-2.c: Regenerate.
+	* aarch64-opc-2.c: Regenerate.
+	
 2014-04-22  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64-asm.c (convert_stop_to_ldop): New assembler function

@@ -640,6 +640,30 @@ aarch64_ins_sysins_op (const aarch64_operand *self ATTRIBUTE_UNUSED,
   return 0;
 }
 
+/* Encode system instruction op operand for e.g. sys <cache_reg>, Xt.  */
+const char *
+aarch64_ins_cachereg (const aarch64_operand *self ATTRIBUTE_UNUSED,
+		       const aarch64_opnd_info *info, aarch64_insn *code,
+		       const aarch64_inst *inst ATTRIBUTE_UNUSED)
+{
+  /* op1:CRn:CRm:op2 */
+  insert_fields (code, info->cache_op->value, inst->opcode->mask, 4,
+		 FLD_op2, FLD_CRm, FLD_CRn, FLD_op1);
+  return NULL;
+}
+
+/* Encode system instruction op operand for e.g. sys <cache_reg>, XZR.  */
+const char *
+aarch64_ins_cachezero (const aarch64_operand *self ATTRIBUTE_UNUSED,
+                       const aarch64_opnd_info *info, aarch64_insn *code,
+                       const aarch64_inst *inst ATTRIBUTE_UNUSED)
+{
+  /* op1:CRn:CRm:op2 */
+  insert_fields (code, info->cache_zeroop->value, inst->opcode->mask, 4,
+                 FLD_op2, FLD_CRm, FLD_CRn, FLD_op1);
+  return NULL;
+}
+
 /* Encode the memory barrier option operand for e.g. DMB <option>|#<imm>.  */
 
 const char*

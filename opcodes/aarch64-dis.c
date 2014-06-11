@@ -1031,6 +1031,76 @@ aarch64_ext_sysins_op (const aarch64_operand *self ATTRIBUTE_UNUSED,
   return 0;
 }
 
+/* Decode system instruction op operand for e.g. sys <cache_reg>, XZR.  */
+int
+aarch64_ext_cachezero (const aarch64_operand *self ATTRIBUTE_UNUSED,
+		       aarch64_opnd_info *info,
+		       aarch64_insn code,
+		       const aarch64_inst *inst ATTRIBUTE_UNUSED)
+{
+  int i;
+  aarch64_insn value;
+  const aarch64_sys_ins_reg *cache_zeroops;
+  /* op0:op1:CRn:CRm:op2 */
+  value = extract_fields (code, 0, 5,
+			  FLD_op0, FLD_op1, FLD_CRn,
+			  FLD_CRm, FLD_op2);
+
+  switch (info->type)
+    {
+    case AARCH64_OPND_CACHEZERO: cache_zeroops = aarch64_cache_zeros; break;
+    default: assert (0); return 0;
+    }
+
+  for (i = 0; cache_zeroops[i].template != NULL; ++i)
+    if (cache_zeroops[i].value == value)
+      {
+	info->cache_zeroop = cache_zeroops + i;
+	DEBUG_TRACE ("%s found value: %x, has_xt: %d, i: %d.",
+		     info->cache_zeroop->template,
+		     (unsigned)info->cache_zeroop->value,
+		     info->cache_zeroop->has_xt, i);
+	return 1;
+      }
+
+  return 0;
+}
+
+/* Decode system instruction op operand for e.g. sys <cache_reg>, Xt.  */
+int
+aarch64_ext_cachereg (const aarch64_operand *self ATTRIBUTE_UNUSED,
+                       aarch64_opnd_info *info,
+                       aarch64_insn code,
+                       const aarch64_inst *inst ATTRIBUTE_UNUSED)
+{
+  int i;
+  aarch64_insn value;
+  const aarch64_sys_ins_reg *cache_ops;
+  /* op0:op1:CRn:CRm:op2 */
+  value = extract_fields (code, 0, 5,
+                          FLD_op0, FLD_op1, FLD_CRn,
+                          FLD_CRm, FLD_op2);
+
+  switch (info->type)
+    {
+    case AARCH64_OPND_CACHEREG: cache_ops = aarch64_cache_regs; break;
+    default: assert (0); return 0;
+    }
+
+  for (i = 0; cache_ops[i].template != NULL; ++i)
+    if (cache_ops[i].value == value)
+      {
+        info->cache_op = cache_ops + i;
+        DEBUG_TRACE ("%s found value: %x, has_xt: %d, i: %d.",
+                     info->cache_op->template,
+                     (unsigned)info->cache_op->value,
+                     info->cache_op->has_xt, i);
+        return 1;
+      }
+
+  return 0;
+}
+
 /* Decode the memory barrier option operand for e.g. DMB <option>|#<imm>.  */
 
 int
