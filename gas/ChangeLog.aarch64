@@ -1,3 +1,9 @@
+2014-08-07  Andrew Pinski  <apinski@cavium.com>
+
+	* config/tc-aarch64.c (aarch64_cpus): Rename thunder to thunderx.
+	* testsuite/gas/aarch64/cvmcache.d: Update for the cpu name change of
+	thunder to thunderx.
+
 2014-06-05  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 	
 	* config/tc-aarch64.c (aarch64_cache_regs_hsh,

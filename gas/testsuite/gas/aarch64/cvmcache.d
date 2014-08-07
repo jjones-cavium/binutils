@@ -1,5 +1,5 @@
 #objdump: -dr
-#as: -mcpu=thunder
+#as: -mcpu=thunderx
 
 .*:     file format .*
 
