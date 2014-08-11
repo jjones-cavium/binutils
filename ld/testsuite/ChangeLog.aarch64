@@ -1,3 +1,8 @@
+2014-05-20  Will Newton  <will.newton@linaro.org>
+
+	* ld-shared/shared.exp: Mark non-PIC shared object tests
+	as xfail on aarch64.
+
 2014-04-15  Marcus Shawcroft  <marcus.shawcroft@arm.com>
 
 	* ld-aarch64/tls-relax-gdesc-ie.s (var): Adjust test case
