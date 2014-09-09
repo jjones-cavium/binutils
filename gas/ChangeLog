@@ -1,3 +1,8 @@
+2014-08-22  Richard Henderson  <rth@redhat.com>
+
+	* config/tc-aarch64.c (tc_aarch64_regname_to_dw2regnum): Fix
+	register number for vector register types.
+
 2013-07-19  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* config/tc-aarch64.c (enum aarch64_abi_type): New enumeration tag.
