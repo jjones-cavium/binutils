@@ -22,7 +22,7 @@ Contents of the .eh_frame section:
 #...
 0000001[48] 00000014 0000001[8c] FDE cie=00000000 pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
@@ -39,7 +39,7 @@ Contents of the .eh_frame section:
 
 0000004[48] 00000014 0000001c FDE cie=000000(2c|30) pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
@@ -67,7 +67,7 @@ Contents of the .eh_frame section:
   Augmentation data:     (ef be ad de 00 00 00 00|00 00 00 00 de ad be ef)
 
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
@@ -80,7 +80,7 @@ Contents of the .eh_frame section:
   Return address column: .*
   Augmentation data:     (0b|1b)
 
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
 #...
 000000(c4|d0) 0000001[04] 0000001[8c] FDE cie=000000b[08] pc=.*
   DW_CFA_nop
@@ -99,7 +99,7 @@ Contents of the .eh_frame section:
 
 00000(0f|10)0 00000014 0000001c FDE cie=000000[de]8 pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
@@ -125,28 +125,28 @@ Contents of the .eh_frame section:
   Augmentation data:     (ef be ad de 00 00 00 00|00 00 00 00 de ad be ef)
 
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
 
 000001(58|70) 00000014 000001(5c|74) FDE cie=00000000 pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
 #...
 000001(70|88) 00000014 00000(01c|148|15c) FDE cie=00000(02c|030|170) pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
 
 000001(88|a0) 00000014 000001(8c|a4) FDE cie=00000000 pc=.*
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
@@ -155,7 +155,7 @@ Contents of the .eh_frame section:
   Augmentation data:     (ef be ad de 00 00 00 00|00 00 00 00 de ad be ef)
 
   DW_CFA_advance_loc: 4 to .*
-  DW_CFA_def_cfa: r0( \([er]ax\)|) ofs 16
+  DW_CFA_def_cfa: r0(.*) ofs 16
   DW_CFA_nop
   DW_CFA_nop
   DW_CFA_nop
