@@ -181,42 +181,6 @@
   QLF3(W,W,X),			\
 }
 
-/* e.g. STADD <Ws>, [<Xn|SP>].  */
-#define QL_ATOMIC_ST_W          \
-{                               \
-  QLF2(W,NIL),              	\
-}
-
-/* e.g. STADD <Xs>, [<Xn|SP>].  */
-#define QL_ATOMIC_ST_X          \
-{                               \
-  QLF2(X,NIL),              	\
-}
-
-/* e.g. CAS <Ws>, <Wt>, [<Xn|SP>].  */
-#define QL_ATOMIC_W             \
-{                               \
-  QLF3(W,W,NIL),              	\
-}
-
-/* e.g. CAS <Xs>, <Xt>, [<Xn|SP>].  */
-#define QL_ATOMIC_X             \
-{                               \
-  QLF3(X,X,NIL),              	\
-}
-
-/* e.g. CASP <Ws>, <W(s+1)>, <Wt>, <W(t+1)>, [<Xn|SP>].  */
-#define QL_CASPW                \
-{                               \
-  QLF5(W,W,W,W,NIL),            \
-}
-
-/* e.g. CASP <Xs>, <X(s+1)>, <Xt>, <X(t+1)>, [<Xn|SP>].  */
-#define QL_CASPX                \
-{                               \
-  QLF5(X,X,X,X,NIL),            \
-}
-
 /* e.g. UDIV <Xd>, <Xn>, <Xm>.  */
 #define QL_I3SAMER		\
 {				\
@@ -1249,8 +1213,6 @@ static const aarch64_feature_set aarch64_feature_crypto =
   AARCH64_FEATURE (AARCH64_FEATURE_CRYPTO, 0);
 static const aarch64_feature_set aarch64_feature_crc =
   AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0);
-static const aarch64_feature_set aarch64_feature_atomic =
-  AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0);
 static const aarch64_feature_set aarch64_feature_cache =
   AARCH64_FEATURE (AARCH64_FEATURE_CACHE, 0);
 
@@ -1259,7 +1221,6 @@ static const aarch64_feature_set aarch64_feature_cache =
 #define SIMD	&aarch64_feature_simd
 #define CRYPTO	&aarch64_feature_crypto
 #define CRC	&aarch64_feature_crc
-#define ATOMIC	&aarch64_feature_atomic
 #define CACHE	&aarch64_feature_cache
 
 struct aarch64_opcode aarch64_opcode_table[] =
@@ -2162,241 +2123,6 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"blt", 0x5400000b, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
   {"bgt", 0x5400000c, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
   {"ble", 0x5400000d, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
-  /* Atomic CAS.  */
-  {"casb", 0x08a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casab", 0x08e07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"caslb", 0x08a0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casalb", 0x08e0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"cash", 0x48a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casah", 0x48e07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"caslh", 0x48a0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casalh", 0x48e0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"cas", 0x88a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casa", 0x88e07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casl", 0x88a0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"casal", 0x88e0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"cas", 0xc8a07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"casa", 0xc8e07c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"casl", 0xc8a0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"casal", 0xc8e0fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"casp", 0x08207c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPW, 0},
-  {"caspa", 0x08607c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPW, 0},
-  {"caspl", 0x0820fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPW, 0},
-  {"caspal", 0x0860fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPW, 0},
-  {"casp", 0x48207c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPX, 0},
-  {"caspa", 0x48607c00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPX, 0},
-  {"caspl", 0x4820fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPX, 0},
-  {"caspal", 0x4860fc00, 0xffe0fc00, atomiccas, 0, ATOMIC, OP5 (Rs0, Rs1, Rt0, Rt1, SIMD_ADDR_SIMPLE), QL_CASPX, 0},
-  /* Atomic LD.  */
-  {"ldaddb", 0x38200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"staddb", 0x38200000, 0xffe0fc00, atomicst, OP_ADDB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldaddab", 0x38a00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldaddlb", 0x38600000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"staddlb", 0x38600000, 0xffe0fc00, atomicst, OP_ADDLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldaddalb", 0x38e00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldaddh", 0x78200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"staddh", 0x78200000, 0xffe0fc00, atomicst, OP_ADDH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldaddah", 0x78a00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldaddlh", 0x78600000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"staddlh", 0x78600000, 0xffe0fc00, atomicst, OP_ADDLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldaddalh", 0x78e00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldadd", 0xb8200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stadd", 0xb8200000, 0xffe0fc00, atomicst, OP_ADD1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldadda", 0xb8a00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldaddl", 0xb8600000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"staddl", 0xb8600000, 0xffe0fc00, atomicst, OP_ADDL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldaddal", 0xb8e00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldadd", 0xf8200000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stadd", 0xf8200000, 0xffe0fc00, atomicst, OP_ADD2, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldadda", 0xf8a00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldaddl", 0xf8600000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"staddl", 0xf8600000, 0xffe0fc00, atomicst, OP_ADDL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldaddal", 0xf8e00000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldclrb", 0x38201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclrb", 0x38201000, 0xffe0fc00, atomicst, OP_CLRB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclrab", 0x38a01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclrlb", 0x38601000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclrlb", 0x38601000, 0xffe0fc00, atomicst, OP_CLRLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclralb", 0x38e01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclrh", 0x78201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclrh", 0x78201000, 0xffe0fc00, atomicst, OP_CLRH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclrah", 0x78a01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclrlh", 0x78601000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclrlh", 0x78601000, 0xffe0fc00, atomicst, OP_CLRLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclralh", 0x78e01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclr", 0xb8201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclr", 0xb8201000, 0xffe0fc00, atomicst, OP_CLR, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclra", 0xb8a01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclrl", 0xb8601000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stclrl", 0xb8601000, 0xffe0fc00, atomicst, OP_CLRL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldclral", 0xb8e01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldclr", 0xf8201000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stclr", 0xf8201000, 0xffe0fc00, atomicst, OP_CLR1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldclra", 0xf8a01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldclrl", 0xf8601000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stclrl", 0xf8601000, 0xffe0fc00, atomicst, OP_CLRL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldclral", 0xf8e01000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldeorb", 0x38202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steorb", 0x38202000, 0xffe0fc00, atomicst, OP_EORB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeorab", 0x38a02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeorlb", 0x38602000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steorlb", 0x38602000, 0xffe0fc00, atomicst, OP_EORLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeoralb", 0x38e02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeorh", 0x78202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steorh", 0x78202000, 0xffe0fc00, atomicst, OP_EORH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeorah", 0x78a02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeorlh", 0x78602000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steorlh", 0x78602000, 0xffe0fc00, atomicst, OP_EORLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeoralh", 0x78e02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeor", 0xb8202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steor", 0xb8202000, 0xffe0fc00, atomicst, OP_EOR, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeora", 0xb8a02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeorl", 0xb8602000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"steorl", 0xb8602000, 0xffe0fc00, atomicst, OP_EORL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldeoral", 0xb8e02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldeor", 0xf8202000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"steor", 0xf8202000, 0xffe0fc00, atomicst, OP_EOR1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldeora", 0xf8a02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldeorl", 0xf8602000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"steorl", 0xf8602000, 0xffe0fc00, atomicst, OP_EORL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldeoral", 0xf8e02000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsetb", 0x38203000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsetb", 0x38203000, 0xffe0fc00, atomicst, OP_SETB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsetab", 0x38a03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsetlb", 0x38603000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsetlb", 0x38603000, 0xffe0fc00, atomicst, OP_SETLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsetalb", 0x38e03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldseth", 0x78203000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stseth", 0x78203000, 0xffe0fc00, atomicst, OP_SETH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsetah", 0x78a03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsetlh", 0x78603000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsetlh", 0x78603000, 0xffe0fc00, atomicst, OP_SETLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsetalh", 0x78e03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldset", 0xb8203000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stset", 0xb8203000, 0xffe0fc00, atomicst, OP_SET, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldseta", 0xb8a03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsetl", 0xb8603000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsetl", 0xb8603000, 0xffe0fc00, atomicst, OP_SETL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsetal", 0xb8e03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldset", 0xf8203000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stset", 0xf8203000, 0xffe0fc00, atomicst, OP_SET1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldseta", 0xf8a03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsetl", 0xf8603000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stsetl", 0xf8603000, 0xffe0fc00, atomicst, OP_SETL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldsetal", 0xf8e03000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsmaxb", 0x38204000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmaxb", 0x38204000, 0xffe0fc00, atomicst, OP_SMAXB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxab", 0x38a04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmaxlb", 0x38604000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmaxlb", 0x38604000, 0xffe0fc00, atomicst, OP_SMAXLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxalb", 0x38e04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmaxh", 0x78204000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmaxh", 0x78204000, 0xffe0fc00, atomicst, OP_SMAXH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxah", 0x78a04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmaxlh", 0x78604000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmaxlh", 0x78604000, 0xffe0fc00, atomicst, OP_SMAXLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxalh", 0x78e04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmax", 0xb8204000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmax", 0xb8204000, 0xffe0fc00, atomicst, OP_SMAX, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxa", 0xb8a04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmaxl", 0xb8604000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmaxl", 0xb8604000, 0xffe0fc00, atomicst, OP_SMAXL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmaxal", 0xb8e04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmax", 0xf8204000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stsmax", 0xf8204000, 0xffe0fc00, atomicst, OP_SMAX1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldsmaxa", 0xf8a04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsmaxl", 0xf8604000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stsmaxl", 0xf8604000, 0xffe0fc00, atomicst, OP_SMAXL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldsmaxal", 0xf8e04000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsminb", 0x38205000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsminb", 0x38205000, 0xffe0fc00, atomicst, OP_SMINB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsminab", 0x38a05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsminlb", 0x38605000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsminlb", 0x38605000, 0xffe0fc00, atomicst, OP_SMINLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsminalb", 0x38e05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsminh", 0x78205000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsminh", 0x78205000, 0xffe0fc00, atomicst, OP_SMINH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsminah", 0x78a05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsminlh", 0x78605000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsminlh", 0x78605000, 0xffe0fc00, atomicst, OP_SMINLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsminalh", 0x78e05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmin", 0xb8205000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsmin", 0xb8205000, 0xffe0fc00, atomicst, OP_SMIN, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsmina", 0xb8a05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsminl", 0xb8605000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stsminl", 0xb8605000, 0xffe0fc00, atomicst, OP_SMINL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldsminal", 0xb8e05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldsmin", 0xf8205000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stsmin", 0xf8205000, 0xffe0fc00, atomicst, OP_SMIN1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldsmina", 0xf8a05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldsminl", 0xf8605000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stsminl", 0xf8605000, 0xffe0fc00, atomicst, OP_SMINL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldsminal", 0xf8e05000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldumaxb", 0x38206000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumaxb", 0x38206000, 0xffe0fc00, atomicst, OP_UMAXB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxab", 0x38a06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumaxlb", 0x38606000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumaxlb", 0x38606000, 0xffe0fc00, atomicst, OP_UMAXLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxalb", 0x38e06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumaxh", 0x78206000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumaxh", 0x78206000, 0xffe0fc00, atomicst, OP_UMAXH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxah", 0x78a06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumaxlh", 0x78606000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumaxlh", 0x78606000, 0xffe0fc00, atomicst, OP_UMAXLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxalh", 0x78e06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumax", 0xb8206000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumax", 0xb8206000, 0xffe0fc00, atomicst, OP_UMAX, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxa", 0xb8a06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumaxl", 0xb8606000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumaxl", 0xb8606000, 0xffe0fc00, atomicst, OP_UMAXL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumaxal", 0xb8e06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumax", 0xf8206000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stumax", 0xf8206000, 0xffe0fc00, atomicst, OP_UMAX1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldumaxa", 0xf8a06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"ldumaxl", 0xf8606000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stumaxl", 0xf8606000, 0xffe0fc00, atomicst, OP_UMAXL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldumaxal", 0xf8e06000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"lduminb", 0x38207000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stuminb", 0x38207000, 0xffe0fc00, atomicst, OP_UMINB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"lduminab", 0x38a07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"lduminlb", 0x38607000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stuminlb", 0x38607000, 0xffe0fc00, atomicst, OP_UMINLB, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"lduminalb", 0x38e07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"lduminh", 0x78207000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stuminh", 0x78207000, 0xffe0fc00, atomicst, OP_UMINH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"lduminah", 0x78a07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"lduminlh", 0x78607000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stuminlh", 0x78607000, 0xffe0fc00, atomicst, OP_UMINLH, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"lduminalh", 0x78e07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumin", 0xb8207000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stumin", 0xb8207000, 0xffe0fc00, atomicst, OP_UMIN, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"ldumina", 0xb8a07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"lduminl", 0xb8607000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, F_HAS_ALIAS},
-  {"stuminl", 0xb8607000, 0xffe0fc00, atomicst, OP_UMINL, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_W, F_ALIAS | F_CONV},
-  {"lduminal", 0xb8e07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"ldumin", 0xf8207000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stumin", 0xf8207000, 0xffe0fc00, atomicst, OP_UMIN1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"ldumina", 0xf8a07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"lduminl", 0xf8607000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, F_HAS_ALIAS},
-  {"stuminl", 0xf8607000, 0xffe0fc00, atomicst, OP_UMINL1, ATOMIC, OP2 (Rs, SIMD_ADDR_SIMPLE), QL_ATOMIC_ST_X, F_ALIAS | F_CONV},
-  {"lduminal", 0xf8e07000, 0xffe0fc00, atomicld, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  /* Atomic SWAP.  */
-  {"swpb", 0x38208000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpab", 0x38a08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swplb", 0x38608000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpalb", 0x38e08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swph", 0x78208000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpah", 0x78a08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swplh", 0x78608000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpalh", 0x78e08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swp", 0xb8208000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpa", 0xb8a08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpl", 0xb8608000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swpal", 0xb8e08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_W, 0},
-  {"swp", 0xf8208000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"swpa", 0xf8a08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"swpl", 0xf8608000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
-  {"swpal", 0xf8e08000, 0xffe0fc00, atomicswp, 0, ATOMIC, OP3 (Rs, Rt, SIMD_ADDR_SIMPLE), QL_ATOMIC_X, 0},
   {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEREG, Rt), QL_SRC_X, F_ALIAS},
   {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEZERO, Rz), QL_SRC_X, F_ALIAS},
   {0, 0, 0, 0, 0, 0, {}, {}, 0},
@@ -2424,12 +2150,8 @@ struct aarch64_opcode aarch64_opcode_table[] =
     Y(INT_REG, regno, "Rn", 0, F(FLD_Rn), "an integer register")	\
     Y(INT_REG, regno, "Rm", 0, F(FLD_Rm), "an integer register")	\
     Y(INT_REG, regno, "Rt", 0, F(FLD_Rt), "an integer register")	\
-    Y(INT_REG, regno, "Rt0", 0, F(FLD_Rt0), "an integer register")      \
-    Y(INT_REG, regno, "Rt1", 0, F(FLD_Rt1), "an integer register")      \
     Y(INT_REG, regno, "Rt2", 0, F(FLD_Rt2), "an integer register")	\
     Y(INT_REG, regno, "Rs", 0, F(FLD_Rs), "an integer register")	\
-    Y(INT_REG, regno, "Rs0", 0, F(FLD_Rs0), "an integer register")      \
-    Y(INT_REG, regno, "Rs1", 0, F(FLD_Rs1), "an integer register")      \
     Y(INT_REG, regno, "Ra", 0, F(FLD_Ra), "an integer register")	\
     Y(INT_REG, regno, "Rz", 0, F(FLD_Rz), "XZR register")		\
     X(INT_REG, ins_regno, ext_regrt_sysins, "Rt_SYS", 0, F(FLD_Rt),	\

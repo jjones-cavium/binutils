@@ -1695,22 +1695,6 @@ convert_from_csel (aarch64_inst *inst)
   return 0;
 }
 
-/* LDOP <Ws>, WZR, [Wn]
-     is equivalent to:
-   STOP <Ws>, [Wn].  */
-
-static int
-convert_ldop_to_stop (aarch64_inst *inst)
-{
-  if (inst->operands[1].reg.regno == 0x1f)
-    {
-      copy_operand_info (inst, 1, 2);
-      inst->operands[2].type = AARCH64_OPND_NIL;
-      return 1;
-    }
-  return 0;
-}
-
 /* CSET <Wd>, <cond>
      is equivalent to:
    CSINC <Wd>, WZR, WZR, invert(<cond>)
@@ -1842,71 +1826,6 @@ convert_to_alias (aarch64_inst *inst, const aarch64_opcode *alias)
     case OP_UXTL:
     case OP_UXTL2:
       return convert_shll_to_xtl (inst);
-    case OP_ADDB:
-    case OP_ADDLB:
-    case OP_ADDH:
-    case OP_ADDLH:
-    case OP_ADD1:
-    case OP_ADDL:
-    case OP_ADD2:
-    case OP_ADDL1:
-    case OP_CLRB:
-    case OP_CLRLB:
-    case OP_CLRH:
-    case OP_CLRLH:
-    case OP_CLR:
-    case OP_CLRL:
-    case OP_CLR1:
-    case OP_CLRL1:
-    case OP_SETB:
-    case OP_SETLB:
-    case OP_SETH:
-    case OP_SETLH:
-    case OP_SET:
-    case OP_SETL:
-    case OP_SET1:
-    case OP_SETL1:
-    case OP_EORB:
-    case OP_EORLB:
-    case OP_EORH:
-    case OP_EORLH:
-    case OP_EOR:
-    case OP_EORL:
-    case OP_EOR1:
-    case OP_EORL1:
-    case OP_SMAXB:
-    case OP_SMAXLB:
-    case OP_SMAXH:
-    case OP_SMAXLH:
-    case OP_SMAX:
-    case OP_SMAXL:
-    case OP_SMAX1:
-    case OP_SMAXL1:
-    case OP_SMINB:
-    case OP_SMINLB:
-    case OP_SMINH:
-    case OP_SMINLH:
-    case OP_SMIN:
-    case OP_SMINL:
-    case OP_SMIN1:
-    case OP_SMINL1:
-    case OP_UMAXB:
-    case OP_UMAXLB:
-    case OP_UMAXH:
-    case OP_UMAXLH:
-    case OP_UMAX:
-    case OP_UMAXL:
-    case OP_UMAX1:
-    case OP_UMAXL1:
-    case OP_UMINB:
-    case OP_UMINLB:
-    case OP_UMINH:
-    case OP_UMINLH:
-    case OP_UMIN:
-    case OP_UMINL:
-    case OP_UMIN1:
-    case OP_UMINL1:
-      return convert_ldop_to_stop (inst);
     default:
       return 0;
     }

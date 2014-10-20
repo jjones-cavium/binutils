@@ -3482,41 +3482,6 @@ parse_cache_zero (char **str, struct hash_control *cache_zeros)
       }								\
   } while (0)
 
-#define casp_int_reg_or_fail(reject_sp, reject_rz) do {         \
-    val = aarch64_reg_parse_32_64 (&str, reject_sp, reject_rz,  \
-				   &isreg32, &isregzero);	\
-    if (val == PARSE_FAIL)					\
-      {								\
-	set_default_error ();					\
-	goto failure;						\
-      }								\
-    if (val % 2 != 0)						\
-      {								\
-	set_fatal_syntax_error (_("Even number register expected"));\
-	goto failure;						\
-      }								\
-    info->reg.regno = val;					\
-    if (isreg32)						\
-      info->qualifier = AARCH64_OPND_QLF_W;			\
-    else							\
-      info->qualifier = AARCH64_OPND_QLF_X;			\
-  } while (0)
-
-#define casp1_int_reg_or_fail(reject_sp, reject_rz) do {        \
-    val1 = aarch64_reg_parse_32_64 (&str, reject_sp, reject_rz, \
-				    &isreg32, &isregzero);	\
-    if (val1 == PARSE_FAIL)					\
-      {								\
-	set_default_error ();					\
-	goto failure;						\
-      }								\
-    if (val1 != val + 1)					\
-      {								\
-	set_fatal_syntax_error (_("Register should be consecutive with the previous"));	\
-	goto failure;						\
-      }								\
-  } while (0)
-
 #define po_imm_nc_or_fail() do {				\
     if (! parse_constant_immediate (&str, &val))		\
       goto failure;						\
@@ -4474,12 +4439,8 @@ process_omitted_operand (enum aarch64_opnd type, const aarch64_opcode *opcode,
     case AARCH64_OPND_Rn:
     case AARCH64_OPND_Rm:
     case AARCH64_OPND_Rt:
-    case AARCH64_OPND_Rt0:
-    case AARCH64_OPND_Rt1:
     case AARCH64_OPND_Rt2:
     case AARCH64_OPND_Rs:
-    case AARCH64_OPND_Rs0:
-    case AARCH64_OPND_Rs1:
     case AARCH64_OPND_Ra:
     case AARCH64_OPND_Rz:
     case AARCH64_OPND_Rt_SYS:
@@ -4753,16 +4714,6 @@ parse_operands (char *str, const aarch64_opcode *opcode)
 	case AARCH64_OPND_Ra:
 	case AARCH64_OPND_Rt_SYS:
 	  po_int_reg_or_fail (1, 0);
-	  break;
-
-	case AARCH64_OPND_Rt0:
-	case AARCH64_OPND_Rs0:
-	  casp_int_reg_or_fail (1, 1);
-	  break;
-
-	case AARCH64_OPND_Rt1:
-	case AARCH64_OPND_Rs1:
-	  casp1_int_reg_or_fail (1, 0);
 	  break;
 
 	case AARCH64_OPND_Rd_SP:
@@ -7344,7 +7295,7 @@ static const struct aarch64_cpu_option_table aarch64_cpus[] = {
   {"cortex-a53",	AARCH64_ARCH_V8, "Cortex-A53"},
   {"cortex-a57",	AARCH64_ARCH_V8, "Cortex-A57"},
   {"thunderx",		AARCH64_ARCH_V8 | AARCH64_FEATURE_CRYPTO \
-			| AARCH64_FEATURE_CRC | AARCH64_FEATURE_ATOMIC \
+			| AARCH64_FEATURE_CRC \
 			| AARCH64_FEATURE_CACHE, "Cavium ThunderX"},
   {"xgene-1",		AARCH64_ARCH_V8, "APM X-Gene 1"},
   {"generic", AARCH64_ARCH_V8, NULL},
@@ -7379,7 +7330,6 @@ struct aarch64_option_cpu_value_table
 };
 
 static const struct aarch64_option_cpu_value_table aarch64_features[] = {
-  {"atomic",		AARCH64_FEATURE (AARCH64_FEATURE_ATOMIC, 0)},
   {"cache",		AARCH64_FEATURE (AARCH64_FEATURE_CACHE, 0)},
   {"crc",		AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0)},
   {"crypto",		AARCH64_FEATURE (AARCH64_FEATURE_CRYPTO, 0)},

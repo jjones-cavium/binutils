@@ -1,3 +1,14 @@
+2014-10-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-aarch64.c (casp_int_reg_or_fail): Remove.
+	(casp1_int_reg_or_fail): Likewise.
+	(process_omitted_operand): Remove AARCH64_OPND_Rt0,
+	AARCH64_OPND_Rt1, AARCH64_OPND_Rs0 & AARCH64_OPND_Rs1.
+	(parse_operands): Remove handling functions for
+	AARCH64_OPND_Rt0, AARCH64_OPND_Rt1, AARCH64_OPND_Rs0
+	& AARCH64_OPND_Rs1.
+	(aarch64_cpus): Remove AARCH64_FEATURE_ATOMIC feature.
+
 2014-08-07  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Rename thunder to thunderx.

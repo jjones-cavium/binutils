@@ -1,3 +1,24 @@
+2014-10-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-asm.c (convert_stop_to_ldop): Remove.
+	(convert_to_real): Remove cases for all operations mentioned in
+	the include/opcode/aarch64.h to alias st<op> to ld<op>.
+	* aarch64-dis.c (convert_ldop_to_stop): Remove.
+	(convert_to_alias): Remove all operations mentioned in the
+	include/opcode/aarch64.h to alias ld<op> to st<op>.
+	* aarch64-opc.c (aarch64_field): Remove field entries for
+	Rt0, Rt1, Rs0 and Rs1.
+	(aarch64_print_operand): Remove AARCH64_OPND_Rt0,
+	AARCH64_OPND_Rt1, AARCH64_OPND_Rs0 & AARCH64_OPND_Rs1.
+	* aarch64-opc.h (aarch64_field_kind): Remove fields FLD_Rt0,
+	* aarch64-tbl.h (QL_ATOMIC_ST_W, QL_ATOMIC_ST_X, QL_ATOMIC_W,
+	QL_ATOMIC_X, QL_CASPW & QL_CASPX): Remove.
+	(aarch64_feature_atomic): Remove.
+	(aarch64_opcode_table): Remove all the atomic instructions.
+	* aarch64-asm-2.c: Regenerate.
+	* aarch64-dis-2.c: Regenerate.
+	* aarch64-opc-2.c: Regenerate.
+
 2014-06-05  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64-asm.c (aarch64_ins_cachereg, aarch64_ins_cachezero):
