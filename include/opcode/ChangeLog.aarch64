@@ -1,3 +1,11 @@
+2014-09-03  Jiong Wang  <jiong.wang@arm.com>
+
+	* aarch64.h (AARCH64_FEATURE_LSE): New feature added.
+	(aarch64_opnd): Add AARCH64_OPND_PAIRREG.
+	(aarch64_insn_class): Add lse_atomic.
+	(F_LSE_SZ): New field added.
+	(opcode_has_special_coder): Recognize F_LSE_SZ.
+
 2014-02-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* aarch64.h (aarch64_opnd): New operands AARCH64_OPND_Rt0,

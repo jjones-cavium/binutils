@@ -1,3 +1,8 @@
+2014-09-03  Jiong Wang  <jiong.wang@arm.com>
+
+	* config/tc-aarch64.c (parse_operands): Recognize PAIRREG.
+	(aarch64_features): Add entry for lse extension.
+
 2014-10-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* config/tc-aarch64.c (casp_int_reg_or_fail): Remove.
