@@ -1,3 +1,8 @@
+2014-10-21  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-aarch64.c (aarch64_cpus): Add AARCH64_FEATURE_LSE
+	feature for thunderx.
+
 2014-09-03  Jiong Wang  <jiong.wang@arm.com>
  
 	* config/tc-aarch64.c (parse_sys_reg): Remove the restriction on op0
