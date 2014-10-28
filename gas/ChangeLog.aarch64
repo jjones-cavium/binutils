@@ -1,3 +1,11 @@
+2014-10-27  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #12786
+	* config/tc-aarch64.c (aarch64_handle_align): Rewrite so it is not based
+	on MAX_MEM_FOR_RS_ALIGN_CODE; only store a max of 4 + 3 bytes.  3 bytes for
+	the excessive and 4 for the rest.
+	* config/tc-aarch64.h (md_do_align): Delete.
+
 2014-10-21  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Add AARCH64_FEATURE_LSE

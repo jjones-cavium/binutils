@@ -5914,7 +5914,7 @@ aarch64_handle_align (fragS * fragP)
   /* AArch64 instructions are always little-endian.  */
   static char const aarch64_noop[4] = { 0x1f, 0x20, 0x03, 0xd5 };
 
-  int bytes, fix, noop_size;
+  int bytes, fix, noop_size, excess;
   char *p;
   const char *noop;
 
@@ -5925,37 +5925,35 @@ aarch64_handle_align (fragS * fragP)
   p = fragP->fr_literal + fragP->fr_fix;
   fix = 0;
 
-  if (bytes > MAX_MEM_FOR_RS_ALIGN_CODE)
-    bytes &= MAX_MEM_FOR_RS_ALIGN_CODE;
-
 #ifdef OBJ_ELF
   gas_assert (fragP->tc_frag_data.recorded);
 #endif
 
   noop = aarch64_noop;
   noop_size = sizeof (aarch64_noop);
+
+  excess = bytes % noop_size;
+  /* Handle the leading part if we're not inserting a whole number of
+     instructions, and make it the end of the fixed part of the frag.  */
+  switch (excess)
+    {
+    case 3:
+      *p++ = '\0';
+      /* Fall through.  */
+    case 2:
+      *p++ = '\0';
+      /* Fall through.  */
+    case 1:
+      *p++ = '\0';
+      insert_data_mapping_symbol (MAP_INSN, fragP->fr_fix, fragP, excess);
+      /* Fall through.  */
+    case 0:
+      break;
+    }
+  /* Skip over the excessive part */
+  fragP->fr_fix += excess;
+  memcpy(p, noop, noop_size);
   fragP->fr_var = noop_size;
-
-  if (bytes & (noop_size - 1))
-    {
-      fix = bytes & (noop_size - 1);
-#ifdef OBJ_ELF
-      insert_data_mapping_symbol (MAP_INSN, fragP->fr_fix, fragP, fix);
-#endif
-      memset (p, 0, fix);
-      p += fix;
-      bytes -= fix;
-    }
-
-  while (bytes >= noop_size)
-    {
-      memcpy (p, noop, noop_size);
-      p += noop_size;
-      bytes -= noop_size;
-      fix += noop_size;
-    }
-
-  fragP->fr_fix += fix;
 }
 
 /* Called from md_do_align.  Used to create an alignment

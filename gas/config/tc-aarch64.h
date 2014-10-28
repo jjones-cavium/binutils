@@ -138,13 +138,6 @@ struct aarch64_frag_type
 #define TC_FRAG_INIT(fragp)	aarch64_init_frag (fragp, max_chars)
 #define HANDLE_ALIGN(fragp)	aarch64_handle_align (fragp)
 
-#define md_do_align(N, FILL, LEN, MAX, LABEL)					\
-  if (FILL == NULL && (N) != 0 && ! need_pass_2 && subseg_text_p (now_seg))	\
-    {										\
-      aarch64_frag_align_code (N, MAX);						\
-      goto LABEL;								\
-    }
-
 #define DWARF2_LINE_MIN_INSN_LENGTH 	4
 
 /* The lr register is r30.  */
