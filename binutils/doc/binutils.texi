@@ -228,7 +228,8 @@ contents of each object would only waste time and space.  Thin archives
 are also @emph{flattened}, so that adding one or more archives to a
 thin archive will add the elements of the nested archive individually.
 The paths to the elements of the archive are stored relative to the
-archive itself.
+archive itself.  For security reasons absolute paths and paths with a
+@code{/../} component are not allowed.
 
 @cindex compatibility, @command{ar}
 @cindex @command{ar} compatibility
