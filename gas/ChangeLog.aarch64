@@ -1,3 +1,7 @@
+2014-09-05  joel jones-CA  <jjones@caveonetworks.com>
+	* gas/config/tc-aarch64.c (aarch64_cpu_option_table): Remove
+	AARCH64_FEATURE_ATOMIC
+
 2014-08-07  Andrew Pinski  <apinski@cavium.com>
 
 	* config/tc-aarch64.c (aarch64_cpus): Rename thunder to thunderx.
