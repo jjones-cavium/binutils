@@ -1,3 +1,9 @@
+2014-11-18  Praveen Jonnalagadda <pjonnalagadda@caviumnetworks.com>
+            Naveen Hurugalawadi <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* config/tc-mips.c (mips_elf_final_processing): set elf header eflags
+	EF_MIPS_HARD_FLOAT and EF_MIPS_SINGLE_FLOAT accordingly.
+
 2014-01-16  Manjunath Matti  <mmatti@caviumnetworks.com>
 
 	Bug #56128 reported on MV bugz.

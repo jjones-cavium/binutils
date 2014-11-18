@@ -2417,6 +2417,12 @@ get_machine_flags (unsigned e_flags, unsigned e_machine)
 	  if (e_flags & EF_MIPS_32BITMODE)
 	    strcat (buf, ", 32bitmode");
 
+	  if (e_flags & EF_MIPS_HARD_FLOAT)
+	    strcat (buf, ", hard-float");
+
+	  if (e_flags & EF_MIPS_SINGLE_FLOAT)
+	    strcat (buf, ", single-float");
+
 	  switch ((e_flags & EF_MIPS_MACH))
 	    {
 	    case E_MIPS_MACH_3900: strcat (buf, ", 3900"); break;

@@ -18789,6 +18789,12 @@ mips_elf_final_processing (void)
   if (mips_32bitmode)
     elf_elfheader (stdoutput)->e_flags |= EF_MIPS_32BITMODE;
 
+  if(file_mips_soft_float==0)
+    elf_elfheader (stdoutput)->e_flags |= EF_MIPS_HARD_FLOAT;
+
+  if(file_mips_single_float==1)
+    elf_elfheader (stdoutput)->e_flags |= EF_MIPS_SINGLE_FLOAT;
+
 #if 0 /* XXX FIXME */
   /* 32 bit code with 64 bit FP registers.  */
   if (!file_mips_fp32 && ABI_NEEDS_32BIT_REGS (mips_abi))

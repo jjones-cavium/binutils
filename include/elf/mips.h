@@ -203,6 +203,15 @@ END_RELOC_NUMBERS (R_MIPS_maxext)
    (regs are 32-bits wide.) */
 #define EF_MIPS_32BITMODE       0x00000100
 
+/* Indicates that code is using hard-float libraries, if 0 then 
+   it has soft-float instructions */
+#define EF_MIPS_HARD_FLOAT	0x00000200
+
+/* Indicates that floating point is single precision, if 0 then
+   it is double precision floating point. Combination of 
+   hard-float and single float gives the complete picture*/
+#define EF_MIPS_SINGLE_FLOAT	0x00000400
+
 /* Four bit MIPS architecture field.  */
 #define EF_MIPS_ARCH		0xf0000000
 
