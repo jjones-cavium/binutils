@@ -1,5 +1,5 @@
 #objdump: -dr
-#as: -march=armv8-a+atomic
+#as: -march=armv8-a+lse
 
 .*:     file format .*
 

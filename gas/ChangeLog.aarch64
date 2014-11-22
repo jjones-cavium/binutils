@@ -1,4 +1,12 @@
+2014-11-21  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #13243
+	* config/tc-aarch64.c (aarch64_features): Rename atomic to lse.
+	* testsuite/gas/aarch64/atomic-1.d: Update for the name change.
+	* testsuite/gas/aarch64/atomic.d: Likewise.
+
 2014-09-05  joel jones-CA  <jjones@caveonetworks.com>
+
 	* gas/config/tc-aarch64.c (aarch64_cpu_option_table): Remove
 	AARCH64_FEATURE_ATOMIC
 
