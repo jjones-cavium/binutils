@@ -29,6 +29,9 @@ fi
 
 # Look for 64 bit target libraries in /lib64, /usr/lib64 etc., first.
 LIBPATH_SUFFIX=$ELFSIZE
+# Look for fp target libraries in /lib64-fp, /usr/lib64-fp etc., first.
+LIBFP_SUFFIX=${ELFSIZE}-fp
+
 
 GENERATE_SHLIB_SCRIPT=yes
 GENERATE_PIE_SCRIPT=yes

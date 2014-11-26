@@ -179,8 +179,8 @@ if [ "x${LIB_PATH}" = "x" ] && [ "x${USE_LIBPATH}" = xyes ] ; then
     if test -n "$addsuffix"; then
       case :${LIB_PATH}: in
 	*:${lib}${LIBPATH_SUFFIX}:*) ;;
-	::) LIB_PATH=${lib}${LIBPATH_SUFFIX} ;;
-	*) LIB_PATH=${LIB_PATH}:${lib}${LIBPATH_SUFFIX} ;;
+	::) LIB_PATH=${lib}${LIBPATH_SUFFIX}:${lib}${LIBFP_SUFFIX} ;;
+	*) LIB_PATH=${LIB_PATH}:${lib}${LIBPATH_SUFFIX}:${lib}${LIBFP_SUFFIX} ;;
       esac
       case :${LIB_PATH}:${LIB_PATH2}: in
 	*:${lib}:*) ;;
@@ -209,9 +209,9 @@ if [ "x${LIB_PATH}" = "x" ] && [ "x${USE_LIBPATH}" = xyes ] ; then
     :*) ;;
     *:*${LIBPATH_SUFFIX}) ;;
     *)
-      paths="${exec_prefix}/${target_alias}/lib${LIBPATH_SUFFIX}"
+      paths="${exec_prefix}/${target_alias}/lib${LIBPATH_SUFFIX}:${exec_prefix}/${target_alias}/lib${LIBFP_SUFFIX}"
       if [ x"${TOOL_LIB}" != x ]; then
-        paths="${paths} ${exec_prefix}/${TOOL_LIB}/lib${LIBPATH_SUFFIX}"
+        paths="${paths} ${exec_prefix}/${TOOL_LIB}/lib${LIBPATH_SUFFIX}:${paths} ${exec_prefix}/${TOOL_LIB}/lib${LIBFP_SUFFIX}"
       fi
       for path in $paths; do
         case :${LIB_PATH}: in
@@ -235,8 +235,8 @@ if [ "x${use_sysroot}" != "xyes" ] ; then
   if [ "x${LIBPATH_SUFFIX}" != "x" ] ; then
     case :${LIB_PATH}: in
       ::: | *:${tool_lib}${LIBPATH_SUFFIX}:*) ;;
-      ::) LIB_PATH=${tool_lib}${LIBPATH_SUFFIX} ;;
-      *) LIB_PATH=${tool_lib}${LIBPATH_SUFFIX}:${LIB_PATH} ;;
+      ::) LIB_PATH=${tool_lib}${LIBPATH_SUFFIX}:${tool_lib}${LIBFP_SUFFIX} ;;
+      *) LIB_PATH=${tool_lib}${LIBPATH_SUFFIX}:${tool_lib}${LIBFP_SUFFIX}:${LIB_PATH} ;;
     esac
   fi
 fi

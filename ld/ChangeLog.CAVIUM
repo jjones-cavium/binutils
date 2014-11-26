@@ -1,3 +1,8 @@
+2014-11-26  Praveen Jonnalagadda <pjonnalagadda@caviumnetworks.com>
+	* emulparams/elf32bmipn32-defs.sh: Add a new variable LIBFP_SUFFIX for
+	searching fp libraries.
+	* genscripts.sh: Add LIBFP_SUFFIX to libraries search path. 
+	
 2013-04-30  Andrew Pinski  <apinski@cavium.com>
 
 	* testsuite/ld-elf/eh5.d: Allow for 0c also.
