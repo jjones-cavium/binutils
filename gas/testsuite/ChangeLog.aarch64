@@ -1,3 +1,8 @@
+2014-11-19  Ryan Mansfield  <rmansfield@qnx.com>
+
+	* gas/aarch64/diagnostic.s: Add new warnings test patterns.
+	* gas/aarch64/diagnostic.l: Update expected diagnostic output.
+
 2014-09-03  Jiong Wang  <jiong.wang@arm.com>
  
 	* gas/aarch64/illegal.s: Update testcase.
