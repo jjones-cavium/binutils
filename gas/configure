@@ -12059,7 +12059,7 @@ _ACEOF
 
 	# Define mips_cpu to octeon for Octeon and MontaVista.
 	case ${target_vendor} in
-	  octeon|montavista)
+	  octeon|montavista*)
 	    mips_cpu=octeon;;
 	  *) ;;
 	esac
@@ -12093,7 +12093,7 @@ _ACEOF
 $as_echo "#define OCTEON_USE_UNALIGN 1" >>confdefs.h
 
 	    ;;
-	  mips*-octeon-linux*|mips*-montavista-linux*)
+	  mips*-octeon-linux*|mips*-montavista*-linux*)
             mips_default_abi=N64_ABI
 	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)
