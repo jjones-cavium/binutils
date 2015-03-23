@@ -1,3 +1,10 @@
+2015-03-23  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* aarch64-tbl.h (aarch64_feature_lor): New feature added.
+	(LOR): New Added.
+	(aarch64_opcode_table): New LOR instructions added.
+	* aarch64-dis-2.c : Regenerate.
+
 2014-09-03  Jiong Wang  <jiong.wang@arm.com>
  
 	* aarch64-tbl.h (aarch64_opcode_table): Update encoding for mrs/msr.

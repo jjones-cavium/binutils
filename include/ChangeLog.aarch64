@@ -1,3 +1,8 @@
+2015-03-23  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* opcode/aarch64.h (AARCH64_FEATURE_LOR): New feature added.
+	(aarch64_insn_class): Add lor_ext.
+
 2014-10-20  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
 
 	* opcode/aarch64.h: Remove AARCH64_FEATURE_ATOMIC.

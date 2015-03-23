@@ -40,6 +40,7 @@ typedef uint32_t aarch64_insn;
 #define AARCH64_FEATURE_CRC	0x00080000	/* CRC instructions.  */
 #define AARCH64_FEATURE_LSE	0x00100000	/* LSE instructions.  */
 #define AARCH64_FEATURE_CACHE	0x00200000	/* CACHE instructions.  */
+#define AARCH64_FEATURE_LOR	0x00400000	/* LOR instructions.  */
 
 /* Architectures are the sum of the base and extensions.  */
 #define AARCH64_ARCH_V8		AARCH64_FEATURE (AARCH64_FEATURE_V8, \
@@ -344,6 +345,7 @@ enum aarch64_insn_class
   log_imm,
   log_shift,
   lse_atomic,
+  lor_ext,
   movewide,
   pcreladdr,
   ic_system,

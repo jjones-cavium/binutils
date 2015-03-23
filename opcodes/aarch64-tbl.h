@@ -1222,6 +1222,8 @@ static const aarch64_feature_set aarch64_feature_crc =
   AARCH64_FEATURE (AARCH64_FEATURE_CRC, 0);
 static const aarch64_feature_set aarch64_feature_lse =
   AARCH64_FEATURE (AARCH64_FEATURE_LSE, 0);
+static const aarch64_feature_set aarch64_feature_lor =
+  AARCH64_FEATURE (AARCH64_FEATURE_LOR, 0);
 static const aarch64_feature_set aarch64_feature_cache =
   AARCH64_FEATURE (AARCH64_FEATURE_CACHE, 0);
 
@@ -1231,6 +1233,7 @@ static const aarch64_feature_set aarch64_feature_cache =
 #define CRYPTO	&aarch64_feature_crypto
 #define CRC	&aarch64_feature_crc
 #define LSE	&aarch64_feature_lse
+#define LOR	&aarch64_feature_lor
 #define CACHE	&aarch64_feature_cache
 
 struct aarch64_opcode aarch64_opcode_table[] =
@@ -2308,6 +2311,15 @@ struct aarch64_opcode aarch64_opcode_table[] =
   {"ble", 0x5400000d, 0xff00001f, condbranch, 0, CORE, OP1 (ADDR_PCREL19), QL_PCREL_NIL, F_ALIAS | F_PSEUDO},
   {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEREG, Rt), QL_SRC_X, F_ALIAS},
   {"sys", 0xd5080000, 0xfff80000, cache, 0, CACHE, OP2 (CACHEZERO, Rz), QL_SRC_X, F_ALIAS},
+  /* The lor extension instructions.  */
+  {"ldlarb", 0x08df7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"ldlarh", 0x48df7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"ldlar",  0x88df7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"ldlar",  0xc8df7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"stllrb", 0x089f7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"stllrh", 0x489f7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"stllr",  0x889f7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
+  {"stllr",  0xc89f7c00, 0xfffffc00, lor_ext, 0, LOR, OP2 (Rs, ADDR_SIMPLE), QL_R1NIL, 0},
   {0, 0, 0, 0, 0, 0, {}, {}, 0},
 };
 

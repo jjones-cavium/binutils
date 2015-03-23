@@ -1,3 +1,8 @@
+2015-03-23  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* gas/aarch64/lor.d: New.
+	* gas/aarch64/lor.s: Likewise.
+
 2014-11-19  Ryan Mansfield  <rmansfield@qnx.com>
 
 	* gas/aarch64/diagnostic.s: Add new warnings test patterns.
